@@ -1,9 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 
+export type ThemeMode = 'dark' | 'light' | 'system';
+
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
+  themeMode = signal<ThemeMode>('dark');
   currentTheme = signal<'dark' | 'light'>('dark');
 
   constructor() {
@@ -12,30 +15,59 @@ export class ThemeService {
 
   private initTheme() {
     if (typeof window !== 'undefined') {
-      const savedTheme = localStorage.getItem('sb_theme') as 'dark' | 'light';
-      if (savedTheme) {
-        this.setTheme(savedTheme);
+      const saved = localStorage.getItem('sb_theme') as ThemeMode;
+      if (saved && ['dark', 'light', 'system'].includes(saved)) {
+        this.setTheme(saved);
       } else {
-        // Default to dark theme as per modern SaaS aesthetics
         this.setTheme('dark');
+      }
+
+      // Listen for OS system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+          if (this.themeMode() === 'system') {
+            this.applyResolvedTheme();
+          }
+        });
       }
     }
   }
 
   toggleTheme() {
-    const next = this.currentTheme() === 'dark' ? 'light' : 'dark';
-    this.setTheme(next);
+    const cycle: ThemeMode[] = ['dark', 'light', 'system'];
+    const nextIdx = (cycle.indexOf(this.themeMode()) + 1) % cycle.length;
+    this.setTheme(cycle[nextIdx]);
   }
 
-  setTheme(theme: 'dark' | 'light') {
-    this.currentTheme.set(theme);
+  setTheme(mode: ThemeMode) {
+    this.themeMode.set(mode);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('sb_theme', mode);
+    }
+    this.applyResolvedTheme();
+  }
+
+  private applyResolvedTheme() {
+    let resolved: 'dark' | 'light' = 'dark';
+    if (this.themeMode() === 'system') {
+      if (typeof window !== 'undefined' && window.matchMedia) {
+        resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+    } else {
+      resolved = this.themeMode() === 'light' ? 'light' : 'dark';
+    }
+
+    this.currentTheme.set(resolved);
     if (typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('sb_theme', theme);
+      document.documentElement.setAttribute('data-theme', resolved);
     }
   }
 
   isDark(): boolean {
     return this.currentTheme() === 'dark';
+  }
+
+  isSystem(): boolean {
+    return this.themeMode() === 'system';
   }
 }

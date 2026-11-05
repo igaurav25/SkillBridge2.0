@@ -7,7 +7,10 @@
     "backend:start": "cd backend && npm start",
     "backend:dev": "cd backend && npm run dev",
     "frontend:start": "cd frontend && npm start",
-    "frontend:build": "cd frontend && npm run build"
+    "frontend:build": "cd frontend && npm run build",
+    "ml:start": "cd ml-service && .venv\\Scripts\\python.exe -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "ml:train": "cd ml-service && .venv\\Scripts\\python.exe training/train_models.py",
+    "ml:test": "cd ml-service && .venv\\Scripts\\python.exe tests/test_ml_service.py"
   },
   "keywords": [
     "job-platform",

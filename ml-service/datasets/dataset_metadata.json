@@ -1,0 +1,38 @@
+{
+  "name": "SkillBridge Career & Skill Taxonomy Dataset",
+  "version": "2.0.0",
+  "description": "Curated machine learning training and evaluation datasets for career recommendation, job matching, skill gap prediction, student clustering, and career readiness estimation.",
+  "sources": [
+    "O*NET Online Occupational Classification (U.S. Department of Labor)",
+    "ESCO European Skills, Competences, Qualifications and Occupations",
+    "Open Tech Role Taxonomy & Curated Industry Job Profiles 2026"
+  ],
+  "license": "CC-BY-4.0 / Open Educational Use",
+  "career_categories": [
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "Software Engineer",
+    "Data Analyst",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "Cloud Engineer",
+    "Cybersecurity Analyst",
+    "Android Developer",
+    "DevOps Engineer"
+  ],
+  "student_clusters": [
+    "Beginner Developers",
+    "Frontend-Oriented Students",
+    "Backend-Oriented Students",
+    "Data-Oriented Students",
+    "Advanced Developers"
+  ],
+  "feature_engineering": {
+    "career_recommendation": "Multi-hot skill encoding + education level ordinal + domain preference one-hot + experience years scaling",
+    "job_recommendation": "TF-IDF vectorizer + Cosine Similarity & K-Nearest Neighbors (k=5)",
+    "skill_clustering": "K-Means (k=5) over normalized skill proficiency vectors",
+    "readiness_prediction": "Gradient Boosting / Random Forest Regressor over composite multi-modal indicators (technical skills, projects, ATS resume, mock interview, assessments)"
+  }
+}
+

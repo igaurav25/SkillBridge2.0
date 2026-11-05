@@ -27,7 +27,7 @@ export class AdminDashboardComponent implements OnInit {
   authService = inject(AuthService);
   private profileService = inject(ProfileService);
 
-  activeTab: 'overview' | 'users' | 'jobs' | 'companies' | 'reports' | 'settings' = 'overview';
+  activeTab: 'overview' | 'users' | 'jobs' | 'companies' | 'reports' | 'ml_monitoring' | 'settings' = 'overview';
 
   stats: any = {
     totalUsers: 0,
@@ -39,6 +39,8 @@ export class AdminDashboardComponent implements OnInit {
     totalApplications: 0,
     pendingReports: 0,
   };
+
+  mlMonitoringData: any = null;
 
   users: User[] = [];
   jobs: any[] = [];
@@ -364,6 +366,17 @@ export class AdminDashboardComponent implements OnInit {
     this.adminService.getReports(this.reportStatusFilter !== 'all' ? this.reportStatusFilter : undefined).subscribe({
       next: (res) => {
         this.reports = res.data || [];
+      }
+    });
+  }
+
+  loadMLMonitoring() {
+    this.adminService.getMLMonitoring().subscribe({
+      next: (res) => {
+        this.mlMonitoringData = res.data;
+      },
+      error: () => {
+        this.toast.error('Failed to load ML monitoring telemetry.');
       }
     });
   }

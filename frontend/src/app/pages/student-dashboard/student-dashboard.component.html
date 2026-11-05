@@ -1,22 +1,29 @@
 <div class="dashboard-page py-8">
   <div class="container">
-    <!-- Welcome Header & Quick Action Row -->
+    <!-- Welcome Header & Quick Action Row (Part 2: Welcome Section) -->
     <div class="welcome-header flex items-center justify-between flex-wrap gap-4 mb-8">
       <div>
-        <span class="badge badge-primary text-xs mb-1">CANDIDATE WORKSPACE</span>
-        <h1 class="text-3xl font-bold">
-          Welcome back, <span class="text-gradient">{{ authService.currentUser()?.name }}</span> 👋
+        <div class="flex items-center gap-2 mb-1">
+          <span class="badge badge-primary text-xs">SKILLBRIDGE 2.0 WORKSPACE</span>
+          <span class="badge badge-emerald text-xs">AI + ML Engine Active</span>
+        </div>
+        <h1 class="text-3xl font-extrabold">
+          {{ greeting }}, <span class="text-gradient">{{ authService.currentUser()?.name }}</span> 👋
         </h1>
         <p class="text-sm text-secondary mt-1">
-          {{ profile?.headline || 'No headline set yet • Go to Profile to fill your genuine details' }}
+          Target Career Goal: <strong class="text-primary">{{ profile?.preferredRole || 'Software Engineer' }}</strong> •
+          Profile Strength: <strong class="text-cyan">{{ profile?.profileCompletion ?? 0 }}%</strong>
         </p>
       </div>
 
-      <div class="flex items-center gap-3">
-        <a routerLink="/profile" class="btn btn-outline btn-sm">👤 Edit Profile</a>
-        <a routerLink="/resume-builder" class="btn btn-outline btn-sm">📄 Resume Builder</a>
-        <a routerLink="/resume-analyzer" class="btn btn-accent btn-sm">⚡ Run ATS Check</a>
-        <a routerLink="/career-assistant" class="btn btn-primary btn-sm">✨ Ask AI Mentor</a>
+      <!-- Quick Action Buttons -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <a routerLink="/career-explorer" class="btn btn-primary btn-sm">🤖 Career Explorer</a>
+        <a routerLink="/assessments" class="btn btn-secondary btn-sm">📝 Assessments</a>
+        <a routerLink="/learning-roadmap" class="btn btn-secondary btn-sm">🗺️ Roadmap</a>
+        <a routerLink="/resume-analyzer" class="btn btn-accent btn-sm">⚡ ATS Scan</a>
+        <a routerLink="/career-assistant" class="btn btn-outline btn-sm">✨ AI Mentor</a>
+        <a routerLink="/profile" class="btn btn-outline btn-sm">👤 Profile</a>
       </div>
     </div>
 
@@ -37,114 +44,187 @@
         </div>
         <div class="flex items-center gap-2">
           <a *ngIf="upcomingInterviews[0].interviewDetails?.link" [href]="upcomingInterviews[0].interviewDetails?.link" target="_blank" class="btn btn-success btn-sm">
-            Join Interview Call 🚀
+            Join Call 🚀
           </a>
           <a routerLink="/interview-prep" class="btn btn-outline btn-sm">Practice Questions</a>
         </div>
       </div>
     </div>
 
-    <!-- Main Grid: Real Profile Completion & ATS Score & Application Stats -->
-    <div class="grid grid-3 gap-6 mb-8">
-      <!-- Profile Completion Card -->
-      <div class="sb-card flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-muted uppercase tracking-wider">Profile Strength</span>
-            <span class="badge badge-cyan font-bold">{{ profile?.profileCompletion ?? 0 }}%</span>
-          </div>
-          <div class="progress-bar-container mb-4">
-            <div class="progress-bar-fill" [style.width.%]="profile?.profileCompletion ?? 0"></div>
-          </div>
-          <p class="text-xs text-secondary mb-3">
-            <ng-container *ngIf="(profile?.profileCompletion ?? 0) === 0">
-              Your profile is currently empty. Add your real college, skills, and projects to increase visibility.
-            </ng-container>
-            <ng-container *ngIf="(profile?.profileCompletion ?? 0) > 0">
-              Real progress: {{ profile?.skills?.length || 0 }} skills, {{ profile?.projects?.length || 0 }} projects, and {{ profile?.education?.length || 0 }} education records.
-            </ng-container>
-          </p>
+    <!-- 8 Statistics Cards Row (Part 2: Statistics Cards) -->
+    <div class="grid grid-4 gap-4 mb-8">
+      <!-- Stat 1: Total Skills -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Total Skills</span>
+          <span class="text-base">⚡</span>
         </div>
-        <a routerLink="/profile" class="btn btn-secondary btn-sm w-full">Update Genuine Details →</a>
+        <div class="text-2xl font-black">{{ userSkills.length }}</div>
+        <div class="text-xs text-secondary mt-1">Recorded in portfolio</div>
       </div>
 
-      <!-- Resume ATS Score Card -->
-      <div class="sb-card flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-muted uppercase tracking-wider">ATS Resume Score</span>
-            <span *ngIf="hasResumeScanned" class="badge badge-emerald font-bold">{{ profile?.resumeScore }}/100</span>
-            <span *ngIf="!hasResumeScanned" class="badge badge-neutral font-bold">Not Scanned</span>
-          </div>
-
-          <ng-container *ngIf="hasResumeScanned">
-            <div class="ats-mini-bars grid grid-2 gap-2 mb-3">
-              <div>
-                <div class="flex justify-between text-xs text-muted mb-1">
-                  <span>Skills</span> <span>{{ profile?.atsBreakdown?.skillsScore ?? 0 }}%</span>
-                </div>
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill" [style.width.%]="profile?.atsBreakdown?.skillsScore ?? 0"></div>
-                </div>
-              </div>
-              <div>
-                <div class="flex justify-between text-xs text-muted mb-1">
-                  <span>Projects</span> <span>{{ profile?.atsBreakdown?.projectsScore ?? 0 }}%</span>
-                </div>
-                <div class="progress-bar-container">
-                  <div class="progress-bar-fill" [style.width.%]="profile?.atsBreakdown?.projectsScore ?? 0"></div>
-                </div>
-              </div>
-            </div>
-            <p class="text-xs text-secondary">
-              AI Recommendation: {{ profile?.suggestedImprovements?.[0] || 'Quantify achievements with impact metrics.' }}
-            </p>
-          </ng-container>
-
-          <ng-container *ngIf="!hasResumeScanned">
-            <p class="text-xs text-secondary mb-3">
-              No resume scanned yet. Scan or build your real resume using AI ATS Analyzer to get an authentic score.
-            </p>
-          </ng-container>
+      <!-- Stat 2: Skills Completed / Verified -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Verified Projects</span>
+          <span class="text-base">📁</span>
         </div>
-        <a routerLink="/resume-analyzer" class="btn btn-secondary btn-sm w-full">
-          {{ hasResumeScanned ? 'View Detailed ATS Report →' : 'Scan Resume with ATS →' }}
-        </a>
+        <div class="text-2xl font-black text-cyan">{{ profile?.projects?.length || 0 }}</div>
+        <div class="text-xs text-secondary mt-1">Portfolio projects verified</div>
       </div>
 
-      <!-- Quick Metrics Card -->
-      <div class="sb-card flex flex-col justify-between">
-        <div>
-          <div class="text-xs font-bold text-muted uppercase tracking-wider mb-3">Application Pipeline</div>
-          <div class="grid grid-3 gap-2 text-center mb-3">
-            <div class="p-2 bg-secondary rounded">
-              <div class="text-xl font-bold">{{ recentApplications.length }}</div>
-              <div class="text-xs text-muted">Applied</div>
-            </div>
-            <div class="p-2 bg-secondary rounded">
-              <div class="text-xl font-bold text-cyan">{{ upcomingInterviews.length }}</div>
-              <div class="text-xs text-muted">Interviews</div>
-            </div>
-            <div class="p-2 bg-secondary rounded">
-              <div class="text-xl font-bold text-amber">{{ savedJobsCount }}</div>
-              <div class="text-xs text-muted">Saved</div>
-            </div>
-          </div>
-          <p class="text-xs text-secondary">
-            Live tracking of your actual applications with status changes from recruiters.
-          </p>
+      <!-- Stat 3: Recommended Careers (from ML) -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Recommended Careers</span>
+          <span class="text-base">🤖</span>
         </div>
-        <a routerLink="/applications" class="btn btn-secondary btn-sm w-full">Open Application Tracker →</a>
+        <div class="text-2xl font-black text-violet">{{ mlTopCareers.length || 4 }}</div>
+        <div class="text-xs text-secondary mt-1">Predicted by Random Forest</div>
+      </div>
+
+      <!-- Stat 4: Job Matches -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Job Matches</span>
+          <span class="text-base">💼</span>
+        </div>
+        <div class="text-2xl font-black text-emerald">{{ livePlatformJobs.length + recommendedJobs.length }}</div>
+        <div class="text-xs text-secondary mt-1">Live & platform listings</div>
+      </div>
+
+      <!-- Stat 5: Resume Score (ATS) -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Resume Score</span>
+          <span class="text-base">📄</span>
+        </div>
+        <div class="text-2xl font-black" [class.text-emerald]="hasResumeScanned" [class.text-muted]="!hasResumeScanned">
+          {{ hasResumeScanned ? (profile?.resumeScore + '/100') : 'Not Scanned' }}
+        </div>
+        <div class="text-xs text-secondary mt-1">ATS keyword alignment</div>
+      </div>
+
+      <!-- Stat 6: Learning Progress -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Learning Progress</span>
+          <span class="text-base">🗺️</span>
+        </div>
+        <div class="text-2xl font-black text-cyan">{{ userRoadmapProgress?.roadmapCompletionPct ?? 0 }}%</div>
+        <div class="text-xs text-secondary mt-1">Roadmap curriculum</div>
+      </div>
+
+      <!-- Stat 7: Interview Performance -->
+      <div class="sb-card p-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Interview Status</span>
+          <span class="text-base">🎯</span>
+        </div>
+        <div class="text-2xl font-black text-amber">{{ upcomingInterviews.length }}</div>
+        <div class="text-xs text-secondary mt-1">Upcoming live rounds</div>
+      </div>
+
+      <!-- Stat 8: Career Readiness Estimate (from ML) -->
+      <div class="sb-card p-4 border-l-4 border-emerald-500">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-muted uppercase font-bold tracking-wider">Career Readiness</span>
+          <span class="text-base">🚀</span>
+        </div>
+        <div class="text-2xl font-black text-emerald">{{ careerReadinessScore }}%</div>
+        <div class="text-xs text-secondary mt-1">{{ careerReadinessLevel }} (ML Model)</div>
       </div>
     </div>
 
+    <!-- Section 1 & Section 2: Career Progress Overview & Recommended Career Paths (ML) -->
+    <div class="grid grid-3 gap-6 mb-8">
+      <!-- Section 1: Career Progress Overview (Col 1) -->
+      <div class="sb-card p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold">1. Career Readiness Overview</h3>
+            <span class="badge badge-emerald text-xs">ML Regression</span>
+          </div>
+
+          <!-- Readiness Gauge / Circle -->
+          <div class="flex items-center justify-center my-4">
+            <div class="relative w-36 h-36 flex items-center justify-center">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" class="text-secondary" fill="transparent" />
+                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" class="text-emerald" fill="transparent"
+                  [attr.stroke-dasharray]="251.2"
+                  [attr.stroke-dashoffset]="251.2 - (251.2 * careerReadinessScore / 100)"
+                  stroke-linecap="round" />
+              </svg>
+              <div class="absolute text-center">
+                <span class="text-2xl font-black text-primary">{{ careerReadinessScore }}%</span>
+                <span class="text-xs text-muted block">{{ careerReadinessLevel }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-xs text-secondary mb-3">
+            <span class="font-bold text-muted block mb-1">Key Profile Strengths:</span>
+            <ul class="list-disc pl-4 flex flex-col gap-1">
+              <li *ngFor="let str of readinessStrengths">{{ str }}</li>
+              <li *ngIf="readinessStrengths.length === 0">Add verified skills and projects to unlock full readiness telemetry.</li>
+            </ul>
+          </div>
+        </div>
+
+        <a routerLink="/career-analytics" class="btn btn-secondary btn-sm w-full text-center">
+          Open Full Analytics Dashboard →
+        </a>
+      </div>
+
+      <!-- Section 2: Recommended Career Paths (ML) (Cols 2-3) -->
+      <div class="col-span-2 sb-card p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="text-base font-bold">2. ML-Recommended Career Paths</h3>
+              <p class="text-xs text-secondary">
+                Calibrated Random Forest multi-class model inference based on your skills and experience
+              </p>
+            </div>
+            <a routerLink="/career-explorer" class="text-xs text-cyan hover:underline">
+              Browse All 11 Careers →
+            </a>
+          </div>
+
+          <!-- Career Paths Cards -->
+          <div class="grid grid-2 gap-3 mb-4">
+            <div *ngFor="let rec of mlTopCareers.slice(0, 4); let idx = index" class="p-3.5 bg-secondary rounded-lg border border-subtle hover:border-indigo-500 transition-all">
+              <div class="flex items-start justify-between mb-1.5">
+                <div>
+                  <span class="text-xs text-muted uppercase font-bold tracking-wider">{{ rec.domain }}</span>
+                  <h4 class="font-bold text-sm text-primary">{{ rec.career_role }}</h4>
+                </div>
+                <span class="badge badge-primary font-bold text-xs">{{ rec.suitability_score }}%</span>
+              </div>
+              <p class="text-xs text-secondary mb-2 line-clamp-2">{{ rec.explanation }}</p>
+              <div class="flex items-center gap-1 flex-wrap">
+                <span *ngFor="let s of rec.required_skills?.slice(0, 3)" class="text-xs bg-tertiary px-2 py-0.5 rounded text-secondary">{{ s }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-subtle flex items-center justify-between text-xs text-secondary">
+          <span>Trained with Scikit-learn Random Forest Classifier</span>
+          <a routerLink="/career-explorer" class="btn btn-primary btn-sm">Explore Next Steps 🚀</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3 & Section 4: Recommended Jobs & Skill Gap Overview -->
     <!-- Real-Time Multi-Platform Salary & Criteria Finder Widget -->
     <div class="criteria-widget sb-card sb-card-glow mb-8 p-5">
       <div class="flex items-center justify-between flex-wrap gap-4 mb-3">
         <div class="flex items-center gap-2">
           <span class="text-xl">⚡</span>
           <div>
-            <h2 class="text-base font-bold">Real-Time Platform Job Finder</h2>
+            <h2 class="text-base font-bold">3. Real-Time Platform Job Finder & Matches</h2>
             <p class="text-xs text-secondary">
               Find live opportunities matching your exact role & salary criteria across LinkedIn, Indeed, Internshala & Remotive
             </p>
@@ -154,9 +234,7 @@
       </div>
 
       <form (ngSubmit)="onCriteriaSubmit()" class="flex flex-col gap-3">
-        <!-- Criteria Inputs -->
         <div class="grid grid-4 gap-3">
-          <!-- Role -->
           <div class="bg-secondary p-2 rounded">
             <label class="text-xs text-muted block mb-1">Target Role / Skill</label>
             <input
@@ -167,8 +245,6 @@
               name="criteriaRole"
             />
           </div>
-
-          <!-- Location -->
           <div class="bg-secondary p-2 rounded">
             <label class="text-xs text-muted block mb-1">Location</label>
             <input
@@ -179,8 +255,6 @@
               name="criteriaLocation"
             />
           </div>
-
-          <!-- Min Salary -->
           <div class="bg-secondary p-2 rounded">
             <label class="text-xs text-muted block mb-1">Min Salary / Stipend</label>
             <input
@@ -191,8 +265,6 @@
               name="criteriaMinSalary"
             />
           </div>
-
-          <!-- Max Salary -->
           <div class="bg-secondary p-2 rounded">
             <label class="text-xs text-muted block mb-1">Max Salary / Stipend</label>
             <input
@@ -205,23 +277,14 @@
           </div>
         </div>
 
-        <!-- Controls Row -->
         <div class="flex items-center justify-between flex-wrap gap-3 pt-2">
-          <!-- Salary Presets -->
           <div class="flex items-center gap-2 flex-wrap">
             <span class="text-xs text-muted font-medium">Quick Salary:</span>
-            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(15000, 35000)">
-              ₹15k - 35k (Internships)
-            </button>
-            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(40000, 90000)">
-              ₹40k - 90k/mo
-            </button>
-            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(80000, 150000)">
-              $80k - $150k/yr
-            </button>
+            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(15000, 35000)">₹15k - 35k (Internships)</button>
+            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(40000, 90000)">₹40k - 90k/mo</button>
+            <button type="button" class="preset-pill text-xs" (click)="applySalaryPreset(80000, 150000)">$80k - $150k/yr</button>
           </div>
 
-          <!-- Submit Button -->
           <button type="submit" class="btn btn-primary btn-sm px-5" [disabled]="isSearchingLive">
             {{ isSearchingLive ? 'Scanning Platforms...' : 'Find Live Matches 🚀' }}
           </button>
@@ -229,12 +292,10 @@
       </form>
     </div>
 
-    <!-- Opportunities Grid & Career Gap Roadmap -->
     <div class="grid grid-3 gap-6 mb-8">
-      <!-- Left 2 Cols: Job Listings with Tabs -->
+      <!-- Left 2 Cols: Job Listings Feed -->
       <div class="col-span-2">
         <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
-          <!-- Feed Switcher Tabs -->
           <div class="flex p-1 bg-secondary rounded-lg">
             <button
               type="button"
@@ -252,85 +313,221 @@
               [class.text-white]="activeTab === 'internal'"
               (click)="setTab('internal')"
             >
-              🏢 SkillBridge Matches ({{ recommendedJobs.length }})
+              💼 SkillBridge Exclusive ({{ recommendedJobs.length }})
             </button>
           </div>
-
-          <a routerLink="/jobs" class="text-xs font-semibold text-gradient">
-            Explore All Across Platforms →
-          </a>
+          <a routerLink="/jobs" class="text-xs text-cyan hover:underline">View All Jobs ↗</a>
         </div>
 
-        <!-- Live Platform Loading Indicator -->
+        <!-- Jobs List -->
         <div *ngIf="isSearchingLive" class="flex flex-col gap-4">
-          <div class="sb-card skeleton" style="height: 140px;"></div>
-          <div class="sb-card skeleton" style="height: 140px;"></div>
+          <div *ngFor="let i of [1,2,3]" class="sb-card p-6 h-36 skeleton-box"></div>
         </div>
 
-        <!-- Tab 1: Live External Stream -->
-        <div *ngIf="!isSearchingLive && activeTab === 'live_platforms'" class="grid grid-2 gap-4">
-          <app-job-card *ngFor="let job of livePlatformJobs.slice(0, 6)" [job]="job"></app-job-card>
+        <div *ngIf="!isSearchingLive">
+          <ng-container *ngIf="activeTab === 'live_platforms'">
+            <div *ngIf="livePlatformJobs.length === 0" class="sb-card p-8 text-center text-sm text-secondary">
+              No live jobs matching criteria currently found. Adjust filters to discover more.
+            </div>
+            <div class="flex flex-col gap-4">
+              <app-job-card *ngFor="let j of livePlatformJobs.slice(0, 4)" [job]="j"></app-job-card>
+            </div>
+          </ng-container>
 
-          <div *ngIf="livePlatformJobs.length === 0" class="col-span-2 sb-card text-center p-6">
-            <p class="text-sm text-secondary">
-              No live platform jobs matched your exact criteria. Click "Find Live Matches" to refresh.
-            </p>
-          </div>
-        </div>
-
-        <!-- Tab 2: Internal Recommended Jobs -->
-        <div *ngIf="activeTab === 'internal'" class="grid grid-2 gap-4">
-          <app-job-card *ngFor="let job of recommendedJobs" [job]="job"></app-job-card>
+          <ng-container *ngIf="activeTab === 'internal'">
+            <div *ngIf="recommendedJobs.length === 0" class="sb-card p-8 text-center text-sm text-secondary">
+              No platform jobs posted yet. Check back soon!
+            </div>
+            <div class="flex flex-col gap-4">
+              <app-job-card *ngFor="let j of recommendedJobs.slice(0, 4)" [job]="j"></app-job-card>
+            </div>
+          </ng-container>
         </div>
       </div>
 
-      <!-- Right 1 Col: Skill Gap & Target Career Progress -->
-      <div class="col-span-1">
-        <div class="sb-card h-full flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-base font-bold">Your Skills & Growth Gap</h3>
-              <span class="badge badge-purple text-xs">{{ profile?.preferredRole || criteriaRole }}</span>
-            </div>
+      <!-- Right 1 Col: Section 4 (Skill Gap Overview) -->
+      <div class="col-span-1 flex flex-col gap-6">
+        <div class="sb-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-base font-bold">4. Skill Gap Overview</h3>
+            <span class="badge badge-accent text-xs">AI Priority</span>
+          </div>
+          <p class="text-xs text-secondary mb-3">
+            Targeting <strong>{{ criteriaRole }}</strong>: acquire these high-priority skills to maximize interview calls.
+          </p>
 
-            <!-- If student has no skills yet -->
-            <div *ngIf="userSkills.length === 0" class="p-4 bg-secondary rounded text-xs text-secondary mb-4 text-center">
-              <div class="font-bold text-white mb-2 text-sm">No Technical Skills Listed</div>
-              <p class="mb-3">You haven't listed your real technical skills yet. Add your programming languages, frameworks, and databases to calculate your career readiness.</p>
-              <a routerLink="/profile" class="btn btn-primary btn-sm w-full">+ Add Real Skills in Profile</a>
-            </div>
-
-            <!-- If student has skills -->
-            <div *ngIf="userSkills.length > 0">
-              <p class="text-xs text-secondary mb-3">
-                You have <strong>{{ userSkills.length }}</strong> verified skills in your profile:
-              </p>
-              <div class="flex items-center gap-1 flex-wrap mb-4">
-                <span *ngFor="let s of userSkills.slice(0, 6)" class="skill-pill text-xs">
-                  {{ s }}
-                </span>
-                <span *ngIf="userSkills.length > 6" class="text-xs text-muted">
-                  +{{ userSkills.length - 6 }} more
-                </span>
-              </div>
-
-              <div class="text-xs font-bold text-muted uppercase tracking-wider mb-2">Recommended Next Skills:</div>
-              <div class="gap-steps flex flex-col gap-2 mb-4">
-                <div *ngFor="let miss of recommendedMissingSkills; let i = index" class="gap-step p-2 bg-secondary rounded flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-gradient">{{ i + 1 }}</span>
-                    <span class="text-xs font-semibold">{{ miss }}</span>
-                  </div>
-                  <span class="badge badge-cyan text-xs">Recommended</span>
-                </div>
-              </div>
+          <div class="flex flex-col gap-2 mb-4">
+            <div *ngFor="let s of recommendedMissingSkills" class="p-2.5 bg-secondary rounded-lg flex items-center justify-between text-xs">
+              <span class="font-semibold text-primary">{{ s }}</span>
+              <span class="badge badge-neutral text-xs">High Impact</span>
             </div>
           </div>
 
-          <a routerLink="/skill-gap" class="btn btn-accent btn-sm w-full">
-            View AI Skill Roadmap ✨
+          <a routerLink="/skill-gap" [queryParams]="{ targetRole: criteriaRole }" class="btn btn-secondary btn-sm w-full text-center">
+            Run Deep Skill Gap Analysis ✨
           </a>
         </div>
+
+        <!-- Section 5: Learning Roadmap Milestone -->
+        <div class="sb-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-base font-bold">5. Learning Roadmap</h3>
+            <span class="badge badge-cyan text-xs">Curriculum</span>
+          </div>
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span>Overall Roadmap Progress</span>
+            <span class="font-bold text-cyan">{{ userRoadmapProgress?.roadmapCompletionPct ?? 0 }}%</span>
+          </div>
+          <div class="progress-bar-container mb-3">
+            <div class="progress-bar-fill" [style.width.%]="userRoadmapProgress?.roadmapCompletionPct ?? 0"></div>
+          </div>
+          <div class="flex items-center justify-between text-xs text-muted mb-4">
+            <span>🔥 Streak: {{ userRoadmapProgress?.currentStreak ?? 1 }} days</span>
+            <span>⏱️ {{ userRoadmapProgress?.totalHoursSpent ?? 0 }} hrs logged</span>
+          </div>
+          <a routerLink="/learning-roadmap" class="btn btn-primary btn-sm w-full text-center">
+            Continue Learning Path →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sections 6, 7, 8: Recent AI Activities, Interview Performance, Application Status -->
+    <div class="grid grid-3 gap-6 mb-8">
+      <!-- Section 6: Recent AI Activities -->
+      <div class="sb-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold">6. Recent AI Activities</h3>
+          <span class="badge badge-primary text-xs">Gemini + ML</span>
+        </div>
+        <div class="flex flex-col gap-3 text-xs text-secondary">
+          <div class="p-2.5 bg-secondary rounded flex items-start gap-2">
+            <span>🤖</span>
+            <div>
+              <div class="font-bold text-primary">ML Career Predictions Calibrated</div>
+              <div class="text-muted">Random Forest evaluated your profile skills.</div>
+            </div>
+          </div>
+          <div class="p-2.5 bg-secondary rounded flex items-start gap-2">
+            <span>⚡</span>
+            <div>
+              <div class="font-bold text-primary">ATS Scan {{ hasResumeScanned ? 'Completed' : 'Pending' }}</div>
+              <div class="text-muted">{{ hasResumeScanned ? 'Resume ATS score: ' + profile?.resumeScore + '/100' : 'Scan your resume to verify format score.' }}</div>
+            </div>
+          </div>
+          <div class="p-2.5 bg-secondary rounded flex items-start gap-2">
+            <span>🎓</span>
+            <div>
+              <div class="font-bold text-primary">Assessments Record</div>
+              <div class="text-muted">{{ assessmentAttemptsCount }} skill assessments completed.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 7: Interview Performance -->
+      <div class="sb-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold">7. Interview Performance</h3>
+          <span class="badge badge-emerald text-xs">Practice</span>
+        </div>
+        <p class="text-xs text-secondary mb-3">
+          Practice role-based and technical interview questions with AI feedback and structured scoring.
+        </p>
+        <div class="p-3 bg-secondary rounded-lg mb-4 text-center">
+          <div class="text-2xl font-bold text-primary">{{ upcomingInterviews.length }} Live Scheduled</div>
+          <div class="text-xs text-muted">Ready for live company rounds</div>
+        </div>
+        <a routerLink="/interview-prep" class="btn btn-secondary btn-sm w-full text-center">
+          Launch AI Mock Interview 🎙️
+        </a>
+      </div>
+
+      <!-- Section 8: Application Status -->
+      <div class="sb-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-base font-bold">8. Application Pipeline</h3>
+          <span class="badge badge-neutral text-xs">Tracker</span>
+        </div>
+        <div class="grid grid-3 gap-2 text-center mb-3">
+          <div class="p-2 bg-secondary rounded">
+            <div class="text-xl font-bold">{{ recentApplications.length }}</div>
+            <div class="text-xs text-muted">Applied</div>
+          </div>
+          <div class="p-2 bg-secondary rounded">
+            <div class="text-xl font-bold text-cyan">{{ upcomingInterviews.length }}</div>
+            <div class="text-xs text-muted">Interviews</div>
+          </div>
+          <div class="p-2 bg-secondary rounded">
+            <div class="text-xl font-bold text-amber">{{ savedJobsCount }}</div>
+            <div class="text-xs text-muted">Saved</div>
+          </div>
+        </div>
+        <a routerLink="/applications" class="btn btn-secondary btn-sm w-full text-center">
+          Open Application Tracker →
+        </a>
+      </div>
+    </div>
+
+    <!-- Sections 9 & 10: Recommended Projects & Upcoming Learning Goals -->
+    <div class="grid grid-2 gap-6 mb-8">
+      <!-- Section 9: Recommended Projects -->
+      <div class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold">9. Recommended Hands-On Projects</h3>
+          <a routerLink="/projects" class="text-xs text-cyan hover:underline">View All →</a>
+        </div>
+        <div *ngIf="recommendedProjects.length === 0" class="text-xs text-secondary p-4 bg-secondary rounded text-center">
+          Explore our catalog of hands-on projects to verify your expertise.
+        </div>
+        <div *ngIf="recommendedProjects.length > 0" class="flex flex-col gap-3">
+          <div *ngFor="let proj of recommendedProjects" class="p-3 bg-secondary rounded-lg flex items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-primary text-xs">{{ proj.difficulty }}</span>
+                <h5 class="text-sm font-bold text-primary">{{ proj.title }}</h5>
+              </div>
+              <p class="text-xs text-secondary line-clamp-1">{{ proj.description }}</p>
+            </div>
+            <a routerLink="/projects" class="btn btn-outline btn-xs flex-shrink-0">View</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 10: Upcoming Learning Goals -->
+      <div class="sb-card p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold">10. Upcoming Learning Goals</h3>
+            <span class="badge badge-emerald text-xs">Active Sprint</span>
+          </div>
+          <div class="flex flex-col gap-3 text-xs text-secondary mb-4">
+            <div class="p-3 bg-secondary rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-bold text-primary block">Complete Angular Signals & Reactive State</span>
+                <span class="text-muted">Target completion: End of week</span>
+              </div>
+              <span class="badge badge-cyan text-xs">In Progress</span>
+            </div>
+            <div class="p-3 bg-secondary rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-bold text-primary block">Take Database Management Assessment</span>
+                <span class="text-muted">Benchmark relational & NoSQL design</span>
+              </div>
+              <a routerLink="/assessments" class="btn btn-secondary btn-xs">Take Quiz</a>
+            </div>
+            <div class="p-3 bg-secondary rounded-lg flex items-center justify-between">
+              <div>
+                <span class="font-bold text-primary block">Scan Public GitHub Profile</span>
+                <span class="text-muted">Verify repository activity and README hygiene</span>
+              </div>
+              <a routerLink="/github-analyzer" class="btn btn-secondary btn-xs">Scan Now</a>
+            </div>
+          </div>
+        </div>
+        <a routerLink="/achievements" class="text-xs text-center text-muted hover:text-primary">
+          🏆 View My Milestone Badges & Achievements →
+        </a>
       </div>
     </div>
   </div>

@@ -7,6 +7,10 @@ import { ProfileService } from '../../services/profile.service';
 import { JobService } from '../../services/job.service';
 import { ApplicationService } from '../../services/application.service';
 import { ToastService } from '../../services/toast.service';
+import { MlService, CareerRecommendationItem } from '../../services/ml.service';
+import { RoadmapService, LearningProgress } from '../../services/roadmap.service';
+import { AssessmentService } from '../../services/assessment.service';
+import { ProjectService, ProjectRecommendation } from '../../services/project.service';
 import { JobCardComponent } from '../../components/job-card/job-card.component';
 import { Profile } from '../../models/profile.model';
 import { Job } from '../../models/job.model';
@@ -24,6 +28,10 @@ export class StudentDashboardComponent implements OnInit {
   private profileService = inject(ProfileService);
   private jobService = inject(JobService);
   private applicationService = inject(ApplicationService);
+  private mlService = inject(MlService);
+  private roadmapService = inject(RoadmapService);
+  private assessmentService = inject(AssessmentService);
+  private projectService = inject(ProjectService);
   private toast = inject(ToastService);
 
   profile: Profile | null = null;
@@ -32,9 +40,21 @@ export class StudentDashboardComponent implements OnInit {
   recentApplications: Application[] = [];
   savedJobsCount = 0;
   upcomingInterviews: Application[] = [];
+  recommendedProjects: ProjectRecommendation[] = [];
+
+  // ML & Telemetry Data
+  mlTopCareers: CareerRecommendationItem[] = [];
+  careerReadinessScore = 72;
+  careerReadinessLevel = 'Job Ready';
+  readinessStrengths: string[] = [];
+  readinessWeaknesses: string[] = [];
+  userRoadmapProgress: LearningProgress | null = null;
+  assessmentAttemptsCount = 0;
+  avgInterviewScore = 0;
 
   isLoading = true;
   isSearchingLive = false;
+  isLoadingMl = false;
 
   // Real-Time Salary & Criteria Finder model
   criteriaRole = 'Full Stack';
@@ -44,6 +64,13 @@ export class StudentDashboardComponent implements OnInit {
   criteriaPlatform = 'all';
 
   activeTab: 'live_platforms' | 'internal' = 'live_platforms';
+
+  get greeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
+  }
 
   ngOnInit() {
     this.loadDashboardData();
@@ -60,11 +87,14 @@ export class StudentDashboardComponent implements OnInit {
           if (this.profile.preferredRole) {
             this.criteriaRole = this.profile.preferredRole;
           }
+          this.fetchMlTelemetry();
+          this.fetchRoadmapProgress();
+          this.fetchProjects();
         }
       },
     });
 
-    // 2. Fetch Live Real-Time Multi-Platform Jobs (LinkedIn, Indeed, Internshala, Remotive)
+    // 2. Fetch Live Real-Time Multi-Platform Jobs
     this.fetchLiveJobs();
 
     // 3. Fetch Internal Recommended Jobs
@@ -74,7 +104,7 @@ export class StudentDashboardComponent implements OnInit {
       },
     });
 
-    // 4. Fetch Candidate Applications
+    // 4. Fetch Candidate Applications & Interviews
     this.applicationService.getMyApplications().subscribe({
       next: (res) => {
         this.recentApplications = res.data || [];
@@ -93,6 +123,70 @@ export class StudentDashboardComponent implements OnInit {
       next: (res) => {
         this.savedJobsCount = res.count || 0;
       },
+    });
+
+    // 6. Fetch Assessment History
+    this.assessmentService.getMyAssessmentHistory().subscribe({
+      next: (res) => {
+        this.assessmentAttemptsCount = res.count || 0;
+      }
+    });
+  }
+
+  fetchMlTelemetry() {
+    this.isLoadingMl = true;
+    const skills = (this.profile?.skills || []).map(s => s.name);
+    const projectsCount = this.profile?.projects?.length || 1;
+    const resumeScore = this.profile?.resumeScore || 0;
+
+    // Call ML career recommender
+    this.mlService.recommendCareers({
+      skills,
+      projects_count: projectsCount,
+      assessment_score: 75
+    }).subscribe({
+      next: (res) => {
+        this.mlTopCareers = res.top_recommendations || [];
+        this.isLoadingMl = false;
+      },
+      error: () => {
+        this.isLoadingMl = false;
+      }
+    });
+
+    // Call ML career readiness
+    this.mlService.predictReadiness({
+      technicalSkills: skills,
+      projectsCount,
+      resumeScore,
+      interviewScore: 70,
+      assessmentScore: 75,
+      targetRole: this.profile?.preferredRole || 'Full Stack Developer'
+    }).subscribe({
+      next: (res) => {
+        this.careerReadinessScore = res.career_readiness_score || 72;
+        this.careerReadinessLevel = res.readiness_level || 'Job Ready';
+        this.readinessStrengths = res.strengths || [];
+        this.readinessWeaknesses = res.weak_areas || [];
+      }
+    });
+  }
+
+  fetchRoadmapProgress() {
+    const role = this.profile?.preferredRole || 'Frontend Developer';
+    this.roadmapService.getMyProgress(role).subscribe({
+      next: (res) => {
+        this.userRoadmapProgress = res.data;
+      }
+    });
+  }
+
+  fetchProjects() {
+    const role = this.profile?.preferredRole || 'Full Stack Developer';
+    this.projectService.getRecommendedProjects({ targetRole: role }).subscribe({
+      next: (res) => {
+        this.recommendedProjects = res.data?.slice(0, 3) || [];
+      }
     });
   }
 
@@ -141,6 +235,9 @@ export class StudentDashboardComponent implements OnInit {
   }
 
   get recommendedMissingSkills(): string[] {
+    if (this.mlTopCareers[0]?.missing_skills?.length) {
+      return this.mlTopCareers[0].missing_skills.slice(0, 4);
+    }
     const common = ['Git', 'Docker', 'REST API', 'Cloud / AWS', 'Testing'];
     const current = new Set(this.userSkills.map((s) => s.toLowerCase()));
     return common.filter((s) => !current.has(s.toLowerCase())).slice(0, 3);

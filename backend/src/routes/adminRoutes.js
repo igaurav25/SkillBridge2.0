@@ -12,6 +12,7 @@ const {
   getAdminProfile,
   updateAdminProfile,
   updateAdminPassword,
+  getMLSystemMonitoring,
 } = require('../controllers/adminController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
@@ -31,5 +32,6 @@ router.get('/jobs', getAllJobsAdmin);
 router.put('/companies/:id/verify', toggleCompanyVerification);
 router.get('/reports', getReportsAdmin);
 router.put('/reports/:id/status', updateReportStatus);
+router.get('/ml-monitoring', getMLSystemMonitoring);
 
 module.exports = router;

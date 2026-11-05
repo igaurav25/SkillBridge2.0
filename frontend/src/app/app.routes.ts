@@ -20,6 +20,13 @@ import { SavedJobsComponent } from './pages/saved-jobs/saved-jobs.component';
 import { SkillGapComponent } from './pages/skill-gap/skill-gap.component';
 import { CareerAssistantComponent } from './pages/career-assistant/career-assistant.component';
 import { InterviewPrepComponent } from './pages/interview-prep/interview-prep.component';
+import { CareerExplorerComponent } from './pages/career-explorer/career-explorer.component';
+import { SkillAssessmentComponent } from './pages/skill-assessment/skill-assessment.component';
+import { LearningRoadmapComponent } from './pages/learning-roadmap/learning-roadmap.component';
+import { ProjectRecommendationsComponent } from './pages/project-recommendations/project-recommendations.component';
+import { GithubAnalyzerComponent } from './pages/github-analyzer/github-analyzer.component';
+import { CareerAnalyticsComponent } from './pages/career-analytics/career-analytics.component';
+import { AchievementsComponent } from './pages/achievements/achievements.component';
 
 // Recruiter & Admin Pages
 import { RecruiterDashboardComponent } from './pages/recruiter-dashboard/recruiter-dashboard.component';
@@ -46,6 +53,14 @@ export const routes: Routes = [
   { path: 'skill-gap', component: SkillGapComponent, canActivate: [authGuard] },
   { path: 'career-assistant', component: CareerAssistantComponent, canActivate: [authGuard] },
   { path: 'interview-prep', component: InterviewPrepComponent, canActivate: [authGuard] },
+  { path: 'career-explorer', component: CareerExplorerComponent },
+  { path: 'assessments', component: SkillAssessmentComponent, canActivate: [authGuard] },
+  { path: 'assessments/:id', component: SkillAssessmentComponent, canActivate: [authGuard] },
+  { path: 'learning-roadmap', component: LearningRoadmapComponent, canActivate: [authGuard] },
+  { path: 'projects', component: ProjectRecommendationsComponent, canActivate: [authGuard] },
+  { path: 'github-analyzer', component: GithubAnalyzerComponent, canActivate: [authGuard] },
+  { path: 'career-analytics', component: CareerAnalyticsComponent, canActivate: [authGuard] },
+  { path: 'achievements', component: AchievementsComponent, canActivate: [authGuard] },
 
   // Recruiter Protected
   { path: 'recruiter', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },

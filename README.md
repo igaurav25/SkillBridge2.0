@@ -1,7 +1,31 @@
-# 🚀 SkillBridge — AI-Powered Job & Internship Platform
+# 🚀 SkillBridge 2.0 — AI + Machine Learning Career Development Platform
 
-> **Modern Full-Stack Career Ecosystem engineered for Students, Job Seekers, Recruiters, and Administrators.**  
-> Built with **Angular 19 (Standalone & Signals)**, **Node.js / Express**, **MongoDB (Mongoose)**, and a **Dual-Engine Smart AI Architecture** (Advanced AI Engine + Intelligent Heuristic Fallback).
+> **Production-Grade Full-Stack Career Ecosystem engineered for Students, Job Seekers, Recruiters, and Administrators.**  
+> Built with **Angular 19 (Standalone & Signals)**, **Node.js / Express**, **MongoDB (Mongoose)**, **Python 3.12 (FastAPI + Scikit-Learn ML Microservice)**, and a **Dual AI/ML Collaboration Engine** (Google Gemini API + Trained Machine Learning Models).
+
+---
+
+## ⚡ SkillBridge 2.0 Upgrade Overview
+
+SkillBridge 2.0 introduces a dedicated **Machine Learning Microservice** built on FastAPI, Scikit-learn, and Pandas, working in seamless concert with Google Gemini AI and Node.js/Express:
+
+1. **Dual AI + ML Architecture**:
+   - **Machine Learning (Python FastAPI)**: Executes deterministic predictions, Random Forest multi-class career classification, continuous readiness regression, TF-IDF cosine similarity job matching, and K-Means student clustering.
+   - **Generative AI (Google Gemini)**: Delivers natural-language conversational guidance, interview evaluation, and personalized career mentoring.
+   - **Backend Gateway (Express)**: Secure proxy shielding the internal ML service and Gemini API keys from the public frontend.
+2. **10 Major New Advanced Features**:
+   - **Career Explorer** (\/career-explorer\): 11 target career tracks with real ML suitability ranking.
+   - **Interactive Skill Assessments** (\/assessments\): Timed MCQ evaluation across 7 technical & soft skill domains with skill-wise radar breakdowns.
+   - **Personalized Learning Roadmaps** (\/learning-roadmap\): Multi-tier curriculum (Beginner, Intermediate, Advanced) with topic completion tracking, streaks, and milestone projects.
+   - **AI Project Recommendations** (\/projects\): Curated hands-on blueprints calibrated to role and experience level.
+   - **GitHub Profile Analyzer** (\/github-analyzer\): Public repository scanner with language distribution, star count, and README quality feedback.
+   - **Advanced Mock Interview** (\/interview-prep\): Technical, HR, and Role-based interview simulations with AI scoring.
+   - **Job Application Tracker** (\/applications\): Pipeline tracking across Applied, Review, Shortlisted, Interview, Selected, and Rejected.
+   - **Learning Progress Tracker**: Topic completion, streak counting, and weekly study hour telemetry.
+   - **Achievement Badges System** (\/achievements\): Gamified recognition for curriculum, assessment, and project milestones.
+   - **Career Analytics Dashboard** (\/career-analytics\): Telemetry tracking ATS score progression, interview score trends, and application pipeline funnel.
+3. **Admin ML Engine Monitoring** (\/admin\): Real-time ML microservice telemetry, model version registry, and live prediction audit stream.
+4. **Theme Engine**: Light Mode, Dark Mode (#0B1020, #111827), and System Default with responsive drawer navigation.
 
 ---
 

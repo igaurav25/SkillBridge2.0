@@ -16,9 +16,15 @@
     </a>
 
     <!-- Desktop Navigation Links -->
-    <div class="nav-links flex items-center gap-6">
+    <div class="nav-links flex items-center gap-5">
       <a routerLink="/jobs" routerLinkActive="active" [routerLinkActiveOptions]="{exact: false}" class="nav-link">Jobs</a>
-      <a routerLink="/companies" routerLinkActive="active" class="nav-link">Companies</a>
+      <a routerLink="/career-explorer" routerLinkActive="active" class="nav-link flex items-center gap-1">
+        <span>Careers</span>
+        <span class="badge badge-primary text-xs" style="font-size: 9px; padding: 1px 4px;">ML</span>
+      </a>
+      <a routerLink="/assessments" routerLinkActive="active" class="nav-link">Assessments</a>
+      <a routerLink="/learning-roadmap" routerLinkActive="active" class="nav-link">Roadmaps</a>
+      <a routerLink="/interview-prep" routerLinkActive="active" class="nav-link">Interview</a>
 
       <!-- AI Tools Menu -->
       <a routerLink="/skill-gap" routerLinkActive="active" class="nav-link flex items-center gap-1">
@@ -29,32 +35,32 @@
         <span>AI Mentor</span>
         <span class="ai-sparkle">✨</span>
       </a>
-      <a routerLink="/resume-analyzer" routerLinkActive="active" class="nav-link">ATS Analyzer</a>
-      <a routerLink="/interview-prep" routerLinkActive="active" class="nav-link">Interview Prep</a>
+      <a routerLink="/resume-analyzer" routerLinkActive="active" class="nav-link">ATS</a>
 
       <!-- Role-based Dashboard Link -->
       <a *ngIf="authService.isStudent()" routerLink="/student/dashboard" routerLinkActive="active" class="nav-link dashboard-link">
-        Student Dashboard
+        Dashboard
       </a>
       <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/dashboard" routerLinkActive="active" class="nav-link dashboard-link recruiter-link">
-        Recruiter Portal
+        Recruiter
       </a>
       <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link dashboard-link admin-link">
-        Admin Console
+        Admin
       </a>
     </div>
 
     <!-- Right Controls: Theme Toggle, Notifications, User Menu / Auth Buttons -->
     <div class="nav-actions flex items-center gap-3">
-      <!-- Dark/Light Theme Switcher -->
+      <!-- Dark/Light/System Theme Switcher -->
       <button
         class="theme-toggle-btn"
         (click)="themeService.toggleTheme()"
-        [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
-        title="Toggle Theme"
+        [attr.aria-label]="'Theme: ' + themeService.themeMode()"
+        [title]="'Theme: ' + themeService.themeMode() + ' (Click to toggle)'"
       >
-        <span *ngIf="themeService.isDark()">☀️</span>
-        <span *ngIf="!themeService.isDark()">🌙</span>
+        <span *ngIf="themeService.themeMode() === 'light'">☀️</span>
+        <span *ngIf="themeService.themeMode() === 'dark'">🌙</span>
+        <span *ngIf="themeService.themeMode() === 'system'">💻</span>
       </button>
 
       <!-- Authenticated Controls -->
@@ -121,6 +127,13 @@
               <!-- Student specific -->
               <ng-container *ngIf="authService.isStudent()">
                 <a routerLink="/student/dashboard" (click)="closeDropdowns()" class="dropdown-item">📊 My Dashboard</a>
+                <a routerLink="/career-explorer" (click)="closeDropdowns()" class="dropdown-item">🤖 Career Explorer</a>
+                <a routerLink="/assessments" (click)="closeDropdowns()" class="dropdown-item">📝 Skill Assessments</a>
+                <a routerLink="/learning-roadmap" (click)="closeDropdowns()" class="dropdown-item">🗺️ Learning Roadmap</a>
+                <a routerLink="/projects" (click)="closeDropdowns()" class="dropdown-item">💼 Recommended Projects</a>
+                <a routerLink="/github-analyzer" (click)="closeDropdowns()" class="dropdown-item">🐙 GitHub Analyzer</a>
+                <a routerLink="/career-analytics" (click)="closeDropdowns()" class="dropdown-item">📈 Career Analytics</a>
+                <a routerLink="/achievements" (click)="closeDropdowns()" class="dropdown-item">🏆 Achievements</a>
                 <a routerLink="/profile" (click)="closeDropdowns()" class="dropdown-item">👤 Profile & Skills</a>
                 <a routerLink="/resume-builder" (click)="closeDropdowns()" class="dropdown-item">📄 Resume Builder</a>
                 <a routerLink="/applications" (click)="closeDropdowns()" class="dropdown-item">📨 My Applications</a>
@@ -169,10 +182,18 @@
     </div>
   </div>
 
-  <!-- Mobile Drawer Menu -->
+  <!-- Mobile Drawer Menu & Backdrop Overlay -->
+  <div *ngIf="isMobileMenuOpen" class="mobile-drawer-overlay" (click)="closeMobileMenu()"></div>
   <div *ngIf="isMobileMenuOpen" class="mobile-drawer">
-    <div class="mobile-links flex flex-col gap-3 p-4">
+    <div class="mobile-links flex flex-col gap-2 p-4">
       <a routerLink="/jobs" (click)="closeMobileMenu()" class="mobile-link">Explore Jobs</a>
+      <a routerLink="/career-explorer" (click)="closeMobileMenu()" class="mobile-link">Career Explorer 🤖</a>
+      <a routerLink="/assessments" (click)="closeMobileMenu()" class="mobile-link">Skill Assessments 📝</a>
+      <a routerLink="/learning-roadmap" (click)="closeMobileMenu()" class="mobile-link">Learning Roadmap 🗺️</a>
+      <a routerLink="/projects" (click)="closeMobileMenu()" class="mobile-link">Portfolio Projects 💼</a>
+      <a routerLink="/github-analyzer" (click)="closeMobileMenu()" class="mobile-link">GitHub Analyzer 🐙</a>
+      <a routerLink="/career-analytics" (click)="closeMobileMenu()" class="mobile-link">Career Analytics 📈</a>
+      <a routerLink="/achievements" (click)="closeMobileMenu()" class="mobile-link">Achievements 🏆</a>
       <a routerLink="/companies" (click)="closeMobileMenu()" class="mobile-link">Companies</a>
       <a routerLink="/skill-gap" (click)="closeMobileMenu()" class="mobile-link">Skill Gap Analyzer ✨</a>
       <a routerLink="/career-assistant" (click)="closeMobileMenu()" class="mobile-link">AI Career Assistant ✨</a>

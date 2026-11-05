@@ -455,6 +455,47 @@ const updateAdminPassword = async (req, res, next) => {
   }
 };
 
+const Assessment = require('../models/Assessment');
+const AssessmentAttempt = require('../models/AssessmentAttempt');
+const CareerPrediction = require('../models/CareerPrediction');
+const mlService = require('../services/mlService');
+
+// @desc    Get ML models monitoring, performance metrics, and system health
+// @route   GET /api/admin/ml-monitoring
+// @access  Private (Admin)
+const getMLSystemMonitoring = async (req, res, next) => {
+  try {
+    const [totalAssessments, totalAttempts, totalPredictions, mlStatus] = await Promise.all([
+      Assessment.countDocuments(),
+      AssessmentAttempt.countDocuments(),
+      CareerPrediction.countDocuments(),
+      mlService.getModelsStatus()
+    ]);
+
+    const recentPredictions = await CareerPrediction.find()
+      .populate('user', 'name email')
+      .sort('-createdAt')
+      .limit(6);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        mlStatus,
+        telemetry: {
+          totalAssessments,
+          totalAttempts,
+          totalPredictions,
+          systemUptimeSeconds: Math.round(process.uptime()),
+          nodeMemoryUsageMB: Math.round(process.memoryUsage().heapUsed / 1024 / 1024)
+        },
+        recentPredictions
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAllUsers,
@@ -467,4 +508,5 @@ module.exports = {
   getAdminProfile,
   updateAdminProfile,
   updateAdminPassword,
+  getMLSystemMonitoring,
 };

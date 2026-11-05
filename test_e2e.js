@@ -134,7 +134,63 @@ async function testApi() {
   const statsData = await statsRes.json();
   console.log(`[PASS] Admin Stats: users=${statsData.data?.totalUsers}, jobs=${statsData.data?.totalJobs}, apps=${statsData.data?.totalApplications}`);
 
-  console.log('--- ALL FULL-STACK SMOKE TESTS COMPLETED SUCCESSFULLY ---');
+  // 10. Test SkillBridge 2.0 ML Career Recommendation
+  const mlCareerRes = await fetch('http://localhost:5000/api/ml/career/recommend', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ skills: ['JavaScript', 'TypeScript', 'Angular', 'Node.js'] })
+  });
+  const mlCareerData = await mlCareerRes.json();
+  console.log(`[PASS] ML Career Recommendation: success=${mlCareerData.success}, topCareer="${mlCareerData.top_recommendations?.[0]?.career_role}" (${mlCareerData.top_recommendations?.[0]?.suitability_score}%)`);
+
+  // 11. Test SkillBridge 2.0 ML Career Readiness
+  const mlReadinessRes = await fetch('http://localhost:5000/api/ml/career/readiness', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ technicalSkills: ['JavaScript', 'TypeScript', 'Angular'], projectsCount: 2, resumeScore: 78, interviewScore: 72, assessmentScore: 80 })
+  });
+  const mlReadinessData = await mlReadinessRes.json();
+  console.log(`[PASS] ML Career Readiness: score=${mlReadinessData.career_readiness_score}%, level="${mlReadinessData.readiness_level}"`);
+
+  // 12. Test Assessments API
+  const assessRes = await fetch('http://localhost:5000/api/assessments');
+  const assessData = await assessRes.json();
+  console.log(`[PASS] Interactive Assessments Catalog: count=${assessData.count}, sampleTitle="${assessData.data?.[0]?.title}"`);
+
+  // 13. Test Learning Roadmaps API
+  const roadmapsRes = await fetch('http://localhost:5000/api/roadmaps');
+  const roadmapsData = await roadmapsRes.json();
+  console.log(`[PASS] Learning Roadmaps: count=${roadmapsData.count}, sampleRole="${roadmapsData.data?.[0]?.role}"`);
+
+  // 14. Test Project Recommendations API
+  const projectsRes = await fetch('http://localhost:5000/api/projects/recommendations');
+  const projectsData = await projectsRes.json();
+  console.log(`[PASS] Project Recommendations: count=${projectsData.count}, sampleProject="${projectsData.data?.[0]?.title}"`);
+
+  // 15. Test GitHub Profile Analyzer
+  const githubRes = await fetch('http://localhost:5000/api/github/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+    body: JSON.stringify({ username: 'octocat' })
+  });
+  const githubData = await githubRes.json();
+  console.log(`[PASS] GitHub Profile Analyzer: username=${githubData.data?.username}, score=${githubData.data?.githubHealthScore}/100, repos=${githubData.data?.publicReposCount}`);
+
+  // 16. Test Student Career Analytics
+  const analyticsRes = await fetch('http://localhost:5000/api/analytics/career', {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const analyticsData = await analyticsRes.json();
+  console.log(`[PASS] Career Analytics: profileStrength=${analyticsData.data?.profileStrength}%, totalApps=${analyticsData.data?.applicationStats?.total}`);
+
+  // 17. Test Achievements System
+  const achieveRes = await fetch('http://localhost:5000/api/achievements/me', {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  const achieveData = await achieveRes.json();
+  console.log(`[PASS] Achievements: totalPoints=${achieveData.data?.totalPoints}, totalBadges=${achieveData.data?.totalAvailable}`);
+
+  console.log('--- ALL FULL-STACK & SKILLBRIDGE 2.0 SMOKE TESTS COMPLETED SUCCESSFULLY ---');
 }
 
 testApi();

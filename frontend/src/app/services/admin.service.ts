@@ -68,5 +68,9 @@ export class AdminService {
   updatePassword(data: { currentPassword: string; newPassword: string }): Observable<ApiResponse<any>> {
     return this.http.put<ApiResponse<any>>(`${this.API_URL}/password`, data);
   }
+
+  getMLMonitoring(): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.API_URL}/ml-monitoring`);
+  }
 }
 

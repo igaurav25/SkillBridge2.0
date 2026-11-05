@@ -1,0 +1,49 @@
+{
+  "version": "2.0.0",
+  "trained_at": "2026-11-05T04:46:26.177242",
+  "algorithms": {
+    "career_recommender": "RandomForestClassifier (120 trees, max_depth=16)",
+    "career_readiness": "RandomForestRegressor (100 trees, max_depth=10)",
+    "student_clustering": "KMeans (k=5)",
+    "job_matcher": "TfidfVectorizer + NearestNeighbors (Cosine)"
+  },
+  "evaluation_metrics": {
+    "career_recommender": {
+      "accuracy": 1.0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0
+    },
+    "career_readiness": {
+      "mae": 5.31,
+      "rmse": 6.52
+    },
+    "student_clustering": {
+      "inertia": 8576.564637806532,
+      "clusters": [
+        "Beginner Developers",
+        "Frontend-Oriented Students",
+        "Backend-Oriented Students",
+        "Data-Oriented Students",
+        "Advanced Full-Stack Developers"
+      ]
+    },
+    "job_matcher": {
+      "jobs_indexed": 132
+    }
+  },
+  "target_roles": [
+    "Frontend Developer",
+    "Backend Developer",
+    "Full Stack Developer",
+    "Software Engineer",
+    "Data Analyst",
+    "Data Scientist",
+    "Machine Learning Engineer",
+    "Cloud Engineer",
+    "Cybersecurity Analyst",
+    "Android Developer",
+    "DevOps Engineer"
+  ],
+  "taxonomy_file": "skill_taxonomy.json"
+}

@@ -1,0 +1,115 @@
+{
+  "roles": {
+    "Frontend Developer": {
+      "core_skills": ["HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Angular", "Responsive Design", "Git"],
+      "secondary_skills": ["Tailwind CSS", "Redux", "REST APIs", "Webpack", "Vite", "Web Accessibility", "Testing / Jest"],
+      "domain": "Web Development",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["HTML5 & Semantics", "CSS3 Flexbox & Grid", "JavaScript ES6+", "Git & GitHub"]},
+        {"stage": "Intermediate", "topics": ["TypeScript Fundamentals", "Angular Component Architecture", "RxJS & Signals", "REST API Consumption"]},
+        {"stage": "Advanced", "topics": ["State Management (NgRx/Redux)", "Performance & Web Vitals", "Unit & E2E Testing", "CI/CD & Cloud Deployment"]}
+      ]
+    },
+    "Backend Developer": {
+      "core_skills": ["Node.js", "Express.js", "Python", "REST APIs", "MongoDB", "PostgreSQL", "SQL", "Git"],
+      "secondary_skills": ["Docker", "Redis", "JWT Auth", "Microservices", "GraphQL", "Linux", "FastAPI"],
+      "domain": "Backend Development",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Node.js & Express Fundamentals", "REST API Principles", "Relational SQL (Postgres)", "Git"]},
+        {"stage": "Intermediate", "topics": ["NoSQL & MongoDB Modeling", "Authentication & JWT Security", "Async Programming & Queues", "Unit Testing (Jest/Mocha)"]},
+        {"stage": "Advanced", "topics": ["Microservices & Docker", "Caching with Redis", "Database Indexing & Tuning", "Cloud Deployment (AWS/GCP)"]}
+      ]
+    },
+    "Full Stack Developer": {
+      "core_skills": ["JavaScript", "TypeScript", "Angular", "React", "Node.js", "Express.js", "MongoDB", "PostgreSQL", "Git"],
+      "secondary_skills": ["Docker", "REST APIs", "Tailwind CSS", "CI/CD", "AWS", "FastAPI", "Redis"],
+      "domain": "Full Stack Development",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Modern JavaScript & Web Basics", "Frontend UI (Angular/React)", "Backend Server (Node/Express)", "MongoDB"]},
+        {"stage": "Intermediate", "topics": ["TypeScript Full Stack", "API Integration & Authentication", "State Management & Component Architecture", "SQL Relational Schemas"]},
+        {"stage": "Advanced", "topics": ["Docker Containerization", "Automated Testing", "CI/CD Deployment Pipelines", "Cloud Infrastructure & Optimization"]}
+      ]
+    },
+    "Software Engineer": {
+      "core_skills": ["Data Structures", "Algorithms", "Java", "C++", "Python", "Object-Oriented Programming", "Git", "SQL"],
+      "secondary_skills": ["System Design", "Design Patterns", "Operating Systems", "Networking", "Multithreading", "Unit Testing"],
+      "domain": "Software Engineering",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["OOP in Java/C++", "Basic Data Structures (Arrays, Linked Lists, Stacks, Queues)", "Algorithm Complexity (Big-O)", "Git"]},
+        {"stage": "Intermediate", "topics": ["Trees, Graphs & Dynamic Programming", "Relational Databases & SQL", "Design Patterns (SOLID)", "Concurrent Programming"]},
+        {"stage": "Advanced", "topics": ["Distributed Systems Fundamentals", "Low-Level System Design", "Microservices Architecture", "Performance Profiling"]}
+      ]
+    },
+    "Data Analyst": {
+      "core_skills": ["Python", "SQL", "Pandas", "NumPy", "Data Visualization", "Excel / Spreadsheets", "Power BI", "Statistics"],
+      "secondary_skills": ["Tableau", "Data Cleaning", "Matplotlib", "Seaborn", "A/B Testing", "EDA", "Business Intelligence"],
+      "domain": "Data Analytics",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Advanced Excel & Pivot Tables", "SQL Querying & Aggregations", "Python for Data Basics", "Descriptive Statistics"]},
+        {"stage": "Intermediate", "topics": ["Pandas & NumPy Data Wrangling", "Data Visualization (Seaborn, Matplotlib)", "Interactive Dashboards (Power BI / Tableau)", "Exploratory Data Analysis"]},
+        {"stage": "Advanced", "topics": ["Hypothesis & A/B Testing", "SQL Optimization & Window Functions", "Automated Reporting Pipelines", "Storytelling with Data"]}
+      ]
+    },
+    "Data Scientist": {
+      "core_skills": ["Python", "Machine Learning", "Scikit-learn", "Pandas", "NumPy", "SQL", "Statistics", "Linear Algebra"],
+      "secondary_skills": ["Feature Engineering", "Data Visualization", "Deep Learning", "TensorFlow / PyTorch", "Model Evaluation", "EDA"],
+      "domain": "Data Science",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Python Data Science Stack", "Probability & Linear Algebra", "SQL Data Extraction", "Exploratory Data Analysis"]},
+        {"stage": "Intermediate", "topics": ["Supervised Learning (Regression, Classification)", "Unsupervised Learning (Clustering, PCA)", "Feature Engineering & Cross-Validation", "Model Evaluation Metrics"]},
+        {"stage": "Advanced", "topics": ["Ensemble Methods (Random Forest, XGBoost)", "Introduction to Deep Learning", "ML Pipeline Deployment", "Explainable AI (SHAP/LIME)"]}
+      ]
+    },
+    "Machine Learning Engineer": {
+      "core_skills": ["Python", "Machine Learning", "Deep Learning", "PyTorch", "TensorFlow", "Scikit-learn", "Docker", "MLOps"],
+      "secondary_skills": ["FastAPI", "Model Serving", "NLP", "Computer Vision", "Kubernetes", "Git", "Feature Stores"],
+      "domain": "Artificial Intelligence",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Python & NumPy Vectorization", "Classical ML Algorithms", "Linear Algebra & Calculus", "Git & Clean Code"]},
+        {"stage": "Intermediate", "topics": ["Deep Neural Networks (PyTorch)", "Model Tuning & Hyperparameter Search", "FastAPI Model Serving Endpoints", "Docker for ML"]},
+        {"stage": "Advanced", "topics": ["MLOps & CI/CD for Models", "Distributed Training", "Large Language Model Fine-Tuning", "Monitoring & Drift Detection"]}
+      ]
+    },
+    "Cloud Engineer": {
+      "core_skills": ["Linux", "AWS", "Google Cloud Platform", "Docker", "Terraform", "Networking", "Bash / Shell", "Python"],
+      "secondary_skills": ["Kubernetes", "CI/CD", "CloudFormation", "IAM Security", "Serverless", "Monitoring / Prometheus"],
+      "domain": "Cloud Computing",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Linux System Administration", "Networking Fundamentals (DNS, TCP/IP, VPC)", "Cloud Provider Core Services (EC2, S3, IAM)", "Bash Scripting"]},
+        {"stage": "Intermediate", "topics": ["Docker Containerization", "Infrastructure as Code (Terraform)", "Serverless Architectures (Lambda/Cloud Functions)", "Database Services (RDS/DynamoDB)"]},
+        {"stage": "Advanced", "topics": ["Kubernetes Cluster Management", "Multi-Region High Availability", "Cloud Cost Optimization & FinOps", "Security & Compliance Architectures"]}
+      ]
+    },
+    "Cybersecurity Analyst": {
+      "core_skills": ["Network Security", "Linux", "Ethical Hacking", "Vulnerability Assessment", "Python", "SIEM", "Cryptography"],
+      "secondary_skills": ["Wireshark", "Metasploit", "OWASP Top 10", "Incident Response", "Firewalls", "SOC Operations"],
+      "domain": "Cybersecurity",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Computer Networking & Protocols", "Linux & CLI Essentials", "Security Principles & Threat Models", "Basic Python Scripting"]},
+        {"stage": "Intermediate", "topics": ["OWASP Top 10 Web Security", "Network Packet Analysis (Wireshark)", "Vulnerability Scanning (Nessus/Nmap)", "Identity & Access Management"]},
+        {"stage": "Advanced", "topics": ["SIEM Tooling & Log Analysis", "Incident Response & Forensics", "Penetration Testing Methodology", "Cloud Security Posture Management"]}
+      ]
+    },
+    "Android Developer": {
+      "core_skills": ["Kotlin", "Android SDK", "Jetpack Compose", "Java", "Mobile UI Design", "REST APIs", "Git"],
+      "secondary_skills": ["Coroutines", "Room Database", "Retrofit", "MVVM Architecture", "Firebase", "App Publishing"],
+      "domain": "Mobile Development",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Kotlin Language Fundamentals", "Android Studio & Activity Lifecycle", "Basic UI with Jetpack Compose", "Git"]},
+        {"stage": "Intermediate", "topics": ["MVVM Architecture & ViewModel", "Retrofit & REST API Integration", "Coroutines & Flow for Asynchronous Work", "Room SQLite Database"]},
+        {"stage": "Advanced", "topics": ["Custom Compose Animations", "Dependency Injection (Hilt/Koin)", "Unit & Instrumented Testing", "Google Play Store Release & CI/CD"]}
+      ]
+    },
+    "DevOps Engineer": {
+      "core_skills": ["Docker", "Kubernetes", "CI/CD Pipelines", "Linux", "Terraform", "Git", "Python / Bash", "Monitoring"],
+      "secondary_skills": ["GitHub Actions", "Prometheus", "Grafana", "Ansible", "AWS / GCP", "Security / DevSecOps"],
+      "domain": "DevOps & Infrastructure",
+      "learning_roadmap": [
+        {"stage": "Beginner", "topics": ["Linux CLI & Shell Scripting", "Git Workflow & Version Control", "Docker Containers & Images", "Networking Basics"]},
+        {"stage": "Intermediate", "topics": ["CI/CD with GitHub Actions", "Infrastructure as Code with Terraform", "Kubernetes Pods & Deployments", "Cloud Deployment"]},
+        {"stage": "Advanced", "topics": ["Helm Charts & GitOps (ArgoCD)", "Observability (Prometheus, Grafana, ELK)", "Site Reliability Engineering (SRE) Principles", "DevSecOps Automation"]}
+      ]
+    }
+  }
+}
+

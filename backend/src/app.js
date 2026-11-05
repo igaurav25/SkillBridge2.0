@@ -20,6 +20,13 @@ const aiRoutes = require('./routes/aiRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const savedJobRoutes = require('./routes/savedJobRoutes');
+const mlRoutes = require('./routes/mlRoutes');
+const assessmentRoutes = require('./routes/assessmentRoutes');
+const roadmapRoutes = require('./routes/roadmapRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+const githubRoutes = require('./routes/githubRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 const app = express();
 
@@ -99,6 +106,13 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/saved-jobs', savedJobRoutes);
+app.use('/api/ml', mlRoutes);
+app.use('/api/assessments', assessmentRoutes);
+app.use('/api/roadmaps', roadmapRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/github', githubRoutes);
+app.use('/api/achievements', achievementRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Error handling middleware
 app.use(notFound);

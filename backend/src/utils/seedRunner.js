@@ -519,6 +519,10 @@ const seedAll = async () => {
     await SkillCategory.insertMany(seedData.skillCategories);
     console.log(` Inserted ${seedData.skillCategories.length} skill categories & roadmaps.`);
 
+    // 11. Seed SkillBridge 2.0 Assessments, Roadmaps, and Projects
+    const { seedNewFeatures } = require('./seedNewFeatures');
+    await seedNewFeatures();
+
     console.log('--- SkillBridge Database Seed Complete! ---');
   } catch (err) {
     console.error('Seed process failed:', err);
