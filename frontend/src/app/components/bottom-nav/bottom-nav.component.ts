@@ -80,3 +80,4 @@ import { AuthService } from '../../services/auth.service';
 export class BottomNavComponent {
   authService = inject(AuthService);
 }
+
