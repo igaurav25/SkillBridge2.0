@@ -568,3 +568,190 @@ textarea.form-control {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+
+/* ==========================================================================
+   SkillBridge 2.0 — Universal Multi-Device & Cross-Platform Adaptive CSS
+   (Apple iOS/iPadOS/macOS, Android Phones/Tablets/Foldables, Windows, Linux)
+   ========================================================================== */
+
+/* 1. Safe Area Insets for Notches, Dynamic Island, Home Bars & Foldable Hinges */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+}
+
+body {
+  padding-top: var(--sat);
+  padding-left: var(--sal);
+  padding-right: var(--sar);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 2. Touch Target Compliance (Minimum 44x44px for Pointer: Coarse & Mobile) */
+@media (pointer: coarse), (max-width: 768px) {
+  button,
+  .btn,
+  a.nav-tab,
+  input[type="button"],
+  input[type="submit"],
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent iOS zoom on input focus by ensuring at least 16px font */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* 3. Keyboard & Stylus Accessibility Focus Rings */
+:focus-visible {
+  outline: 2px solid var(--primary-500) !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px var(--primary-glow) !important;
+}
+
+/* 4. Reduced Motion Optimization */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 5. Viewport Breakpoint Adjustments (320px, 360px, 375px, 390px, 430px, 600px, 768px, 820px, 1024px, 1280px, 1440px, 1920px, 2560px) */
+
+/* Ultra-Compact Smartphones (320px - 360px: e.g. iPhone SE, Fold Outer) */
+@media (max-width: 360px) {
+  .container {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+  h1 { font-size: 1.6rem !important; }
+  h2 { font-size: 1.3rem !important; }
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .sb-card {
+    padding: 0.85rem !important;
+  }
+}
+
+/* Mainstream Smartphones (375px - 390px: iPhone 12/13/14/15/16, Pixel, Galaxy S) */
+@media (min-width: 375px) and (max-width: 429px) {
+  .container {
+    padding-left: 0.85rem;
+    padding-right: 0.85rem;
+  }
+}
+
+/* Large Smartphones & Max Devices (430px: iPhone Pro Max, Galaxy S24 Ultra) */
+@media (min-width: 430px) and (max-width: 599px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Foldables & Mini Tablets (600px - 767px: Galaxy Z Fold unfolded, Pixel Fold, iPad Mini) */
+@media (min-width: 600px) and (max-width: 767px) {
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid-3, .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Standard Tablets & iPad Pro 11 (768px - 820px - 1023px: iPad Air, Galaxy Tab) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    max-width: 100%;
+  }
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Laptops & MacBooks (1024px - 1280px - 1440px: MacBook Air/Pro, Windows Laptops) */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  .container {
+    max-width: 1240px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Large Desktops & iMacs (1440px - 1919px) */
+@media (min-width: 1440px) {
+  .container {
+    max-width: 1360px;
+  }
+}
+
+/* Ultrawide & 4K Monitors (1920px - 2560px+) */
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1560px;
+  }
+  .container-fluid {
+    max-width: 1800px;
+  }
+}
+@media (min-width: 2560px) {
+  .container {
+    max-width: 1720px;
+  }
+}
+
+/* Mobile Landscape Orientation Optimization */
+@media (max-height: 520px) and (orientation: landscape) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+  main {
+    padding-bottom: 0.5rem !important;
+  }
+}
+
+/* Custom Scrollbar for Desktop/Laptop Mice & Trackpads */
+@media (pointer: fine) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-app);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-card);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-500);
+  }
+}

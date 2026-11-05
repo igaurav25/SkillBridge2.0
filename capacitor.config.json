@@ -1,0 +1,45 @@
+{
+  "appId": "com.skillbridge.career",
+  "appName": "SkillBridge",
+  "webDir": "frontend/dist/frontend/browser",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#0B1020",
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https",
+    "cleartext": true
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1500,
+      "launchAutoHide": true,
+      "backgroundColor": "#0B1020",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0B1020"
+    },
+    "Keyboard": {
+      "resize": "body",
+      "style": "DARK",
+      "resizeOnFullScreen": true
+    }
+  },
+  "android": {
+    "buildOptions": {
+      "keystorePath": "",
+      "releaseType": "AAB"
+    },
+    "allowMixedContent": false,
+    "captureInput": true,
+    "webContentsDebuggingEnabled": false
+  },
+  "ios": {
+    "preferredContentMode": "mobile",
+    "contentInset": "always",
+    "allowsLinkPreview": true
+  }
+}

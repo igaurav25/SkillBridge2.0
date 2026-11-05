@@ -1,0 +1,63 @@
+{
+  "name": "SkillBridge 2.0 — AI & ML Career Ecosystem",
+  "short_name": "SkillBridge",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "background_color": "#0B1020",
+  "theme_color": "#6366F1",
+  "orientation": "any",
+  "description": "Universal Cross-Platform CareerTech Platform powered by Real Scikit-learn Machine Learning Models and Gemini AI.",
+  "categories": ["education", "productivity", "business"],
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icons/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Career Dashboard",
+      "short_name": "Dashboard",
+      "description": "View career readiness, skill gaps, and applications",
+      "url": "/dashboard",
+      "icons": [{ "src": "favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Job Marketplace",
+      "short_name": "Jobs",
+      "description": "Discover verified tech jobs and internships",
+      "url": "/jobs",
+      "icons": [{ "src": "favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Learning Roadmaps",
+      "short_name": "Roadmaps",
+      "description": "Personalized curriculum and milestone tracking",
+      "url": "/learning-roadmap",
+      "icons": [{ "src": "favicon.ico", "sizes": "64x64" }]
+    },
+    {
+      "name": "Skill Assessments",
+      "short_name": "Assessments",
+      "description": "Timed technical MCQs with skill radar scoring",
+      "url": "/assessments",
+      "icons": [{ "src": "favicon.ico", "sizes": "64x64" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

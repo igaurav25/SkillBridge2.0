@@ -2,10 +2,29 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8">
-  <title>SkillBridge — AI-Powered Job & Internship Platform</title>
+  <title>SkillBridge — AI + Machine Learning Career Platform</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="SkillBridge is an AI-powered job and internship platform for students and developers. Build resumes, analyze ATS gaps, discover tech opportunities, and prepare for interviews.">
+  
+  <!-- Universal Viewport with Notch / Dynamic Island Safe Area Support -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="SkillBridge 2.0 is a universal cross-platform CareerTech ecosystem powered by real Machine Learning models and Google Gemini AI. Practice mock interviews, evaluate ATS resumes, and accelerate your tech career.">
+  
+  <!-- PWA Manifest & Web Standards -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0B1020" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F8FAFC" media="(prefers-color-scheme: light)">
+  
+  <!-- Apple iOS / iPadOS / macOS Standalone PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="SkillBridge">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <!-- Windows & Android Meta -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#0B1020">
+  <meta name="format-detection" content="telephone=no">
+
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <!-- Google Fonts: Inter & Plus Jakarta Sans -->
@@ -15,5 +34,18 @@
 </head>
 <body>
   <app-root></app-root>
+
+  <!-- PWA Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then((reg) => {
+          console.log('[SkillBridge PWA] Service Worker registered successfully with scope:', reg.scope);
+        }).catch((err) => {
+          console.warn('[SkillBridge PWA] Service Worker registration skipped:', err.message);
+        });
+      });
+    }
+  </script>
 </body>
 </html>

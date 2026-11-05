@@ -12,6 +12,7 @@ import { RoadmapService, LearningProgress } from '../../services/roadmap.service
 import { AssessmentService } from '../../services/assessment.service';
 import { ProjectService, ProjectRecommendation } from '../../services/project.service';
 import { JobCardComponent } from '../../components/job-card/job-card.component';
+import { Career3dVisualizerComponent } from '../../components/career-3d-visualizer/career-3d-visualizer.component';
 import { Profile } from '../../models/profile.model';
 import { Job } from '../../models/job.model';
 import { Application } from '../../models/application.model';
@@ -19,7 +20,7 @@ import { Application } from '../../models/application.model';
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, JobCardComponent],
+  imports: [CommonModule, RouterModule, FormsModule, JobCardComponent, Career3dVisualizerComponent],
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.css'],
 })

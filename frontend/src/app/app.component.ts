@@ -3,12 +3,14 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { ToastComponent } from './components/toast/toast.component';
+import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
+import { PwaInstallBannerComponent } from './components/pwa-install-banner/pwa-install-banner.component';
 import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastComponent, BottomNavComponent, PwaInstallBannerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

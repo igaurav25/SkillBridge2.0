@@ -1,11 +1,22 @@
 <div class="app-shell flex flex-col min-h-screen">
+  <!-- Accessibility Skip Link -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-white">
+    Skip to main content
+  </a>
+
+  <!-- PWA Install Banner -->
+  <app-pwa-install-banner></app-pwa-install-banner>
+
   <app-navbar></app-navbar>
 
-  <main class="flex-1">
+  <main class="flex-1 pb-20 md:pb-0" id="main-content">
     <router-outlet></router-outlet>
   </main>
 
   <app-footer></app-footer>
 
   <app-toast></app-toast>
+
+  <!-- Mobile Bottom Navigation for Smartphones (<768px) -->
+  <app-bottom-nav></app-bottom-nav>
 </div>

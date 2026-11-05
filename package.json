@@ -4,6 +4,8 @@
   "description": "SkillBridge — AI-Powered Job & Internship Platform",
   "scripts": {
     "test:e2e": "node test_e2e.js",
+    "test:cross-platform": "node test_cross_platform.js",
+    "mobile:prepare": "cd frontend && npm run build",
     "backend:start": "cd backend && npm start",
     "backend:dev": "cd backend && npm run dev",
     "frontend:start": "cd frontend && npm start",

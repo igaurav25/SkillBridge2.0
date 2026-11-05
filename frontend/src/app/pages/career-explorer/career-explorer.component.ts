@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Career3dVisualizerComponent } from '../../components/career-3d-visualizer/career-3d-visualizer.component';
 import { MlService, CareerRecommendationItem } from '../../services/ml.service';
 import { ProfileService } from '../../services/profile.service';
 import { ToastService } from '../../services/toast.service';
@@ -20,7 +21,7 @@ interface CareerCard {
 @Component({
   selector: 'app-career-explorer',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, Career3dVisualizerComponent],
   template: `
     <div class="career-explorer-page py-8">
       <div class="container">
@@ -112,6 +113,11 @@ interface CareerCard {
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- Universal 3D / 2D Skill Tree Orbit -->
+        <div class="mb-8">
+          <app-career-3d-visualizer></app-career-3d-visualizer>
         </div>
 
         <!-- Filter Controls -->
