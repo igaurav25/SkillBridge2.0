@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { getJwtSecret } = require('../utils/jwt');
 
 const protect = async (req, res, next) => {
   let token;
@@ -19,10 +20,7 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'skillbridge_super_secret_jwt_key_2026_dev_prod'
-    );
+    const decoded = jwt.verify(token, getJwtSecret());
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -64,10 +62,7 @@ const optionalProtect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || 'skillbridge_super_secret_jwt_key_2026_dev_prod'
-    );
+    const decoded = jwt.verify(token, getJwtSecret());
     const user = await User.findById(decoded.id);
     if (user && user.status !== 'suspended') {
       req.user = user;

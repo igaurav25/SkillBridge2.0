@@ -82,7 +82,7 @@ Return a valid JSON object only (no markdown code blocks, just raw JSON) matchin
     try {
       const cleanJson = geminiResult.replace(/```json/g, '').replace(/```/g, '').trim();
       const parsed = JSON.parse(cleanJson);
-      return parsed;
+      return { ...parsed, engine: 'AI-generated' };
     } catch (e) {
       console.warn('Failed to parse Gemini JSON output for resume analysis, using heuristic analysis');
     }
@@ -103,6 +103,7 @@ Return a valid JSON object only (no markdown code blocks, just raw JSON) matchin
     : `No technical skills matching ${targetRole} were found in this resume. Please include your programming languages, tools, and technical projects to improve your score.`;
 
   return {
+    engine: 'Rule-based estimate',
     profileStrength,
     skillsScore,
     projectsScore,
@@ -169,7 +170,8 @@ Return a pure JSON object:
   if (geminiResult) {
     try {
       const cleanJson = geminiResult.replace(/```json/g, '').replace(/```/g, '').trim();
-      return JSON.parse(cleanJson);
+      const parsed = JSON.parse(cleanJson);
+      return { ...parsed, engine: 'AI-generated' };
     } catch (e) {
       // Fallback
     }
@@ -202,6 +204,7 @@ Return a pure JSON object:
   }
 
   return {
+    engine: 'Rule-based estimate',
     matchScore: score,
     matchedSkills: Array.from(new Set(matched)),
     missingSkills: Array.from(new Set(missing)),
@@ -245,7 +248,8 @@ Return pure JSON with this structure:
   if (geminiResult) {
     try {
       const cleanJson = geminiResult.replace(/```json/g, '').replace(/```/g, '').trim();
-      return JSON.parse(cleanJson);
+      const parsed = JSON.parse(cleanJson);
+      return { ...parsed, engine: 'AI-generated' };
     } catch (e) {
       // Fallback
     }
@@ -278,6 +282,7 @@ Return pure JSON with this structure:
     : `You have 0 matching skills for ${targetRole} right now. Start by learning the foundational requirements: ${missing.slice(0, 2).join(' and ')}.`;
 
   return {
+    engine: 'Rule-based estimate',
     targetRole,
     readinessScore,
     existingSkills: existing,
@@ -330,13 +335,15 @@ ${profileContext}`;
 
   const geminiResult = await callGemini(prompt, systemInstruction);
   if (geminiResult) {
-    return geminiResult;
+    return { reply: geminiResult, engine: 'AI-generated' };
   }
 
   // Intelligent conversational fallback
   const lowerMsg = userMessage.toLowerCase();
   if (lowerMsg.includes('full-stack') || lowerMsg.includes('full stack')) {
-    return `### Path to Becoming a Modern Full-Stack Developer 🚀
+    return {
+      engine: 'Rule-based estimate',
+      reply: `### Path to Becoming a Modern Full-Stack Developer 🚀
 
 To stand out in today's tech market, here is the structured roadmap:
 
@@ -355,11 +362,14 @@ To stand out in today's tech market, here is the structured roadmap:
    - Set up CI/CD pipelines (GitHub Actions).
    - Deploy full-stack apps to cloud providers (Render, Vercel, AWS).
 
-💡 **Pro Tip**: Recruiters value 2 high-quality, production-deployed projects with live demo links more than 10 basic tutorial clones!`;
+💡 **Pro Tip**: Recruiters value 2 high-quality, production-deployed projects with live demo links more than 10 basic tutorial clones!`
+    };
   }
 
   if (lowerMsg.includes('resume') || lowerMsg.includes('shortlist') || lowerMsg.includes('not getting shortlisted')) {
-    return `### Why Resumes Get Filtered & How to Fix Them 📄
+    return {
+      engine: 'Rule-based estimate',
+      reply: `### Why Resumes Get Filtered & How to Fix Them 📄
 
 If you're not getting shortlisted, the 3 most common reasons are:
 
@@ -373,20 +383,26 @@ If you're not getting shortlisted, the 3 most common reasons are:
 3. **Portfolio & GitHub Proof**
    - Provide clickable hyperlinks to your live web applications, clean GitHub READMEs, and API documentation.
 
-Upload your resume to our **SkillBridge AI Resume Analyzer** to get an instant breakdown of missing keywords and score!`;
+Upload your resume to our **SkillBridge AI Resume Analyzer** to get an instant breakdown of missing keywords and score!`
+    };
   }
 
   if (lowerMsg.includes('angular') || lowerMsg.includes('learn after node')) {
-    return `### Next Steps for Modern Web Development ⚡
+    return {
+      engine: 'Rule-based estimate',
+      reply: `### Next Steps for Modern Web Development ⚡
 
 After mastering **Node.js**:
 1. **Caching & Queues**: Master **Redis** for session management and job queues (BullMQ).
 2. **Containerization**: Learn **Docker & Docker Compose** to spin up environments locally.
 3. **Database Performance**: Study indexing strategies, MongoDB aggregation pipelines, and transaction rollbacks.
-4. **Cloud & Serverless**: Deploy serverless functions and explore AWS S3, CloudFront, and Lambda.`;
+4. **Cloud & Serverless**: Deploy serverless functions and explore AWS S3, CloudFront, and Lambda.`
+    };
   }
 
-  return `### Hello! I am your SkillBridge Career Assistant 💼
+  return {
+    engine: 'Rule-based estimate',
+    reply: `### Hello! I am your SkillBridge Career Assistant 💼
 
 I'm here to help you accelerate your tech career. Here are things we can do together:
 
@@ -395,13 +411,14 @@ I'm here to help you accelerate your tech career. Here are things we can do toge
 * **Interview Prep**: Practice behavioral, technical, and system design questions.
 * **Cover Letter Drafting**: Tailor customized cover letters for your target companies.
 
-How can I help you today? Feel free to ask about any role or technology!`;
+How can I help you today? Feel free to ask about any role or technology!`
+  };
 };
 
 /**
  * 5. AI Cover Letter Generator
  */
-const generateCoverLetter = async (userProfile = {}, job = {}) => {
+const generateCoverLetter = async (userProfile = {}, job = {}, customInstructions = '') => {
   const prompt = `You are a professional executive resume writer.
 Generate a compelling, personalized, high-converting cover letter for this candidate applying to this job.
 
@@ -419,32 +436,37 @@ Job Details:
 - Location: ${job.location || 'Remote'}
 - Required Skills: ${(job.requiredSkills || []).join(', ')}
 - Description: ${(job.description || '').slice(0, 1000)}
+${customInstructions ? `- Custom Instructions: ${customInstructions}` : ''}
 
 Write a professional, 3-4 paragraph cover letter.
 Return only the text of the cover letter.`;
 
   const geminiResult = await callGemini(prompt);
   if (geminiResult) {
-    return geminiResult.trim();
+    return { coverLetter: geminiResult.trim(), engine: 'AI-generated' };
   }
 
-  // High quality structured fallback
-  const candidateName = userProfile.user?.name || userProfile.fullName || 'Gaurav Sharma';
+  // High quality structured fallback (no hardcoded user names)
+  const candidateName = userProfile.user?.name || userProfile.fullName || 'Candidate';
   const companyName = job.companyName || 'Hiring Team';
   const jobTitle = job.title || 'Full Stack Developer';
-  const topSkills = (userProfile.skills || []).slice(0, 4).map(s => s.name || s).join(', ') || 'Angular, Node.js, and MongoDB';
+  const topSkills = (userProfile.skills || []).slice(0, 4).map(s => s.name || s).join(', ') || 'your core software engineering stack';
+  const customNote = customInstructions ? `\n\nIn alignment with your role priorities, I bring particular focus to ${customInstructions.trim()}.` : '';
 
-  return `Dear Hiring Manager,
+  return {
+    engine: 'Rule-based estimate',
+    coverLetter: `Dear Hiring Manager,
 
-I am writing to express my strong enthusiasm for the ${jobTitle} position at ${companyName}. With a solid foundation in modern full-stack software development and hands-on experience utilizing ${topSkills}, I am eager to contribute to your engineering team's ongoing success and high-impact initiatives.
+I am writing to express my strong enthusiasm for the ${jobTitle} position at ${companyName}. With a solid foundation in modern software development and hands-on experience utilizing ${topSkills}, I am eager to contribute to your engineering team's ongoing success and high-impact initiatives.
 
-Throughout my technical journey, I have focused on writing clean, scalable, and maintainable code. My experience encompasses architecting reactive web interfaces, building resilient RESTful APIs, and implementing robust database architectures. I thrive on translating complex product requirements into intuitive, performant digital solutions, which closely aligns with the expectations outlined for the ${jobTitle} role at ${companyName}.
+Throughout my technical journey, I have focused on writing clean, scalable, and maintainable code. My experience encompasses building resilient applications, designing maintainable APIs, and solving complex engineering challenges, which closely aligns with the expectations outlined for the ${jobTitle} role at ${companyName}.${customNote}
 
 I am particularly excited about ${companyName}'s vision and dedication to technical excellence. I look forward to bringing my problem-solving mindset, collaborative spirit, and commitment to continuous learning to your team. Thank you for your time and consideration, and I welcome the opportunity to discuss my qualifications further in an interview.
 
 Sincerely,
 ${candidateName}
-SkillBridge Developer Network`;
+SkillBridge Developer Network`
+  };
 };
 
 /**
@@ -470,27 +492,38 @@ Evaluate the answer thoroughly. Return a pure JSON object:
   if (geminiResult) {
     try {
       const cleanJson = geminiResult.replace(/```json/g, '').replace(/```/g, '').trim();
-      return JSON.parse(cleanJson);
+      const parsed = JSON.parse(cleanJson);
+      return { ...parsed, engine: 'AI-generated' };
     } catch (e) {
       // Fallback
     }
   }
 
-  // Heuristic evaluation
-  const wordCount = (userAnswer || '').trim().split(/\s+/).length;
-  let score = 50;
-  if (wordCount >= 20) score += 20;
-  if (wordCount >= 40) score += 15;
-  if (userAnswer.toLowerCase().includes('example') || userAnswer.toLowerCase().includes('because')) score += 10;
-  score = Math.min(95, score);
+  // Heuristic evaluation based on unique meaningful terms to prevent repetition inflation
+  const tokens = (userAnswer || '').trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+  const uniqueTokens = new Set(tokens);
+  const uniqueCount = uniqueTokens.size;
+  let score = 25;
+  if (uniqueCount >= 8) score += 25;
+  if (uniqueCount >= 18) score += 20;
+  if (uniqueCount >= 32) score += 15;
+  if (/(example|because|complexity|async|promise|database|api|cache|state|component|index)/i.test(userAnswer || '')) {
+    score += 10;
+  }
+  score = Math.min(95, uniqueCount === 0 ? 0 : score);
 
   return {
+    engine: 'Rule-based estimate',
     score,
-    feedback: `Good technical attempt with solid conceptual grounding. You demonstrated an understanding of ${category} fundamentals. To elevate your answer to top tier, include a practical scenario or mention performance trade-offs.`,
-    strengths: [
-      'Addresses the core question directly',
-      'Demonstrates familiarity with relevant terminology',
-    ],
+    feedback: uniqueCount < 8
+      ? `Your answer is very brief (${uniqueCount} unique key terms). Try explaining the underlying mechanism, a real code example, and trade-offs in ${category}.`
+      : `Good technical attempt with solid conceptual grounding. You demonstrated an understanding of ${category} fundamentals. To elevate your answer to top tier, include a practical scenario or mention performance trade-offs.`,
+    strengths: uniqueCount >= 8
+      ? [
+          'Addresses the core question directly',
+          'Demonstrates familiarity with relevant terminology',
+        ]
+      : ['Submitted an initial response'],
     areasToImprove: [
       'Include concrete code or architecture examples',
       'Discuss time/space complexity or performance implications where applicable',

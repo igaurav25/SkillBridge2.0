@@ -22,7 +22,7 @@ router.get('/', optionalProtect, getJobs);
 router.get('/popular/tags', getPopularSearches);
 router.get('/courses', getCoursesCatalog);
 router.get('/live-check', checkLiveNewJobs);
-router.post('/simulate-live', simulateLiveJob);
+router.post('/simulate-live', protect, authorize('recruiter', 'admin'), simulateLiveJob);
 router.get('/platforms', getPlatformsDirectory);
 router.get('/live-platforms', getLivePlatformJobs);
 router.post('/criteria-search', searchJobsByCriteria);

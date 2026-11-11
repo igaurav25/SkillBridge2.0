@@ -39,12 +39,14 @@ const chatWithAssistant = async (req, res, next) => {
     const profile = await Profile.findOne({ user: req.user.id });
 
     // Call AI service
-    const aiResponse = await careerChat(message, conversation.messages, profile);
+    const aiResult = await careerChat(message, conversation.messages, profile);
+    const aiReplyText = typeof aiResult === 'string' ? aiResult : aiResult.reply;
+    const aiEngineLabel = typeof aiResult === 'string' ? 'Rule-based estimate' : (aiResult.engine || 'Rule-based estimate');
 
     // Add assistant response
     conversation.messages.push({
       role: 'assistant',
-      content: aiResponse,
+      content: aiReplyText,
       timestamp: new Date(),
     });
 
@@ -54,7 +56,8 @@ const chatWithAssistant = async (req, res, next) => {
       success: true,
       data: {
         conversationId: conversation._id,
-        reply: aiResponse,
+        reply: aiReplyText,
+        engine: aiEngineLabel,
         conversation,
       },
     });
@@ -122,13 +125,16 @@ const generateCoverLetterHandler = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Please complete your profile before generating a cover letter' });
     }
 
-    const letter = await generateCoverLetter(profile, job);
+    const coverResult = await generateCoverLetter(profile, job, customInstructions);
+    const letter = typeof coverResult === 'string' ? coverResult : coverResult.coverLetter;
+    const engine = typeof coverResult === 'string' ? 'Rule-based estimate' : (coverResult.engine || 'Rule-based estimate');
 
     res.status(200).json({
       success: true,
       message: 'Cover letter generated successfully',
       data: {
         coverLetter: letter,
+        engine,
         jobTitle: job.title,
         companyName: job.companyName,
       },

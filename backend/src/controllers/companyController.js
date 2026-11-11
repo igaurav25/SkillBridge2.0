@@ -1,5 +1,6 @@
 const Company = require('../models/Company');
 const Job = require('../models/Job');
+const { escapeRegex } = require('../utils/securityHelpers');
 
 // @desc    Get all companies
 // @route   GET /api/companies
@@ -9,14 +10,15 @@ const getCompanies = async (req, res, next) => {
     const { search, industry, location, isVerified } = req.query;
     const query = {};
 
-    if (search) {
+    if (search && search.trim()) {
+      const escaped = escapeRegex(search.trim());
       query.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
+        { name: { $regex: escaped, $options: 'i' } },
+        { description: { $regex: escaped, $options: 'i' } },
       ];
     }
-    if (industry) query.industry = { $regex: industry, $options: 'i' };
-    if (location) query.location = { $regex: location, $options: 'i' };
+    if (industry && industry.trim()) query.industry = { $regex: escapeRegex(industry.trim()), $options: 'i' };
+    if (location && location.trim()) query.location = { $regex: escapeRegex(location.trim()), $options: 'i' };
     if (isVerified !== undefined) query.isVerified = isVerified === 'true';
 
     const companies = await Company.find(query).sort('-createdAt');

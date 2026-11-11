@@ -1,33 +1,37 @@
 const InterviewQuestion = require('../models/InterviewQuestion');
 const MockInterviewSession = require('../models/MockInterviewSession');
 const { evaluateMockInterview } = require('../services/aiService');
+const { escapeRegex, parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Get interview questions with category & difficulty filters
 // @route   GET /api/interviews/questions
 // @access  Public
 const getQuestions = async (req, res, next) => {
   try {
-    const { category, difficulty, search, page = 1, limit = 15 } = req.query;
+    const { category, difficulty, search } = req.query;
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 15, 100);
     const query = {};
 
     if (category && category !== 'All') query.category = category;
     if (difficulty && difficulty !== 'All') query.difficulty = difficulty;
-    if (search) {
+    if (search && search.trim()) {
+      const escaped = escapeRegex(search.trim());
       query.$or = [
-        { question: { $regex: search, $options: 'i' } },
-        { topic: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } },
+        { question: { $regex: escaped, $options: 'i' } },
+        { topic: { $regex: escaped, $options: 'i' } },
+        { tags: { $in: [new RegExp(escaped, 'i')] } },
       ];
     }
 
     const total = await InterviewQuestion.countDocuments(query);
     const questions = await InterviewQuestion.find(query)
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
       total,
+      page,
       count: questions.length,
       data: questions,
     });

@@ -1,44 +1,44 @@
 const User = require('../models/User');
 const Profile = require('../models/Profile');
+const { escapeRegex, parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Search candidates for recruiters
 // @route   GET /api/users/candidates
 // @access  Private (Recruiter / Admin)
 const searchCandidates = async (req, res, next) => {
   try {
-    const { name, skill, role, location, page = 1, limit = 12 } = req.query;
+    const { name, skill, role, location } = req.query;
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 12, 50);
 
     const query = { role: 'student', status: 'active' };
 
-    if (name) {
-      query.name = { $regex: name, $options: 'i' };
+    if (name && name.trim()) {
+      query.name = { $regex: escapeRegex(name.trim()), $options: 'i' };
     }
 
     const users = await User.find(query)
       .select('-password')
-      .skip((page - 1) * limit)
-      .limit(Number(limit))
+      .skip(skip)
+      .limit(limit)
       .lean();
 
     const userIds = users.map((u) => u._id);
 
-    // Profile query
     const profileFilter = { user: { $in: userIds } };
-    if (skill) {
-      profileFilter['skills.name'] = { $regex: skill, $options: 'i' };
+    if (skill && skill.trim()) {
+      profileFilter['skills.name'] = { $regex: escapeRegex(skill.trim()), $options: 'i' };
     }
-    if (role) {
-      profileFilter.preferredRole = { $regex: role, $options: 'i' };
+    if (role && role.trim()) {
+      profileFilter.preferredRole = { $regex: escapeRegex(role.trim()), $options: 'i' };
     }
-    if (location) {
-      profileFilter.location = { $regex: location, $options: 'i' };
+    if (location && location.trim()) {
+      profileFilter.location = { $regex: escapeRegex(location.trim()), $options: 'i' };
     }
 
     const profiles = await Profile.find(profileFilter).lean();
     const profileMap = new Map();
     profiles.forEach((p) => profileMap.set(p.user.toString(), p));
 
-    // Merge candidates
     const candidates = users
       .filter((u) => profileMap.has(u._id.toString()))
       .map((u) => ({
@@ -48,6 +48,7 @@ const searchCandidates = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
+      page,
       count: candidates.length,
       data: candidates,
     });
@@ -56,11 +57,20 @@ const searchCandidates = async (req, res, next) => {
   }
 };
 
-// @desc    Get user by id
+// @desc    Get user by id (Owner, Recruiter, or Admin only)
 // @route   GET /api/users/:id
 // @access  Private
 const getUserById = async (req, res, next) => {
   try {
+    const isSelf = req.user.id === req.params.id;
+    const isPrivileged = req.user.role === 'recruiter' || req.user.role === 'admin';
+    if (!isSelf && !isPrivileged) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: You are not authorized to inspect another user account.',
+      });
+    }
+
     const user = await User.findById(req.params.id).select('-password');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
@@ -88,7 +98,7 @@ const updateBasicUser = async (req, res, next) => {
     const { name, headline, avatar, companyName } = req.body;
     const user = await User.findById(req.user.id);
 
-    if (name) user.name = name;
+    if (name && name.trim()) user.name = name.trim();
     if (headline !== undefined) user.headline = headline;
     if (avatar !== undefined) user.avatar = avatar;
     if (companyName !== undefined) user.companyName = companyName;

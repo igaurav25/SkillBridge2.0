@@ -1,5 +1,6 @@
 const Resume = require('../models/Resume');
 const Profile = require('../models/Profile');
+const Application = require('../models/Application');
 const { extractTextFromBuffer, detectSkillsFromText } = require('../services/resumeParserService');
 const { analyzeResume } = require('../services/aiService');
 
@@ -24,8 +25,18 @@ const getResumeById = async (req, res, next) => {
     if (!resume) {
       return res.status(404).json({ success: false, message: 'Resume not found' });
     }
-    // Only owner or recruiter can view
-    if (resume.user.toString() !== req.user.id && req.user.role === 'student') {
+    const isOwner = resume.user.toString() === req.user.id;
+    const isAdmin = req.user.role === 'admin';
+    let isAuthorizedRecruiter = false;
+    if (req.user.role === 'recruiter') {
+      const linkedApp = await Application.findOne({
+        recruiter: req.user.id,
+        candidate: resume.user,
+      }).select('_id').lean();
+      isAuthorizedRecruiter = !!linkedApp;
+    }
+
+    if (!isOwner && !isAdmin && !isAuthorizedRecruiter) {
       return res.status(403).json({ success: false, message: 'Not authorized to view this resume' });
     }
     res.status(200).json({ success: true, data: resume });

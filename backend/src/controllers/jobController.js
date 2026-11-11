@@ -14,7 +14,26 @@ const {
 } = require('../services/liveJobService');
 const { PLATFORMS_350, STREAM_CATEGORIES, COURSES_CATALOG, getPlatformsByStream, searchPlatforms } = require('../data/platformsData');
 const { REAL_PLATFORM_JOBS } = require('../data/realJobData');
+const { escapeRegex, parsePagination, pickFields } = require('../utils/securityHelpers');
 const mongoose = require('mongoose');
+
+const ALLOWED_JOB_FIELDS = [
+  'title',
+  'companyName',
+  'companyLogo',
+  'description',
+  'requirements',
+  'responsibilities',
+  'requiredSkills',
+  'preferredSkills',
+  'salary',
+  'location',
+  'workType',
+  'experienceLevel',
+  'jobType',
+  'status',
+  'deadline',
+];
 
 // @desc    Get all jobs with search, filtering, and sorting
 // @route   GET /api/jobs
@@ -30,49 +49,56 @@ const getJobs = async (req, res, next) => {
       skill,
       minSalary,
       sort = 'recent',
-      page = 1,
-      limit = 10,
     } = req.query;
 
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 10, 50);
     const query = { status: 'active' };
 
-    // Text search
+    // Text search with ReDoS-safe escaping
     if (search && search.trim().length > 0) {
-      const term = search.trim();
+      const escaped = escapeRegex(search.trim());
       query.$or = [
-        { title: { $regex: term, $options: 'i' } },
-        { companyName: { $regex: term, $options: 'i' } },
-        { requiredSkills: { $elemMatch: { $regex: term, $options: 'i' } } },
-        { description: { $regex: term, $options: 'i' } },
+        { title: { $regex: escaped, $options: 'i' } },
+        { companyName: { $regex: escaped, $options: 'i' } },
+        { requiredSkills: { $elemMatch: { $regex: escaped, $options: 'i' } } },
+        { description: { $regex: escaped, $options: 'i' } },
       ];
     }
 
     if (location && location.trim().length > 0) {
-      query.location = { $regex: location.trim(), $options: 'i' };
+      query.location = { $regex: escapeRegex(location.trim()), $options: 'i' };
     }
 
     if (workType) {
-      const types = workType.split(',');
-      query.workType = { $in: types };
+      const types = String(workType).split(',').map((t) => t.trim()).filter(Boolean);
+      if (types.length) query.workType = { $in: types };
     }
 
     if (jobType) {
-      const types = jobType.split(',');
-      query.jobType = { $in: types };
+      const types = String(jobType).split(',').map((t) => t.trim()).filter(Boolean);
+      if (types.length) query.jobType = { $in: types };
     }
 
     if (experienceLevel) {
-      const levels = experienceLevel.split(',');
-      query.experienceLevel = { $in: levels };
+      const levels = String(experienceLevel).split(',').map((l) => l.trim()).filter(Boolean);
+      if (levels.length) query.experienceLevel = { $in: levels };
     }
 
     if (skill) {
-      const skills = skill.split(',').map((s) => s.trim());
-      query.requiredSkills = { $in: skills.map((s) => new RegExp(s, 'i')) };
+      const skills = String(skill)
+        .split(',')
+        .map((s) => s.trim())
+        .filter(Boolean);
+      if (skills.length) {
+        query.requiredSkills = { $in: skills.map((s) => new RegExp(escapeRegex(s), 'i')) };
+      }
     }
 
-    if (minSalary) {
-      query['salary.min'] = { $gte: Number(minSalary) };
+    if (minSalary !== undefined && minSalary !== '') {
+      const minSalNum = Number(minSalary);
+      if (Number.isFinite(minSalNum) && minSalNum >= 0) {
+        query['salary.min'] = { $gte: minSalNum };
+      }
     }
 
     // Sorting
@@ -83,12 +109,11 @@ const getJobs = async (req, res, next) => {
       sortOptions = { applicantsCount: -1, viewsCount: -1 };
     }
 
-    const skip = (Number(page) - 1) * Number(limit);
     const total = await Job.countDocuments(query);
     const jobs = await Job.find(query)
       .sort(sortOptions)
       .skip(skip)
-      .limit(Number(limit))
+      .limit(limit)
       .populate('company', 'name logo website industry location isVerified')
       .lean();
 
@@ -115,8 +140,8 @@ const getJobs = async (req, res, next) => {
       success: true,
       count: jobsWithUserMeta.length,
       total,
-      page: Number(page),
-      pages: Math.ceil(total / Number(limit)) || 1,
+      page,
+      pages: Math.ceil(total / limit) || 1,
       data: jobsWithUserMeta,
     });
   } catch (err) {
@@ -234,8 +259,9 @@ const createJob = async (req, res, next) => {
       }
     }
 
+    const safeBody = pickFields(req.body, ALLOWED_JOB_FIELDS);
     const job = await Job.create({
-      ...req.body,
+      ...safeBody,
       company: companyId,
       companyName,
       companyLogo,
@@ -264,7 +290,8 @@ const updateJob = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Not authorized to edit this job' });
     }
 
-    job = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    const safeUpdate = pickFields(req.body, ALLOWED_JOB_FIELDS);
+    job = await Job.findByIdAndUpdate(req.params.id, safeUpdate, {
       new: true,
       runValidators: true,
     });
@@ -545,11 +572,18 @@ const checkLiveNewJobs = async (req, res, next) => {
 // @access  Public
 const simulateLiveJob = async (req, res, next) => {
   try {
+    if (process.env.NODE_ENV === 'production') {
+      return res.status(403).json({
+        success: false,
+        message: 'Sample live job simulation is disabled in production.',
+      });
+    }
     const { stream = 'all', course = 'all' } = req.body;
     const newJob = generateSimulatedLiveJob(stream, course);
     res.status(201).json({
       success: true,
-      message: `⚡ New real-time job successfully arrived from ${newJob.platform}!`,
+      isSample: true,
+      message: `Sample job simulated from ${newJob.platform} (non-production mode).`,
       data: newJob,
     });
   } catch (err) {

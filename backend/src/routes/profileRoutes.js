@@ -17,11 +17,11 @@ const {
   getProfileByUserId,
 } = require('../controllers/profileController');
 const { protect } = require('../middleware/authMiddleware');
-const upload = require('../middleware/uploadMiddleware');
+const { uploadResume } = require('../middleware/uploadMiddleware');
 
 router.get('/me', protect, getMyProfile);
 router.put('/me', protect, updateProfile);
-router.post('/resume', protect, upload.single('resume'), uploadProfileResume);
+router.post('/resume', protect, uploadResume.single('resume'), uploadProfileResume);
 
 router.post('/education', protect, addEducation);
 router.delete('/education/:eduId', protect, deleteEducation);
@@ -38,6 +38,6 @@ router.delete('/experience/:expId', protect, deleteExperience);
 router.post('/certifications', protect, addCertification);
 router.delete('/certifications/:certId', protect, deleteCertification);
 
-router.get('/user/:userId', getProfileByUserId);
+router.get('/user/:userId', protect, getProfileByUserId);
 
 module.exports = router;

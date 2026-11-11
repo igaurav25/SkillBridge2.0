@@ -2,8 +2,12 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 let genAIInstance = null;
 
+const getGeminiApiKey = () => {
+  return process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : '';
+};
+
 const getAIClient = () => {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.AI_API_KEY;
+  const apiKey = getGeminiApiKey();
   if (!apiKey) {
     return null;
   }
@@ -27,4 +31,5 @@ const getModel = (modelName = 'gemini-1.5-flash') => {
 module.exports = {
   getAIClient,
   getModel,
+  getGeminiApiKey,
 };

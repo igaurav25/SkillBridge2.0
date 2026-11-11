@@ -5,6 +5,7 @@ const Application = require('../models/Application');
 const Report = require('../models/Report');
 const Profile = require('../models/Profile');
 const SavedJob = require('../models/SavedJob');
+const { escapeRegex, parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Get complete admin platform statistics
 // @route   GET /api/admin/stats
@@ -76,68 +77,64 @@ const getAdminStats = async (req, res, next) => {
 // @access  Private (Admin)
 const getAllUsers = async (req, res, next) => {
   try {
-    const { role, status, search, page = 1, limit = 50 } = req.query;
+    const { role, status, search } = req.query;
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 50, 100);
     const query = {};
 
     if (role && role !== 'all') query.role = role;
     if (status && status !== 'all') query.status = status;
     if (search && search.trim()) {
+      const escaped = escapeRegex(search.trim());
       query.$or = [
-        { name: { $regex: search.trim(), $options: 'i' } },
-        { email: { $regex: search.trim(), $options: 'i' } },
-        { phone: { $regex: search.trim(), $options: 'i' } },
+        { name: { $regex: escaped, $options: 'i' } },
+        { email: { $regex: escaped, $options: 'i' } },
+        { phone: { $regex: escaped, $options: 'i' } },
       ];
     }
 
     const total = await User.countDocuments(query);
     const users = await User.find(query)
-      .select('+password')
+      .select('-password')
       .sort('-createdAt')
-      .skip((Number(page) - 1) * Number(limit))
-      .limit(Number(limit));
+      .skip(skip)
+      .limit(limit);
 
     const enrichedUsers = await Promise.all(
       users.map(async (u) => {
         const userObj = u.toObject ? u.toObject() : { ...u };
-
-        // Real security & auth information
-        const rawPass = userObj.password || '';
-        const hashPreview = rawPass.startsWith('$2')
-          ? `${rawPass.substring(0, 10)}...${rawPass.substring(rawPass.length - 6)} (Bcrypt Encrypted)`
-          : (rawPass ? `${rawPass.substring(0, 4)}**** (Protected)` : 'Encrypted Token');
+        delete userObj.password;
 
         const authDetails = {
           loginEmail: userObj.email,
-          loginPhone: userObj.phone || '9876543210',
-          authProvider: userObj.email.endsWith('@gmail.com') ? 'Gmail (Google Workspace)' : 'Corporate / Direct Email',
-          passwordPreview: hashPreview,
-          passwordStatus: 'Encrypted & Salted (BCrypt 10 rounds)',
-          isVerified: userObj.isVerified ?? true,
+          loginPhone: userObj.phone || 'Not provided',
+          authProvider: 'Email & Password (Bcrypt)',
+          passwordProtected: true,
+          passwordStatus: 'Bcrypt Salted Hash',
+          isVerified: Boolean(userObj.isVerified),
           lastActive: userObj.updatedAt || userObj.createdAt,
         };
 
-        // If candidate / student: extract what type of job they are searching for
         let candidateProfile = null;
         if (userObj.role === 'student') {
-          const profile = await Profile.findOne({ user: userObj._id }).lean();
-          const appCount = await Application.countDocuments({ candidate: userObj._id });
-          const savedCount = await SavedJob.countDocuments({ user: userObj._id });
+          const [profile, appCount, savedCount] = await Promise.all([
+            Profile.findOne({ user: userObj._id }).lean(),
+            Application.countDocuments({ candidate: userObj._id }),
+            SavedJob.countDocuments({ user: userObj._id }),
+          ]);
 
           candidateProfile = {
-            phone: profile?.phone || userObj.phone || '9876543210',
-            preferredRole: profile?.preferredRole || profile?.headline || 'Full Stack Engineer & Tech Aspirant',
-            preferredLocation: profile?.preferredLocation || 'Pan India / Remote',
-            expectedSalary: profile?.expectedSalary || '₹8 - ₹16 LPA',
-            targetSkills: profile?.skills && profile.skills.length > 0
-              ? profile.skills.map(s => s.name)
-              : ['React', 'Node.js', 'Problem Solving', 'Full Stack'],
-            workTypePreference: profile?.workTypePreference || 'hybrid',
+            phone: profile?.phone || userObj.phone || 'Not provided',
+            preferredRole: profile?.preferredRole || profile?.headline || 'Not specified',
+            preferredLocation: profile?.preferredLocation || 'Not specified',
+            expectedSalary: profile?.expectedSalary || 'Not specified',
+            targetSkills: profile?.skills?.map((s) => s.name) || [],
+            workTypePreference: profile?.workTypePreference || 'Not specified',
             resumeUrl: profile?.resumeUrl || '',
-            resumeScore: profile?.resumeScore || 85,
-            profileCompletion: profile?.profileCompletion || 80,
+            resumeScore: profile?.resumeScore ?? 0,
+            profileCompletion: profile?.profileCompletion ?? 0,
             education: profile?.education?.[0]
-              ? `${profile.education[0].degree} (${profile.education[0].fieldOfStudy || 'Engineering'})`
-              : 'B.Tech - Computer Science',
+              ? `${profile.education[0].degree} (${profile.education[0].fieldOfStudy || 'General'})`
+              : 'Not specified',
             applicationsCount: appCount,
             savedJobsCount: savedCount,
           };
@@ -148,32 +145,26 @@ const getAllUsers = async (req, res, next) => {
           }
         }
 
-        // If recruiter: extract company hiring information
         let recruiterProfile = null;
         if (userObj.role === 'recruiter') {
-          const company = await Company.findOne({ createdBy: userObj._id }).lean();
-          const jobCount = await Job.countDocuments({ recruiter: userObj._id });
-          const activeJobCount = await Job.countDocuments({ recruiter: userObj._id, status: 'active' });
+          const [company, jobCount, activeJobCount] = await Promise.all([
+            Company.findOne({ createdBy: userObj._id }).lean(),
+            Job.countDocuments({ recruiter: userObj._id }),
+            Job.countDocuments({ recruiter: userObj._id, status: 'active' }),
+          ]);
 
           recruiterProfile = {
-            companyName: company?.name || userObj.companyName || 'Enterprise Talent Acquisition',
-            industry: company?.industry || 'Technology & Innovation',
-            website: company?.website || 'https://skillbridge.careers',
-            location: company?.location || 'Bangalore / Mumbai',
-            companySize: company?.companySize || '50-200 Employees',
-            isVerified: company?.isVerified ?? true,
+            companyName: company?.name || userObj.companyName || 'Not specified',
+            industry: company?.industry || 'Not specified',
+            website: company?.website || '',
+            location: company?.location || 'Not specified',
+            companySize: company?.companySize || 'Not specified',
+            isVerified: Boolean(company?.isVerified),
             totalJobsPosted: jobCount,
             activeVacancies: activeJobCount,
-            phone: userObj.phone || '9812345678',
+            phone: userObj.phone || 'Not provided',
           };
-
-          if (!userObj.phone) {
-            userObj.phone = recruiterProfile.phone;
-            authDetails.loginPhone = recruiterProfile.phone;
-          }
         }
-
-        delete userObj.password;
 
         return {
           ...userObj,
@@ -181,27 +172,21 @@ const getAllUsers = async (req, res, next) => {
           loginEmail: authDetails.loginEmail,
           loginPhone: authDetails.loginPhone,
           authProvider: authDetails.authProvider,
-          passwordPreview: authDetails.passwordPreview,
           passwordStatus: authDetails.passwordStatus,
-
-          // Candidate flattened fields (What kind of job they are looking for)
-          preferredRole: candidateProfile?.preferredRole || (userObj.role === 'student' ? 'Full Stack / Software Engineer' : undefined),
-          preferredStream: candidateProfile?.education || (userObj.role === 'student' ? 'B.Tech Computer Science' : undefined),
-          preferredLocation: candidateProfile?.preferredLocation || (userObj.role === 'student' ? 'Pan India / Remote' : undefined),
-          expectedSalary: candidateProfile?.expectedSalary || (userObj.role === 'student' ? '₹8 - ₹16 LPA' : undefined),
-          targetSkills: candidateProfile?.targetSkills || (userObj.role === 'student' ? ['React', 'Node.js', 'TypeScript', 'SQL'] : undefined),
-          education: candidateProfile?.education || (userObj.role === 'student' ? 'B.Tech - Computer Science' : undefined),
-          resumeScore: candidateProfile?.resumeScore || (userObj.role === 'student' ? 88 : undefined),
-          applicationsCount: candidateProfile?.applicationsCount ?? (userObj.role === 'student' ? 2 : undefined),
-          savedJobsCount: candidateProfile?.savedJobsCount ?? (userObj.role === 'student' ? 5 : undefined),
-
-          // Recruiter flattened fields
+          preferredRole: candidateProfile?.preferredRole,
+          preferredStream: candidateProfile?.education,
+          preferredLocation: candidateProfile?.preferredLocation,
+          expectedSalary: candidateProfile?.expectedSalary,
+          targetSkills: candidateProfile?.targetSkills,
+          education: candidateProfile?.education,
+          resumeScore: candidateProfile?.resumeScore,
+          applicationsCount: candidateProfile?.applicationsCount,
+          savedJobsCount: candidateProfile?.savedJobsCount,
           companyName: recruiterProfile?.companyName || userObj.companyName,
-          industry: recruiterProfile?.industry || (userObj.role === 'recruiter' ? 'Information Technology & AI' : undefined),
-          website: recruiterProfile?.website || (userObj.role === 'recruiter' ? 'https://nexusai.tech' : undefined),
-          companySize: recruiterProfile?.companySize || (userObj.role === 'recruiter' ? '50-200 Employees' : undefined),
-          totalJobsPosted: recruiterProfile?.totalJobsPosted ?? (userObj.role === 'recruiter' ? 4 : undefined),
-
+          industry: recruiterProfile?.industry,
+          website: recruiterProfile?.website,
+          companySize: recruiterProfile?.companySize,
+          totalJobsPosted: recruiterProfile?.totalJobsPosted,
           authDetails,
           candidateProfile,
           recruiterProfile,
@@ -212,8 +197,8 @@ const getAllUsers = async (req, res, next) => {
     res.status(200).json({
       success: true,
       total,
-      page: Number(page),
-      pages: Math.ceil(total / Number(limit)),
+      page,
+      pages: Math.ceil(total / limit) || 1,
       data: enrichedUsers,
     });
   } catch (err) {
@@ -271,7 +256,8 @@ const deleteUser = async (req, res, next) => {
 // @access  Private (Admin)
 const getAllJobsAdmin = async (req, res, next) => {
   try {
-    const { status, reportedOnly, page = 1, limit = 20 } = req.query;
+    const { status, reportedOnly } = req.query;
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
     const query = {};
 
     if (status) query.status = status;
@@ -282,12 +268,14 @@ const getAllJobsAdmin = async (req, res, next) => {
       .populate('recruiter', 'name email')
       .populate('company', 'name isVerified')
       .sort('-createdAt')
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       success: true,
       total,
+      page,
+      pages: Math.ceil(total / limit) || 1,
       data: jobs,
     });
   } catch (err) {
@@ -346,7 +334,24 @@ const updateReportStatus = async (req, res, next) => {
 
     if (!report) return res.status(404).json({ success: false, message: 'Report not found' });
 
-    if (status) report.status = status;
+    const STATUS_MAP = {
+      pending: 'Pending',
+      'under review': 'Under Review',
+      under_review: 'Under Review',
+      resolved: 'Resolved',
+      rejected: 'Rejected',
+    };
+
+    if (status) {
+      const normalized = STATUS_MAP[String(status).trim().toLowerCase()];
+      if (!normalized) {
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid report status. Allowed: Pending, Under Review, Resolved, Rejected.',
+        });
+      }
+      report.status = normalized;
+    }
     if (adminNotes !== undefined) report.adminNotes = adminNotes;
     report.resolvedBy = req.user.id;
     report.resolvedAt = new Date();
@@ -355,7 +360,7 @@ const updateReportStatus = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      message: `Report status updated to ${status}`,
+      message: `Report status updated to ${report.status}`,
       data: report,
     });
   } catch (err) {

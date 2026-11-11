@@ -59,7 +59,9 @@ exports.getStudentCareerAnalytics = async (req, res, next) => {
     // 6. Learning Progress across roles
     const learningProgressList = await LearningProgress.find({ user: userId });
     const totalHoursLearned = learningProgressList.reduce((sum, p) => sum + (p.totalHoursSpent || 0), 0);
-    const maxStreak = Math.max(...learningProgressList.map(p => p.currentStreak || 0), 1);
+    const maxStreak = learningProgressList.length > 0
+      ? Math.max(...learningProgressList.map((p) => p.currentStreak || 0), 0)
+      : 0;
 
     // 7. Skill Development Distribution
     const skills = profile?.skills || [];

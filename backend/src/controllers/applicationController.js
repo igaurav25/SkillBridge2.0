@@ -160,9 +160,11 @@ const getApplicationById = async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'Application not found' });
     }
 
-    // Access check: owner candidate, assigned recruiter, or admin
-    const isCandidate = application.candidate._id.toString() === req.user.id;
-    const isRecruiter = application.recruiter._id.toString() === req.user.id;
+    // Access check: owner candidate, assigned recruiter, or admin (with null safety)
+    const candidateId = application.candidate?._id ? application.candidate._id.toString() : application.candidate?.toString();
+    const recruiterId = application.recruiter?._id ? application.recruiter._id.toString() : application.recruiter?.toString();
+    const isCandidate = candidateId === req.user.id;
+    const isRecruiter = recruiterId === req.user.id;
     const isAdmin = req.user.role === 'admin';
 
     if (!isCandidate && !isRecruiter && !isAdmin) {
@@ -216,10 +218,10 @@ const withdrawApplication = async (req, res, next) => {
 const getRecruiterApplications = async (req, res, next) => {
   try {
     const { status, jobId } = req.query;
-    const query = { recruiter: req.user.id };
+    const query = req.user.role === 'admin' ? {} : { recruiter: req.user.id };
 
-    if (status) query.status = status;
-    if (jobId) query.job = jobId;
+    if (status && status !== 'all') query.status = status;
+    if (jobId && jobId !== 'all') query.job = jobId;
 
     const applications = await Application.find(query)
       .populate('job', 'title location workType jobType')
@@ -266,7 +268,28 @@ const updateApplicationStatus = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Not authorized to manage this application' });
     }
 
-    if (status) application.status = status;
+    const APP_STATUS_MAP = {
+      applied: 'Applied',
+      under_review: 'Under Review',
+      'under review': 'Under Review',
+      shortlisted: 'Shortlisted',
+      interview: 'Interview',
+      selected: 'Selected',
+      rejected: 'Rejected',
+      withdrawn: 'Withdrawn',
+    };
+
+    let normalizedStatus = application.status;
+    if (status) {
+      normalizedStatus = APP_STATUS_MAP[String(status).trim().toLowerCase()];
+      if (!normalizedStatus) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid application status "${status}". Allowed: Applied, Under Review, Shortlisted, Interview, Selected, Rejected, Withdrawn.`,
+        });
+      }
+      application.status = normalizedStatus;
+    }
     if (recruiterNotes !== undefined) application.recruiterNotes = recruiterNotes;
     if (interviewDetails) {
       application.interviewDetails = {
@@ -276,28 +299,30 @@ const updateApplicationStatus = async (req, res, next) => {
     }
 
     application.timeline.push({
-      status: status || application.status,
-      note: note || `Status updated to ${status}.`,
+      status: normalizedStatus,
+      note: note || `Status updated to ${normalizedStatus}.`,
       changedAt: new Date(),
       changedBy: req.user.id,
     });
 
     await application.save();
 
-    // Notify candidate
-    await Notification.create({
-      recipient: application.candidate._id,
-      sender: req.user.id,
-      type: status === 'Interview' ? 'interview' : 'application_status',
-      title: `Application Status: ${status}`,
-      message: `Your application for "${application.job.title}" at ${application.job.companyName} has moved to "${status}".`,
-      link: '/applications',
-      metadata: { jobId: application.job._id, applicationId: application._id },
-    });
+    // Notify candidate if user still exists
+    if (application.candidate?._id) {
+      await Notification.create({
+        recipient: application.candidate._id,
+        sender: req.user.id,
+        type: normalizedStatus === 'Interview' ? 'interview' : 'application_status',
+        title: `Application Status: ${normalizedStatus}`,
+        message: `Your application for "${application.job?.title || 'Role'}" at ${application.job?.companyName || 'Company'} has moved to "${normalizedStatus}".`,
+        link: '/applications',
+        metadata: { jobId: application.job?._id, applicationId: application._id },
+      });
+    }
 
     res.status(200).json({
       success: true,
-      message: `Application status updated to ${status}`,
+      message: `Application status updated to ${normalizedStatus}`,
       data: application,
     });
   } catch (err) {

@@ -16,9 +16,10 @@ const register = async (req, res, next) => {
     }
 
     const { name, email, password, role, headline, companyName } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -31,8 +32,8 @@ const register = async (req, res, next) => {
 
     // Create user
     const user = await User.create({
-      name,
-      email: email.trim().toLowerCase(),
+      name: name.trim(),
+      email: normalizedEmail,
       password,
       role: safeRole,
       headline: headline || '',
@@ -68,9 +69,10 @@ const login = async (req, res, next) => {
     }
 
     const { email, password } = req.body;
+    const normalizedEmail = email.trim().toLowerCase();
 
     // Check for user
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email: normalizedEmail }).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -167,26 +169,30 @@ const updatePassword = async (req, res, next) => {
 // @access  Public
 const forgotPassword = async (req, res, next) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email ? String(req.body.email).trim().toLowerCase() : '';
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Email address is required.' });
+    }
+
     const user = await User.findOne({ email });
 
     if (!user) {
-      // Don't leak if email exists
+      // Uniform response to avoid user enumeration
       return res.status(200).json({
         success: true,
-        message: 'If that email address is registered, a password reset token has been generated.',
+        message: 'If that email address is registered, a password reset link has been initiated.',
       });
     }
 
-    const resetToken = crypto.randomBytes(20).toString('hex');
+    const resetToken = crypto.randomBytes(24).toString('hex');
     user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
     await user.save({ validateBeforeSave: false });
 
+    // Security: NEVER expose resetToken in API responses or production logs
     res.status(200).json({
       success: true,
-      message: 'Password reset link generated successfully.',
-      resetToken, // Provided for easy development and demonstration
+      message: 'If that email address is registered, a password reset link has been initiated.',
     });
   } catch (err) {
     next(err);
@@ -198,9 +204,17 @@ const forgotPassword = async (req, res, next) => {
 // @access  Public
 const resetPassword = async (req, res, next) => {
   try {
+    const newPassword = req.body.password;
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a new password that is at least 6 characters long.',
+      });
+    }
+
     const resetPasswordToken = crypto
       .createHash('sha256')
-      .update(req.params.resettoken)
+      .update(String(req.params.resettoken || ''))
       .digest('hex');
 
     const user = await User.findOne({
@@ -215,7 +229,7 @@ const resetPassword = async (req, res, next) => {
       });
     }
 
-    user.password = req.body.password;
+    user.password = newPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save();

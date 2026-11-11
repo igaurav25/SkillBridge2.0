@@ -278,11 +278,20 @@ const deleteCertification = async (req, res, next) => {
   }
 };
 
-// @desc    Get public profile by user ID
+// @desc    Get user profile by ID (Restricted to Owner, Recruiter, or Admin)
 // @route   GET /api/profiles/user/:userId
-// @access  Public
+// @access  Private
 const getProfileByUserId = async (req, res, next) => {
   try {
+    const isOwner = req.user.id === req.params.userId;
+    const isPrivileged = req.user.role === 'recruiter' || req.user.role === 'admin';
+    if (!isOwner && !isPrivileged) {
+      return res.status(403).json({
+        success: false,
+        message: 'Forbidden: You are not authorized to inspect another student profile.',
+      });
+    }
+
     const profile = await Profile.findOne({ user: req.params.userId }).populate(
       'user',
       'name email avatar headline'

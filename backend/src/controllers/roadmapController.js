@@ -1,6 +1,7 @@
 const LearningRoadmap = require('../models/LearningRoadmap');
 const LearningProgress = require('../models/LearningProgress');
 const Achievement = require('../models/Achievement');
+const { escapeRegex } = require('../utils/securityHelpers');
 
 /**
  * @desc Get all active roadmaps
@@ -29,7 +30,7 @@ exports.getRoadmapByRole = async (req, res, next) => {
   try {
     const roleName = decodeURIComponent(req.params.role);
     const roadmap = await LearningRoadmap.findOne({
-      role: { $regex: new RegExp(`^${roleName}$`, 'i') },
+      role: { $regex: new RegExp(`^${escapeRegex(roleName)}$`, 'i') },
       isActive: true
     });
 
@@ -54,9 +55,10 @@ exports.getRoadmapByRole = async (req, res, next) => {
 exports.getMyRoadmapProgress = async (req, res, next) => {
   try {
     const roleName = decodeURIComponent(req.params.role);
+    const safeRoleRegex = new RegExp(`^${escapeRegex(roleName)}$`, 'i');
     let progress = await LearningProgress.findOne({
       user: req.user._id,
-      role: { $regex: new RegExp(`^${roleName}$`, 'i') }
+      role: { $regex: safeRoleRegex }
     });
 
     if (!progress) {
@@ -64,7 +66,7 @@ exports.getMyRoadmapProgress = async (req, res, next) => {
         user: req.user._id,
         role: roleName,
         completedTopics: [],
-        currentStreak: 1,
+        currentStreak: 0,
         totalHoursSpent: 0
       });
     }
@@ -90,9 +92,10 @@ exports.toggleTopicCompletion = async (req, res, next) => {
       return res.status(400).json({ success: false, message: 'Role and topicId are required' });
     }
 
+    const safeRoleRegex = new RegExp(`^${escapeRegex(role)}$`, 'i');
     let progress = await LearningProgress.findOne({
       user: req.user._id,
-      role: { $regex: new RegExp(`^${role}$`, 'i') }
+      role: { $regex: safeRoleRegex }
     });
 
     if (!progress) {
@@ -100,7 +103,7 @@ exports.toggleTopicCompletion = async (req, res, next) => {
         user: req.user._id,
         role,
         completedTopics: [],
-        currentStreak: 1,
+        currentStreak: 0,
         totalHoursSpent: 0
       });
     }
@@ -112,22 +115,26 @@ exports.toggleTopicCompletion = async (req, res, next) => {
       progress.completedTopics.splice(topicIndex, 1);
     } else {
       progress.completedTopics.push(topicId);
-      progress.totalHoursSpent += Number(hoursSpent);
+      progress.totalHoursSpent += Math.max(0, Number(hoursSpent) || 0);
       isCompletedNow = true;
 
-      // Update streaks
+      // Update streaks based on UTC calendar days
       const now = new Date();
       const last = progress.lastActiveDate ? new Date(progress.lastActiveDate) : null;
-      if (last) {
-        const diffDays = Math.floor((now - last) / (1000 * 60 * 60 * 24));
-        if (diffDays === 1) progress.currentStreak += 1;
-        else if (diffDays > 1) progress.currentStreak = 1;
+      if (!last) {
+        progress.currentStreak = 1;
+      } else {
+        const utcToday = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+        const utcLast = Date.UTC(last.getUTCFullYear(), last.getUTCMonth(), last.getUTCDate());
+        const diffDays = Math.floor((utcToday - utcLast) / (1000 * 60 * 60 * 24));
+        if (diffDays === 1) progress.currentStreak = (progress.currentStreak || 0) + 1;
+        else if (diffDays > 1 || !progress.currentStreak) progress.currentStreak = 1;
       }
       progress.lastActiveDate = now;
     }
 
     // Recalculate roadmap completion percentage
-    const roadmap = await LearningRoadmap.findOne({ role: { $regex: new RegExp(`^${role}$`, 'i') } });
+    const roadmap = await LearningRoadmap.findOne({ role: { $regex: safeRoleRegex } });
     if (roadmap) {
       const allTopicIds = [];
       roadmap.levels.forEach(lvl => lvl.topics.forEach(t => allTopicIds.push(t.topicId)));

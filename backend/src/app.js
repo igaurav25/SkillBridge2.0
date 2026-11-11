@@ -37,21 +37,46 @@ app.use(
   })
 );
 
-// Enable CORS
-const allowedOrigins = [
-  'http://localhost:4200',
-  'http://127.0.0.1:4200',
-  process.env.CLIENT_URL,
-].filter(Boolean);
+// Explicit CORS Allow-List (Desktop Browsers + Mobile Capacitor/Ionic Shells)
+const buildAllowedOrigins = () => {
+  const extra = (process.env.CORS_ALLOWED_ORIGINS || '')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
+  return new Set([
+    'http://localhost:4200',
+    'http://127.0.0.1:4200',
+    'capacitor://localhost',
+    'ionic://localhost',
+    'http://localhost',
+    'https://localhost',
+    ...(process.env.CLIENT_URL ? [process.env.CLIENT_URL.trim()] : []),
+    ...extra,
+  ]);
+};
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // Mobile native shells, curl, same-origin
+  const allowSet = buildAllowedOrigins();
+  if (allowSet.has(origin)) return true;
+  if (process.env.NODE_ENV !== 'production') {
+    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return true;
+    }
+  }
+  return false;
+};
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (like mobile apps, curl, postman)
-      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
+      if (isOriginAllowed(origin)) {
         return callback(null, true);
       }
-      return callback(null, true); // Dev-friendly permissive CORS
+      const corsErr = new Error('Origin not allowed by CORS policy');
+      corsErr.statusCode = 403;
+      return callback(corsErr, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
@@ -59,19 +84,19 @@ app.use(
   })
 );
 
-// Body parser
-app.use(express.json({ limit: '15mb' }));
-app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+// Body parser capped at safe size (file uploads handled separately via Multer limits)
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-// Logging in development
+// Request logging in non-production only (never logs headers/body/tokens)
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
 
-// Global rate limiting
+// Global API rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 mins
-  max: 300, // limit each IP to 300 requests per window
+  windowMs: 15 * 60 * 1000,
+  max: 400,
   standardHeaders: true,
   legacyHeaders: false,
   message: {
@@ -81,7 +106,7 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Health check endpoint
+// Health check endpoint (non-sensitive public status)
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -119,3 +144,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+module.exports.isOriginAllowed = isOriginAllowed;
