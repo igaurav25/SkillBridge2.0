@@ -1,0 +1,70 @@
+{
+  "phase": "phase-0-baseline",
+  "timestamp": "2026-11-11T16:34:30.298Z",
+  "results": [
+    {
+      "url": "http://127.0.0.1:4200/",
+      "scores": {
+        "performance": 75,
+        "accessibility": 98,
+        "bestPractices": 96,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaintMs": 1758,
+        "largestContentfulPaintMs": 7118,
+        "totalBlockingTimeMs": 102,
+        "cumulativeLayoutShift": 0,
+        "speedIndexMs": 2265
+      }
+    },
+    {
+      "url": "http://127.0.0.1:4200/jobs",
+      "scores": {
+        "performance": 47,
+        "accessibility": 95,
+        "bestPractices": 73,
+        "seo": 92
+      },
+      "metrics": {
+        "firstContentfulPaintMs": 1452,
+        "largestContentfulPaintMs": 7658,
+        "totalBlockingTimeMs": 227,
+        "cumulativeLayoutShift": 0.8455,
+        "speedIndexMs": 2249
+      }
+    },
+    {
+      "url": "http://127.0.0.1:4200/career-explorer",
+      "scores": {
+        "performance": 50,
+        "accessibility": 96,
+        "bestPractices": 96,
+        "seo": 91
+      },
+      "metrics": {
+        "firstContentfulPaintMs": 1529,
+        "largestContentfulPaintMs": 6493,
+        "totalBlockingTimeMs": 166,
+        "cumulativeLayoutShift": 0.8979,
+        "speedIndexMs": 2457
+      }
+    },
+    {
+      "url": "http://127.0.0.1:4200/login",
+      "scores": {
+        "performance": 76,
+        "accessibility": 98,
+        "bestPractices": 96,
+        "seo": 91
+      },
+      "metrics": {
+        "firstContentfulPaintMs": 1521,
+        "largestContentfulPaintMs": 1521,
+        "totalBlockingTimeMs": 50,
+        "cumulativeLayoutShift": 0.8177,
+        "speedIndexMs": 1860
+      }
+    }
+  ]
+}

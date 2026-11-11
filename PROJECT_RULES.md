@@ -62,3 +62,4 @@ Bundle analysis, dead-code removal, image optimization, database indexes and slo
 
 ### 10. Extra features (ask me which ones before building)
 Google sign-in; email verification and password-reset emails; job alerts (saved searches) by email/push; interview and deadline reminders; public shareable portfolio page; resume auto-fill from an uploaded PDF and "tailor my resume to this job"; learning streaks and badges; moderated recruiter-candidate messaging; company reviews and salary insights (only with real sources); global search / command palette; English + Hindi; sitemap + prerendered landing page for SEO.
+
