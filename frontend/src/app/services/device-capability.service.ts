@@ -69,9 +69,9 @@ export class DeviceCapabilityService {
     }
 
     const tier = this.deviceTier();
-    const isSmallMobile = this.windowWidth() < 400;
+    const isSoftwareWebGL = /swiftshader|llvmpipe|software/i.test(this.gpuInfo());
 
-    if (tier === 'minimal' || (tier === 'low' && isSmallMobile)) {
+    if (tier === 'minimal' || isSoftwareWebGL || (tier === 'low' && this.isMobile())) {
       return '2d-fallback';
     }
     if (tier === 'low') {
