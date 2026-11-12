@@ -31,19 +31,20 @@ import { ToastService } from '../../services/toast.service';
         <div class="sb-card p-6 mb-8 max-w-2xl">
           <form (ngSubmit)="analyzeProfile()" class="flex flex-col gap-4">
             <div>
-              <label class="text-xs font-bold uppercase tracking-wider text-muted block mb-2">
+              <label for="github-input" class="text-xs font-bold uppercase tracking-wider text-muted block mb-2">
                 GitHub Username or Profile URL:
               </label>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <div class="prefix-box px-3 py-2 bg-secondary rounded-lg text-sm text-muted font-mono border border-subtle">
                   github.com/
                 </div>
                 <input
+                  id="github-input"
                   type="text"
                   [(ngModel)]="githubInput"
                   name="githubInput"
                   placeholder="e.g. torvalds or your-username"
-                  class="flex-1 input-sm text-sm font-semibold bg-secondary text-primary border border-subtle rounded-lg px-3 py-2 outline-none focus:border-indigo-500"
+                  class="flex-1 input-sm text-sm font-semibold bg-secondary text-primary border border-subtle rounded-lg px-3 py-2 outline-none focus:border-indigo-500 min-w-0"
                   required
                 />
                 <button
@@ -67,15 +68,15 @@ import { ToastService } from '../../services/toast.service';
           <!-- Top Overview Card -->
           <div class="sb-card sb-card-glow p-6 mb-8">
             <div class="flex items-center justify-between flex-wrap gap-4 border-b border-subtle pb-6 mb-6">
-              <div class="flex items-center gap-4">
+              <div class="flex items-center gap-4 min-w-0 flex-wrap">
                 <img
                   [src]="analysisResult.avatarUrl"
                   alt="Avatar"
-                  class="w-16 h-16 rounded-full border-2 border-indigo-500"
+                  class="w-16 h-16 rounded-full border-2 border-indigo-500 shrink-0"
                 />
-                <div>
-                  <h2 class="text-2xl font-bold flex items-center gap-2">
-                    {{ analysisResult.name }}
+                <div class="min-w-0 flex-1">
+                  <h2 class="text-2xl font-bold flex items-center gap-2 flex-wrap github-profile-title">
+                    <span class="github-profile-name">{{ analysisResult.name }}</span>
                     <a [href]="analysisResult.profileUrl" target="_blank" class="text-muted text-xs hover:text-primary">
                       🔗 &#64;{{ analysisResult.username }}
                     </a>
@@ -169,6 +170,12 @@ import { ToastService } from '../../services/toast.service';
   styles: [`
     .github-analyzer-page { min-height: 85vh; }
     .text-emerald { color: var(--accent-emerald); }
+    .github-profile-title,
+    .github-profile-name {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
   `]
 })
 export class GithubAnalyzerComponent implements OnInit {

@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { Resume } from '../models/resume.model';
 })
 export class ResumeService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/resumes';
+  private readonly API_URL = `${environment.apiUrl}/resumes`;
 
   getMyResumes(): Observable<ApiResponse<Resume[]>> {
     return this.http.get<ApiResponse<Resume[]>>(this.API_URL);

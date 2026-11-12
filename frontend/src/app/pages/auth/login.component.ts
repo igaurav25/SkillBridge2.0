@@ -266,15 +266,18 @@ export class LoginComponent implements OnInit {
     this.isLoading = true;
     const { email, password } = this.loginForm.value;
 
-    this.authService.login({ email: email!.trim(), password: password! }).subscribe({
+    this.authService.login({ email: email!.trim(), password: password! }, true).subscribe({
       next: (res) => {
         this.isLoading = false;
 
-        // If user attempted to log in under Admin portal with a non-admin account, reject immediately!
         if (this.selectedRole === 'admin' && res.user?.role !== 'admin') {
-          this.authService.logout();
-          this.toast.error('Access Denied: This account is not an Administrator. Please select the Student portal.');
+          this.authService.forceClearSession();
+          this.toast.error('Access Denied: This account is not an Administrator. Please select the Student or Recruiter portal.');
           return;
+        }
+        if (res.user) {
+          this.toast.success(res.message || 'Welcome back!');
+          this.authService.redirectByRole(res.user.role);
         }
       },
       error: () => {

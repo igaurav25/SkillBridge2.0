@@ -6,7 +6,7 @@
         <div>
           <div class="flex items-center gap-2 mb-1">
             <span class="badge badge-emerald text-xs font-bold pulse-badge">● LIVE REAL-TIME AGGREGATOR</span>
-            <span class="badge badge-primary text-xs font-bold">350+ VERIFIED PLATFORMS</span>
+            <span class="badge badge-primary text-xs font-bold">350+ CAREER PLATFORMS</span>
           </div>
           <h1 class="text-3xl font-extrabold tracking-tight">Career & Opportunity Explorer</h1>
           <p class="text-sm text-secondary mt-1">
@@ -105,19 +105,18 @@
       <!-- EXPANDABLE COURSE SELECTION HUB ("Select Course upr side pe usko click kre toh niche ko option expend ho") -->
       <div class="course-selector-hub sb-card mb-4 overflow-hidden">
         <!-- Main Accordion Header Button -->
-        <div
+        <button
+          type="button"
           class="course-hub-header flex items-center justify-between p-4 cursor-pointer select-none transition-colors"
           (click)="toggleCourseDropdown()"
-          role="button"
-          tabindex="0"
           [attr.aria-expanded]="isCourseDropdownOpen"
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <div class="course-hub-icon-box text-2xl p-2.5 rounded-xl bg-primary-subtle text-primary">
               🎓
             </div>
-            <div>
-              <div class="flex items-center gap-2">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
                 <span class="text-xs font-bold text-muted uppercase tracking-wider">
                   Select Course / Degree Track
                 </span>
@@ -125,7 +124,7 @@
                   Active Filter
                 </span>
               </div>
-              <div class="text-lg font-black text-primary flex items-center gap-2 mt-0.5">
+              <div class="text-lg font-black text-primary flex items-center gap-2 mt-0.5 flex-wrap">
                 <span>{{ selectedCourseLabel }}</span>
                 <span class="text-xs font-semibold text-muted">
                   ({{ total }} Opportunities)
@@ -134,20 +133,19 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 shrink-0">
             <span class="text-xs font-bold text-secondary hidden sm:inline">
               {{ isCourseDropdownOpen ? 'Click to Collapse ▲' : 'Click to Expand Courses ▼' }}
             </span>
-            <button
-              type="button"
+            <span
+              aria-hidden="true"
               class="btn-accordion-toggle w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-200"
               [class.open]="isCourseDropdownOpen"
-              title="Expand/Collapse Courses"
             >
               {{ isCourseDropdownOpen ? '▲' : '▼' }}
-            </button>
+            </span>
           </div>
-        </div>
+        </button>
 
         <!-- Downward Expanded Panel ("niche ko option expend ho ki konse course ki job chahiye") -->
         <div *ngIf="isCourseDropdownOpen" class="course-dropdown-panel p-4 border-top animate-slide-down">
@@ -226,7 +224,7 @@
           [class.active]="selectedPlatform === p.name"
           (click)="setPlatform(p.name)"
         >
-          <img *ngIf="p.icon" [src]="p.icon" class="platform-chip-icon" alt="" />
+          <span class="platform-chip-badge" aria-hidden="true">{{ p.name.slice(0, 1) }}</span>
           <span>{{ p.name }}</span>
         </button>
 
@@ -484,14 +482,15 @@
       <div class="flex items-start justify-between gap-4 mb-4 pb-3 border-bottom">
         <div class="flex items-center gap-3">
           <img
-            [src]="selectedJobForDetails.companyLogo || selectedJobForDetails.company?.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80'"
+            [src]="(selectedJobForDetails.companyLogo || selectedJobForDetails.company?.logo) && ((selectedJobForDetails.companyLogo || selectedJobForDetails.company?.logo || '').startsWith('/uploads/') || (selectedJobForDetails.companyLogo || selectedJobForDetails.company?.logo || '').startsWith('data:image/')) ? (selectedJobForDetails.companyLogo || selectedJobForDetails.company?.logo) : 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231e293b%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23818cf8%22%20font-family%3D%22system-ui%2Csans-serif%22%3ESB%3C%2Ftext%3E%3C%2Fsvg%3E'"
             alt="{{ selectedJobForDetails.companyName }}"
             class="details-company-logo"
           />
           <div>
             <div class="flex items-center gap-2 flex-wrap">
               <span class="text-xs font-semibold text-secondary">{{ selectedJobForDetails.companyName }}</span>
-              <span class="badge badge-emerald text-xs font-bold">✓ Verified Opening</span>
+              <span *ngIf="selectedJobForDetails.company?.isVerified" class="badge badge-emerald text-xs font-bold">✓ Verified Company</span>
+              <span *ngIf="!selectedJobForDetails.company?.isVerified && selectedJobForDetails.isLiveExternal" class="badge badge-neutral text-xs font-bold">External Listing</span>
               <span *ngIf="selectedJobForDetails.platformBadge" class="badge badge-neutral text-xs">
                 {{ selectedJobForDetails.platformBadge }}
               </span>
@@ -571,7 +570,7 @@
         <!-- Source Verification Box -->
         <div class="source-verification-box p-3 rounded-lg flex items-center justify-between gap-4">
           <div class="flex items-center gap-2">
-            <img *ngIf="selectedJobForDetails.platformIcon" [src]="selectedJobForDetails.platformIcon" class="w-5 h-5 object-contain" alt="" />
+            <img *ngIf="selectedJobForDetails.platformIcon && (selectedJobForDetails.platformIcon.startsWith('/uploads/') || selectedJobForDetails.platformIcon.startsWith('data:image/'))" [src]="selectedJobForDetails.platformIcon" class="w-5 h-5 object-contain" alt="" />
             <div class="text-xs">
               <span class="font-bold">Original Source: {{ selectedJobForDetails.platform }}</span>
               <div class="text-muted">Clicking Apply will redirect you to the official recruitment registration portal.</div>
@@ -630,6 +629,7 @@
           <span>🔍</span>
           <input
             type="text"
+            aria-label="Search platforms directory"
             class="header-input w-full text-xs"
             placeholder="Search platform name (e.g. UPSC, TCS, Internshala, Remotive, SBI)..."
             [(ngModel)]="platformsSearchQuery"
@@ -638,6 +638,7 @@
         </div>
 
         <select
+          aria-label="Filter platforms by category"
           class="select-control text-xs py-2"
           [(ngModel)]="platformsModalCategory"
           (change)="onPlatformsCategoryChange(platformsModalCategory)"

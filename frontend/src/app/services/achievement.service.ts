@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -25,7 +26,7 @@ export interface AchievementsData {
 })
 export class AchievementService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/achievements';
+  private apiUrl = `${environment.apiUrl}/achievements`;
 
   getMyAchievements(): Observable<{ success: boolean; data: AchievementsData }> {
     return this.http.get<{ success: boolean; data: AchievementsData }>(`${this.apiUrl}/me`);

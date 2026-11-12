@@ -29,9 +29,10 @@ import { ToastService } from '../../services/toast.service';
           </div>
 
           <!-- Role Selector -->
-          <div class="role-selector flex items-center gap-3">
-            <label class="text-xs text-muted font-bold uppercase">Role Track:</label>
+          <div class="role-selector flex items-center gap-3 flex-wrap">
+            <label for="roadmap-role-select" class="text-xs text-muted font-bold uppercase">Role Track:</label>
             <select
+              id="roadmap-role-select"
               class="input-sm text-sm font-semibold bg-secondary text-primary border border-subtle rounded-lg px-3 py-2 outline-none"
               [(ngModel)]="selectedRole"
               (change)="onRoleChange()"
@@ -195,7 +196,7 @@ import { ToastService } from '../../services/toast.service';
       border-color: var(--primary-500);
     }
     .check-btn.checked {
-      background: var(--accent-emerald);
+      background: #047857;
       border-color: var(--accent-emerald);
     }
     .skill-pill-xs {
@@ -206,8 +207,8 @@ import { ToastService } from '../../services/toast.service';
       font-size: 10px;
       font-weight: 600;
     }
-    .text-violet { color: var(--accent-violet); }
-    .text-emerald { color: var(--accent-emerald); }
+    .text-violet { color: #a78bfa; }
+    .text-emerald { color: #34d399; }
   `]
 })
 export class LearningRoadmapComponent implements OnInit {

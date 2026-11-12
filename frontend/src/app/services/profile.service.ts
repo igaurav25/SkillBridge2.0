@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,8 +10,8 @@ import { Profile } from '../models/profile.model';
 })
 export class ProfileService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/profiles';
-  private readonly USERS_URL = 'http://localhost:5000/api/users';
+  private readonly API_URL = `${environment.apiUrl}/profiles`;
+  private readonly USERS_URL = `${environment.apiUrl}/users`;
 
   getMyProfile(): Observable<ApiResponse<Profile>> {
     return this.http.get<ApiResponse<Profile>>(`${this.API_URL}/me`);
@@ -25,7 +26,7 @@ export class ProfileService {
   }
 
   uploadAvatar(formData: FormData): Observable<ApiResponse<any>> {
-    return this.http.post<ApiResponse<any>>('http://localhost:5000/api/auth/avatar', formData);
+    return this.http.post<ApiResponse<any>>(`${environment.apiUrl}/auth/avatar`, formData);
   }
 
   addEducation(edu: any): Observable<ApiResponse<Profile>> {

@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
@@ -9,7 +10,7 @@ import { NotificationItem } from '../models/notification.model';
 })
 export class NotificationService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/notifications';
+  private readonly API_URL = `${environment.apiUrl}/notifications`;
 
   unreadCount = signal<number>(0);
   notifications = signal<NotificationItem[]>([]);

@@ -27,8 +27,18 @@ export const guestGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  const role = authService.role() || (localStorage.getItem('sb_user') ? JSON.parse(localStorage.getItem('sb_user')!).role : 'student');
-  authService.redirectByRole(role);
+  let role = authService.role();
+  if (!role) {
+    try {
+      const raw = localStorage.getItem('sb_user');
+      role = raw ? JSON.parse(raw).role : 'student';
+    } catch {
+      localStorage.removeItem('sb_user');
+      localStorage.removeItem('sb_auth_token');
+      return true;
+    }
+  }
+  authService.redirectByRole(role || 'student');
   return false;
 };
 

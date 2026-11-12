@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -14,7 +15,7 @@ export interface ChatResponse {
 })
 export class AiService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/ai';
+  private readonly API_URL = `${environment.apiUrl}/ai`;
 
   chat(message: string, conversationId?: string, category = 'career_guidance'): Observable<ApiResponse<ChatResponse>> {
     return this.http.post<ApiResponse<ChatResponse>>(`${this.API_URL}/chat`, {

@@ -6,6 +6,8 @@ import { User, AuthResponse } from '../models/user.model';
 import { ApiResponse } from '../models/api-response.model';
 import { ToastService } from './toast.service';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -14,7 +16,7 @@ export class AuthService {
   private router = inject(Router);
   private toast = inject(ToastService);
 
-  private readonly API_URL = 'http://localhost:5000/api/auth';
+  private readonly API_URL = `${environment.apiUrl}/auth`;
 
   currentUser = signal<User | null>(null);
   token = signal<string | null>(null);
@@ -58,13 +60,15 @@ export class AuthService {
     );
   }
 
-  login(credentials: { email: string; password: string }): Observable<AuthResponse> {
+  login(credentials: { email: string; password: string }, skipRedirect = false): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
       tap((res) => {
         if (res.token && res.user) {
           this.setSession(res.token, res.user);
-          this.toast.success(res.message || 'Welcome back!');
-          this.redirectByRole(res.user.role);
+          if (!skipRedirect) {
+            this.toast.success(res.message || 'Welcome back!');
+            this.redirectByRole(res.user.role);
+          }
         }
       })
     );
@@ -151,6 +155,10 @@ export class AuthService {
       localStorage.setItem('sb_auth_token', token);
       localStorage.setItem('sb_user', JSON.stringify(user));
     }
+  }
+
+  forceClearSession() {
+    this.clearSession();
   }
 
   private clearSession() {

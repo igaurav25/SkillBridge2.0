@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -50,7 +51,7 @@ export interface SkillGapResponse {
 })
 export class MlService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/ml';
+  private apiUrl = `${environment.apiUrl}/ml`;
 
   recommendCareers(data: any = {}): Observable<CareerRecommendResponse> {
     return this.http.post<CareerRecommendResponse>(`${this.apiUrl}/career/recommend`, data);

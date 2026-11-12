@@ -93,7 +93,13 @@ export class CareerAssistantComponent implements OnInit {
   // Simple Markdown formatter for clean text rendering
   formatMarkdown(content: string): string {
     if (!content) return '';
-    let html = content
+    const safe = content
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    let html = safe
       .replace(/### (.*?)\n/g, '<h4 class="font-bold text-base mt-2 mb-1 text-primary">$1</h4>')
       .replace(/## (.*?)\n/g, '<h3 class="font-bold text-lg mt-3 mb-1 text-primary">$1</h3>')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')

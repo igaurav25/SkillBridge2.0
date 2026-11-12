@@ -268,7 +268,11 @@
   to { opacity: 1; }
 }
 
-@media (max-width: 992px) {
+.brand-name {
+  white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
   .nav-links {
     display: none;
   }
@@ -279,6 +283,43 @@
     min-width: 44px;
     min-height: 44px;
   }
+}
+
+@media (max-width: 560px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  .navbar-brand {
+    font-size: 0.95rem;
+    gap: 0.35rem;
+  }
+  .brand-badge,
+  .auth-buttons,
+  .user-name {
+    display: none !important;
+  }
+  .nav-actions {
+    gap: 0.3rem;
+  }
+  .icon-btn {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    padding: 0;
+  }
+  .user-menu-btn {
+    padding: 2px 5px;
+    gap: 0.15rem;
+    font-size: 0.7rem;
+  }
+  .user-avatar {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+@media (max-width: 1200px) {
   .mobile-drawer {
     display: block;
     position: fixed;

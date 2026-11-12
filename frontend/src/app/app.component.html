@@ -1,6 +1,6 @@
 <div class="app-shell flex flex-col min-h-screen">
   <!-- Accessibility Skip Link -->
-  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-lg focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-white">
+  <a href="#main-content" class="sr-only skip-link">
     Skip to main content
   </a>
 
@@ -9,7 +9,7 @@
 
   <app-navbar></app-navbar>
 
-  <main class="flex-1 pb-20 md:pb-0" id="main-content">
+  <main class="app-main flex-1" id="main-content">
     <router-outlet></router-outlet>
   </main>
 

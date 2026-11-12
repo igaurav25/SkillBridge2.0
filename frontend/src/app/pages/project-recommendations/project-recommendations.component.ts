@@ -124,9 +124,9 @@ import { ProjectService, ProjectRecommendation } from '../../services/project.se
       transition: all 0.2s ease;
     }
     .filter-pill.active {
-      background: var(--primary-500);
+      background: var(--primary-600);
       color: #ffffff;
-      border-color: var(--primary-500);
+      border-color: var(--primary-600);
     }
     .tech-pill {
       background: var(--bg-tertiary);

@@ -14,7 +14,7 @@
 
 .role-pill:hover,
 .role-pill.active {
-  background: var(--primary-500);
+  background: var(--primary-600);
   color: #ffffff;
   border-color: var(--primary-400);
 }

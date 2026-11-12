@@ -6,3 +6,4 @@ for (const f of r.findings) {
   const ov = f.viewportIssues.filter(v => v.overlapCount > 0);
   console.log(`${f.role} ${f.route}: overflow=[${o.map(x => `${x.viewport}:+${x.horizontalOverflowPx}`).join(',')}] clipped=${clip.length} overlaps=${ov.length} bottomNavDesktop=${f.viewportIssues.some(x=>x.bottomNavBugOnDesktop)} skipVisible=${f.viewportIssues.some(x=>x.skipLinkVisibleWithoutFocus)}`);
 }
+

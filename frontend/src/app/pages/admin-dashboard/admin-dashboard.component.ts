@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { CompanyService } from '../../services/company.service';
 import { JobService } from '../../services/job.service';
@@ -26,8 +26,13 @@ export class AdminDashboardComponent implements OnInit {
   private toast = inject(ToastService);
   authService = inject(AuthService);
   private profileService = inject(ProfileService);
+  private route = inject(ActivatedRoute);
 
   activeTab: 'overview' | 'users' | 'jobs' | 'companies' | 'reports' | 'ml_monitoring' | 'settings' = 'overview';
+
+  get unverifiedCompaniesCount(): number {
+    return this.companies.filter((c) => !c.isVerified).length;
+  }
 
   stats: any = {
     totalUsers: 0,
@@ -83,11 +88,15 @@ export class AdminDashboardComponent implements OnInit {
 
   // Report resolution modal
   selectedReport: ReportItem | null = null;
-  reportActionStatus = 'resolved';
+  reportActionStatus = 'Resolved';
   reportActionNotes = '';
   showReportModal = false;
 
   ngOnInit() {
+    const segments = this.route.snapshot.url.map((s) => s.path);
+    if (segments.includes('users')) this.activeTab = 'users';
+    else if (segments.includes('jobs')) this.activeTab = 'jobs';
+    else if (segments.includes('reports')) this.activeTab = 'reports';
     this.initAdminProfile();
     this.loadAll();
   }
@@ -434,7 +443,7 @@ export class AdminDashboardComponent implements OnInit {
   // Report Actions
   openReportModal(report: ReportItem) {
     this.selectedReport = report;
-    this.reportActionStatus = 'resolved';
+    this.reportActionStatus = 'Resolved';
     this.reportActionNotes = '';
     this.showReportModal = true;
   }

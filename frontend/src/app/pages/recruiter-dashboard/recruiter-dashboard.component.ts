@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { JobService } from '../../services/job.service';
 import { ApplicationService } from '../../services/application.service';
 import { CompanyService } from '../../services/company.service';
@@ -27,6 +27,7 @@ export class RecruiterDashboardComponent implements OnInit {
   private toast = inject(ToastService);
   public authService = inject(AuthService);
   private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
 
   activeTab: 'overview' | 'jobs' | 'applications' | 'candidates' | 'company' = 'overview';
 
@@ -55,8 +56,9 @@ export class RecruiterDashboardComponent implements OnInit {
   candidateLocation = '';
   isSearchingCandidates = false;
 
-  // Job Modal
+  // Job Modal / Inline Post Job
   showJobModal = false;
+  showInlinePostJob = false;
   isEditingJob = false;
   currentJobId: string | null = null;
   jobForm: FormGroup;
@@ -74,7 +76,7 @@ export class RecruiterDashboardComponent implements OnInit {
   constructor() {
     this.jobForm = this.fb.group({
       title: ['', Validators.required],
-      type: ['job', Validators.required],
+      type: ['full-time', Validators.required],
       workMode: ['remote', Validators.required],
       location: ['Remote', Validators.required],
       experienceLevel: ['entry', Validators.required],
@@ -100,6 +102,15 @@ export class RecruiterDashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    const segments = this.route.snapshot.url.map(s => s.path);
+    if (segments.includes('post-job')) {
+      this.activeTab = 'jobs';
+      this.openInlineCreateJob();
+    } else if (segments.includes('applications')) {
+      this.activeTab = 'applications';
+    } else if (segments.includes('candidates')) {
+      this.activeTab = 'candidates';
+    }
     this.loadAllData();
   }
 
@@ -137,14 +148,16 @@ export class RecruiterDashboardComponent implements OnInit {
 
   computeStats() {
     this.totalApplicationsCount = this.applications.length;
-    this.shortlistedCount = this.applications.filter(a => a.status === 'shortlisted').length;
-    this.interviewCount = this.applications.filter(a => a.status === 'interview').length;
-    this.hiredCount = this.applications.filter(a => a.status === 'selected').length;
+    this.shortlistedCount = this.applications.filter(a => (a.status || '').toLowerCase() === 'shortlisted').length;
+    this.interviewCount = this.applications.filter(a => (a.status || '').toLowerCase() === 'interview').length;
+    this.hiredCount = this.applications.filter(a => (a.status || '').toLowerCase() === 'selected').length;
   }
 
   applyAppFilters() {
     this.filteredApplications = this.applications.filter(app => {
-      const matchStatus = this.appStatusFilter === 'all' || app.status === this.appStatusFilter;
+      const normStatus = (app.status || '').toLowerCase().replace(/\s+/g, '_');
+      const normFilter = this.appStatusFilter.toLowerCase().replace(/\s+/g, '_');
+      const matchStatus = this.appStatusFilter === 'all' || normStatus === normFilter;
       const jobId = typeof app.job === 'object' ? app.job._id : app.job;
       const matchJob = this.appJobFilter === 'all' || jobId === this.appJobFilter;
       return matchStatus && matchJob;
@@ -222,12 +235,12 @@ export class RecruiterDashboardComponent implements OnInit {
     });
   }
 
-  // Job Modal Actions
-  openCreateJobModal() {
+  // Job Modal & Inline Post Actions
+  private resetCreateJobForm() {
     this.isEditingJob = false;
     this.currentJobId = null;
     this.jobForm.reset({
-      type: 'job',
+      type: 'full-time',
       workMode: 'remote',
       location: 'Remote',
       experienceLevel: 'entry',
@@ -238,21 +251,33 @@ export class RecruiterDashboardComponent implements OnInit {
       responsibilities: '',
       requirements: '',
     });
+  }
+
+  openCreateJobModal() {
+    this.resetCreateJobForm();
+    this.showInlinePostJob = false;
     this.showJobModal = true;
+  }
+
+  openInlineCreateJob() {
+    this.resetCreateJobForm();
+    this.showJobModal = false;
+    this.showInlinePostJob = true;
   }
 
   openEditJobModal(job: Job) {
     this.isEditingJob = true;
     this.currentJobId = job._id;
+    const rawJob: any = job;
     this.jobForm.patchValue({
       title: job.title,
-      type: job.type,
-      workMode: job.workMode,
+      type: rawJob.jobType || job.type || 'full-time',
+      workMode: rawJob.workType || job.workMode || 'remote',
       location: job.location,
-      experienceLevel: job.experienceLevel,
+      experienceLevel: job.experienceLevel || 'entry',
       minSalary: job.salary?.min || 0,
       maxSalary: job.salary?.max || 0,
-      skillsRequired: job.skillsRequired?.join(', ') || '',
+      skillsRequired: (rawJob.requiredSkills || job.skillsRequired || []).join(', '),
       description: job.description,
       responsibilities: job.responsibilities?.join('\n') || '',
       requirements: job.requirements?.join('\n') || '',
@@ -283,7 +308,9 @@ export class RecruiterDashboardComponent implements OnInit {
 
     const payload: any = {
       title: formVal.title,
+      jobType: formVal.type,
       type: formVal.type,
+      workType: formVal.workMode,
       workMode: formVal.workMode,
       location: formVal.location,
       experienceLevel: formVal.experienceLevel,
@@ -291,8 +318,9 @@ export class RecruiterDashboardComponent implements OnInit {
         min: Number(formVal.minSalary),
         max: Number(formVal.maxSalary),
         currency: 'USD',
-        period: formVal.type === 'internship' ? 'month' : 'year'
+        period: formVal.type === 'internship' ? 'monthly' : 'yearly'
       },
+      requiredSkills: skills,
       skillsRequired: skills,
       description: formVal.description,
       responsibilities,
@@ -305,6 +333,7 @@ export class RecruiterDashboardComponent implements OnInit {
         next: () => {
           this.toast.success('Job listing updated!');
           this.showJobModal = false;
+          this.showInlinePostJob = false;
           this.fetchJobs();
         },
         error: () => this.toast.error('Failed to update job.')
@@ -314,6 +343,7 @@ export class RecruiterDashboardComponent implements OnInit {
         next: () => {
           this.toast.success('Job listing published!');
           this.showJobModal = false;
+          this.showInlinePostJob = false;
           this.fetchJobs();
         },
         error: (err) => this.toast.error(err.error?.message || 'Failed to create job.')

@@ -188,8 +188,8 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Select Resume</label>
-        <select class="select-control" [(ngModel)]="selectedResumeId" name="selectedResume">
+        <label for="apply-resume-select" class="form-label">Select Resume</label>
+        <select id="apply-resume-select" class="select-control" [(ngModel)]="selectedResumeId" name="selectedResume">
           <option *ngFor="let r of userResumes" [value]="r._id">
             {{ r.title }} ({{ r.isPrimary ? 'Primary' : 'Saved' }})
           </option>
@@ -201,7 +201,7 @@
 
       <div class="form-group">
         <div class="flex items-center justify-between mb-1">
-          <label class="form-label">Cover Letter</label>
+          <label for="apply-cover-letter" class="form-label">Cover Letter</label>
           <button
             type="button"
             class="btn btn-outline btn-sm text-xs"
@@ -212,6 +212,7 @@
           </button>
         </div>
         <textarea
+          id="apply-cover-letter"
           class="form-control"
           rows="6"
           placeholder="Explain why you are a great match for this position..."

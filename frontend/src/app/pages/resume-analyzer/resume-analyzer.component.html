@@ -12,7 +12,7 @@
     <div class="sb-card sb-card-glow mb-8">
       <div class="form-group mb-4">
         <label class="form-label">Select Your Target Engineering Role</label>
-        <select class="select-control" [(ngModel)]="targetRole">
+        <select aria-label="Target job role for ATS analysis" class="select-control" [(ngModel)]="targetRole">
           <option *ngFor="let r of availableRoles" [value]="r">{{ r }}</option>
         </select>
       </div>

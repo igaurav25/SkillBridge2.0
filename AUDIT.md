@@ -119,3 +119,32 @@ Measured against `ng build --configuration production` served locally (`127.0.0.
 2. Fix **BUG-C01 .. BUG-C04** & **BUG-H01 .. BUG-H07** critical functional/runtime/XSS/layout-overflow/console-error bugs (`environment.ts` centralization, Recruiter/Admin schemas & tabs & opaque modals, mobile 360px header overflow, `sr-only`/`.bottom-nav` visibility, `/jobs` image/icon 403s, truthful labels & zero console errors).
 3. Fix **axe-core** critical `label`, `select-name`, and `nested-interactive` accessibility bugs so Playwright matrix passes cleanly across all **10 viewports × 30 routes = 300 checks**.
 4. Capture post-fix **Phase 0 Playwright + Lighthouse** measurements into `tests/reports/` & `tests/screenshots/phase-0/` and document baseline vs Phase 0 results.
+
+---
+
+## 6. Phase 0 Post-Fix Verification (Baseline vs. Phase 0)
+
+All SEC-01 .. SEC-11, BUG-C01 .. BUG-C04, BUG-H01 .. BUG-H07, and critical/serious Playwright + Axe blockers have been resolved and verified on branch `redesign/phase-0`:
+
+### A. Command & Test Suite Results
+- **Frontend Production Build** (`cd frontend; npx ng build --configuration production`): **PASS (exit 0)** — Initial total `911.66 kB` raw (`196.71 kB` transfer; `main` `858.50 kB`, `polyfills` `34.59 kB`, `styles` `18.58 kB`).
+- **Backend Security & API Regression Suite** (`node --test backend/tests/regression.test.js`): **9 / 9 PASS (0 fail, 0 skipped)** covering JWT fail-fast, CORS mobile + prod origin gating, `GEMINI_API_KEY` config, ReDoS escaping (`C++`), pagination clamping, mass-assignment filtering, HTTP status precedence + Multer `413`, AI engine honesty labeling, auth rate limits, IDOR isolation, recruiter job creation, and admin privacy.
+- **Full-Stack E2E Smoke Suite** (`node test_e2e.js` via `tests/run-audit-harness.mjs`): **PASS** across all endpoints (health, auth, profile, jobs, AI mentor/skill-gap/cover-letter, mock interviews, recruiter/admin dashboards, ML fallback, assessments, roadmaps, projects, GitHub analyzer, analytics, achievements).
+- **Playwright Strict Audit Matrix** (`$env:AUDIT_PHASE='phase-0'; node tests/run-audit-harness.mjs`): **PASS (exit 0)** — **30 routes × 10 viewports = 300 viewport checks, 0 routes with issues** (`0` console errors, `0` page errors, `0` failed API calls, `0` serious/critical Axe violations, `0` viewport overlaps/clips/overflows; screenshots in `tests/screenshots/phase-0/`, report in `tests/reports/playwright-phase-0.json`).
+
+### B. Metrics Comparison (Baseline vs. Phase 0 Post-Fix)
+
+| Metric / Audit | Baseline (`135d4db`) | Phase 0 Post-Fix | Notes |
+| :--- | :---: | :---: | :--- |
+| **Playwright Routes w/ Issues (of 30)** | **30 / 30** | **0 / 30** | All 300 viewport checks (`1920..360`) clean |
+| **Landing `/` (Lighthouse Perf / A11y / BP)** | 75 / 98 / 96 | **76 / 98 / 100** | FCP `4940→1564ms`, LCP `7118→6949ms`, CLS `0` |
+| **`/jobs` (Perf / A11y / BP / CLS)** | 47 / 95 / 73 / 0.8455 | **51 / 98 / 100 / 0.8471** | Console errors `16→0`; LCP `7658→7544ms` |
+| **`/career-explorer` (Perf / A11y / BP / CLS)** | 50 / 96 / 96 / 0.8979 | **50 / 100 / 100 / 0.8199** | FCP `4897→1459ms`, LCP `6493→6346ms` |
+| **`/login` (Perf / A11y / BP / CLS)** | 76 / 98 / 96 / 0.8177 | **76 / 98 / 100 / 0.8199** | LCP `1521→1478ms` |
+
+### C. Known Risks & Items Deferred to Later Phases
+- **Mobile Slow 4G Performance (`50–76`) & CLS (`0.82–0.85` on `/jobs`, `/career-explorer`, `/login`)**: Still below Phase 5/9 target (`Perf >= 85/90`, `LCP < 2.5s`, `CLS < 0.1`) because routes in `app.routes.ts` are still eagerly bundled (`858.50 kB` `main` chunk) and asynchronous page/font layout shifts remain until Phases 1, 2, 5, and 9 (`loadComponent`, `@defer`, reserved layout containers, font-display & critical CSS optimization).
+- **Light Theme Sweep**: Global contrast and component tokens were verified in default dark mode across all 300 Playwright checks; full dual-theme light+dark automated sweep will be standardized with the new design system tokens in Phase 1.
+- **ML Python Service Fallback**: Live Python `ml-service` was offline during headless Node tests, so ML endpoints exercised deterministic fallback (`[MLService] ... fallback engaged`). Keep `Rule-based estimate` / fallback UX accurate in Phase 4.
+
+

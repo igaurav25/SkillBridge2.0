@@ -13,7 +13,7 @@
     </div>
 
     <!-- Top KPI Stat Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+    <div class="stats-grid-7 mb-8">
       <div class="sb-card p-4 stat-card">
         <span class="text-xs font-semibold text-secondary uppercase">Total Users</span>
         <div class="text-2xl font-bold text-primary mt-1">{{ stats.totalUsers || 0 }}</div>
@@ -160,7 +160,7 @@
                 <div class="text-xs text-secondary">Awaiting business authenticity confirmation</div>
               </div>
               <span class="text-xl font-extrabold text-warning">
-                {{ companies.length ? (companies.length - (companies | slice:0:1).length) : 0 }}
+                {{ unverifiedCompaniesCount }}
               </span>
             </div>
           </div>
@@ -184,7 +184,7 @@
             [(ngModel)]="userSearch"
             (keyup.enter)="fetchUsers()"
           />
-          <select class="select-control" [(ngModel)]="userRoleFilter" (change)="fetchUsers()">
+          <select aria-label="Filter users by role" class="select-control" [(ngModel)]="userRoleFilter" (change)="fetchUsers()">
             <option value="all">All Roles</option>
             <option value="student">Students</option>
             <option value="recruiter">Recruiters</option>
@@ -251,11 +251,8 @@
                 <td>
                   <div class="flex flex-col gap-1 max-w-[210px]">
                     <span class="badge badge-success text-[10px] w-fit">
-                      {{ u.passwordStatus || 'Bcrypt Encrypted' }}
+                      {{ u.passwordStatus || 'Bcrypt Protected' }}
                     </span>
-                    <div class="text-[11px] font-mono text-secondary truncate" [title]="u.passwordPreview">
-                      {{ u.passwordPreview || '•••••••• (Bcrypt Protected)' }}
-                    </div>
                   </div>
                 </td>
 
@@ -264,7 +261,7 @@
                   <!-- For Students / Candidates -->
                   <div *ngIf="u.role === 'student'" class="flex flex-col gap-1">
                     <div class="text-xs font-bold text-foreground">
-                      🎯 Seeking: <span class="text-primary">{{ u.preferredRole || 'Full Stack / Tech Roles' }}</span>
+                      🎯 Seeking: <span class="text-primary">{{ u.preferredRole || 'Not specified' }}</span>
                     </div>
                     <div class="text-[11px] text-secondary">
                       Stream: <span class="font-medium">{{ u.preferredStream || u.education || 'B.Tech / General' }}</span>
@@ -345,7 +342,7 @@
     <div *ngIf="activeTab === 'jobs'" class="flex flex-col gap-6">
       <div class="sb-card p-4 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <select class="select-control" [(ngModel)]="jobFilter" (change)="fetchJobs()">
+          <select aria-label="Filter jobs by status" class="select-control" [(ngModel)]="jobFilter" (change)="fetchJobs()">
             <option value="all">All Postings</option>
             <option value="active">Active Only</option>
             <option value="closed">Closed / Inactive</option>
@@ -448,7 +445,7 @@
     <!-- TAB 5: REPORTS & FLAGGED CONTENT -->
     <div *ngIf="activeTab === 'reports'" class="flex flex-col gap-6">
       <div class="sb-card p-4 flex items-center justify-between">
-        <select class="select-control" [(ngModel)]="reportStatusFilter" (change)="fetchReports()">
+        <select aria-label="Filter reports by status" class="select-control" [(ngModel)]="reportStatusFilter" (change)="fetchReports()">
           <option value="all">All Report Statuses</option>
           <option value="pending">Pending Review</option>
           <option value="under_review">Under Investigation</option>
@@ -815,17 +812,17 @@
 
     <div class="flex flex-col gap-3">
       <div>
-        <label class="form-label">Set Resolution Status</label>
-        <select class="select-control" [(ngModel)]="reportActionStatus">
-          <option value="resolved">Resolved (Action Taken)</option>
-          <option value="under_review">Under Active Review</option>
-          <option value="rejected">Dismiss / Inaccurate</option>
+        <label for="report-action-status" class="form-label">Set Resolution Status</label>
+        <select id="report-action-status" class="select-control" [(ngModel)]="reportActionStatus">
+          <option value="Resolved">Resolved (Action Taken)</option>
+          <option value="Under Review">Under Active Review</option>
+          <option value="Rejected">Dismiss / Inaccurate</option>
         </select>
       </div>
 
       <div>
-        <label class="form-label">Internal Resolution Notes</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="reportActionNotes" placeholder="Describe the outcome or communication with user..."></textarea>
+        <label for="report-action-notes" class="form-label">Internal Resolution Notes</label>
+        <textarea id="report-action-notes" class="form-control" rows="3" [(ngModel)]="reportActionNotes" placeholder="Describe the outcome or communication with user..."></textarea>
       </div>
 
       <div class="pt-3 border-t border-border flex justify-end gap-2">
@@ -900,14 +897,11 @@
           <span class="text-[11px] text-secondary block">Password Security State</span>
           <div class="flex items-center gap-2 mt-0.5">
             <span class="badge badge-success text-[10px]">
-              {{ selectedUserForDetails.passwordStatus || 'Bcrypt 256-bit Encrypted' }}
-            </span>
-            <span class="text-xs font-mono text-secondary truncate max-w-sm" [title]="selectedUserForDetails.passwordPreview">
-              {{ selectedUserForDetails.passwordPreview || '•••••••• (Bcrypt Protected)' }}
+              {{ selectedUserForDetails.passwordStatus || 'Bcrypt Protected' }}
             </span>
           </div>
           <p class="text-[10px] text-muted mt-1">
-            * Passwords are irreversibly encrypted using industry-standard 256-bit salt hashes to prevent unauthorized access.
+            * Passwords are irreversibly hashed using industry-standard bcrypt salts; hashes and previews are never exposed.
           </p>
         </div>
       </div>
@@ -922,37 +916,40 @@
         <div>
           <span class="text-[11px] text-secondary block">Target Job Role Looking For</span>
           <span class="text-sm font-bold text-primary">
-            {{ selectedUserForDetails.preferredRole || 'Software Development Engineer / General' }}
+            {{ selectedUserForDetails.preferredRole || 'Not specified' }}
           </span>
         </div>
         <div>
           <span class="text-[11px] text-secondary block">Academic Degree / Stream Track</span>
           <span class="text-sm font-semibold text-foreground">
-            {{ selectedUserForDetails.preferredStream || selectedUserForDetails.education || 'B.Tech Computer Science' }}
+            {{ selectedUserForDetails.preferredStream || selectedUserForDetails.education || 'Not specified' }}
           </span>
         </div>
         <div>
           <span class="text-[11px] text-secondary block">Preferred Work Location</span>
           <span class="text-xs font-medium text-foreground">
-            📍 {{ selectedUserForDetails.preferredLocation || 'Pan-India / Remote / Hybrid' }}
+            📍 {{ selectedUserForDetails.preferredLocation || 'Not specified' }}
           </span>
         </div>
         <div>
           <span class="text-[11px] text-secondary block">Expected Salary Package</span>
           <span class="text-xs font-semibold text-emerald-600">
-            💰 {{ selectedUserForDetails.expectedSalary || 'Market Competitive (₹8.0 - ₹16.0 LPA)' }}
+            💰 {{ selectedUserForDetails.expectedSalary || 'Not specified' }}
           </span>
         </div>
         <div class="sm:col-span-2 pt-2 border-t border-border/50">
-          <span class="text-[11px] text-secondary block mb-1">Key Verified Skills</span>
-          <div class="flex flex-wrap gap-1.5">
+          <span class="text-[11px] text-secondary block mb-1">Profile Skills</span>
+          <div class="flex flex-wrap gap-1.5" *ngIf="selectedUserForDetails.targetSkills?.length; else noSkillsSet">
             <span
-              *ngFor="let skill of (selectedUserForDetails.targetSkills || ['React', 'Node.js', 'TypeScript', 'SQL', 'Git'])"
+              *ngFor="let skill of selectedUserForDetails.targetSkills"
               class="badge badge-outline text-[11px] py-0.5 px-2 bg-surface"
             >
               {{ skill }}
             </span>
           </div>
+          <ng-template #noSkillsSet>
+            <span class="text-xs text-secondary">No skills added yet</span>
+          </ng-template>
         </div>
         <div class="sm:col-span-2 pt-2 border-t border-border/50 flex items-center justify-between flex-wrap gap-3">
           <div class="flex items-center gap-4">
@@ -988,13 +985,13 @@
         <div>
           <span class="text-[11px] text-secondary block">Company / Organization</span>
           <span class="text-sm font-bold text-foreground">
-            {{ selectedUserForDetails.companyName || 'Corporate Entity' }}
+            {{ selectedUserForDetails.companyName || 'Not specified' }}
           </span>
         </div>
         <div>
           <span class="text-[11px] text-secondary block">Industry Sector</span>
           <span class="text-sm font-medium text-foreground">
-            {{ selectedUserForDetails.industry || 'Information Technology & Cloud' }}
+            {{ selectedUserForDetails.industry || 'Not specified' }}
           </span>
         </div>
         <div>
@@ -1015,13 +1012,13 @@
         <div>
           <span class="text-[11px] text-secondary block">Headquarters / Location</span>
           <span class="text-xs font-medium text-foreground">
-            📍 {{ selectedUserForDetails.location || 'Bangalore, India' }}
+            📍 {{ selectedUserForDetails.location || 'Not specified' }}
           </span>
         </div>
         <div>
           <span class="text-[11px] text-secondary block">Workforce Size</span>
           <span class="text-xs font-medium text-foreground">
-            👥 {{ selectedUserForDetails.companySize || '50-200 employees' }}
+            👥 {{ selectedUserForDetails.companySize || 'Not specified' }}
           </span>
         </div>
         <div>

@@ -9,37 +9,37 @@ import { DeviceCapabilityService } from '../../services/device-capability.servic
   template: `
     <!-- PWA Install Prompt Banner -->
     <div *ngIf="showBanner()"
-         class="pwa-banner fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-md p-3.5 rounded-2xl border border-primary/40 bg-card/95 backdrop-blur-xl shadow-2xl animate-slide-down flex items-center justify-between gap-3 text-xs"
-         role="alert"
+         class="pwa-banner animate-slide-down"
+         role="region"
+         aria-label="Install SkillBridge App"
          aria-live="polite">
       
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-lg font-bold shadow-md shrink-0">
-          🌉
-        </div>
+      <div class="pwa-banner-info">
+        <div class="pwa-icon-box" aria-hidden="true">🌉</div>
         <div>
-          <div class="font-bold text-foreground text-sm flex items-center gap-1.5">
+          <div class="pwa-banner-title">
             <span>Install SkillBridge App</span>
-            <span class="text-[10px] px-1.5 py-0.2 rounded bg-primary/20 text-primary font-mono">PWA</span>
+            <span class="pwa-badge">PWA</span>
           </div>
-          <p class="text-muted-foreground text-[11px] leading-tight">
-            {{ isIosDevice() ? 'Tap Share ⎙ then "Add to Home Screen" ⊞' : 'Install for offline access, 3D orbit & notifications' }}
+          <p class="pwa-banner-sub">
+            {{ isIosDevice() ? 'Tap Share then "Add to Home Screen"' : 'Install for offline access and faster launch' }}
           </p>
         </div>
       </div>
 
-      <div class="flex items-center gap-2 shrink-0">
+      <div class="pwa-banner-actions">
         <button
           *ngIf="!isIosDevice() && deferredPrompt"
           type="button"
           (click)="installPwa()"
-          class="px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold transition-transform active:scale-95 shadow-sm min-h-[36px]">
+          class="btn btn-primary btn-sm">
           Install
         </button>
         <button
           type="button"
           (click)="dismissBanner()"
-          class="p-1.5 text-muted-foreground hover:text-foreground rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center text-sm font-bold">
+          aria-label="Dismiss install banner"
+          class="pwa-close-btn">
           ✕
         </button>
       </div>
@@ -47,6 +47,86 @@ import { DeviceCapabilityService } from '../../services/device-capability.servic
     </div>
   `,
   styles: [`
+    .pwa-banner {
+      position: fixed;
+      top: 0.75rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 950;
+      width: min(94vw, 28rem);
+      padding: 0.85rem 1rem;
+      border-radius: 16px;
+      border: 1px solid var(--border-active);
+      background: var(--bg-glass);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .pwa-banner-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+    .pwa-icon-box {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+    .pwa-banner-title {
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .pwa-badge {
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      background: rgba(99, 102, 241, 0.18);
+      color: var(--text-primary);
+      font-family: monospace;
+    }
+    .pwa-banner-sub {
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      line-height: 1.3;
+    }
+    .pwa-banner-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+    .pwa-close-btn {
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .pwa-close-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-glass-hover);
+    }
     @keyframes slideDown {
       from { opacity: 0; transform: translate(-50%, -20px); }
       to { opacity: 1; transform: translate(-50%, 0); }

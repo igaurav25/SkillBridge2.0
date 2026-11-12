@@ -53,7 +53,7 @@
             (keyup.enter)="fetchQuestions()"
           />
         </div>
-        <select class="select-control" style="width: auto;" [(ngModel)]="selectedDifficulty" (change)="fetchQuestions()">
+        <select aria-label="Filter questions by difficulty" class="select-control" style="width: auto;" [(ngModel)]="selectedDifficulty" (change)="fetchQuestions()">
           <option value="All">All Difficulties</option>
           <option value="Beginner">Beginner</option>
           <option value="Intermediate">Intermediate</option>
@@ -109,8 +109,8 @@
 
         <div class="grid grid-3 gap-4 mb-6">
           <div class="form-group">
-            <label class="form-label">Interview Track</label>
-            <select class="select-control" [(ngModel)]="mockCategory">
+            <label for="mock-track" class="form-label">Interview Track</label>
+            <select id="mock-track" class="select-control" [(ngModel)]="mockCategory">
               <option value="JavaScript">JavaScript</option>
               <option value="Angular">Angular 19</option>
               <option value="Node.js">Node.js & Express</option>
@@ -121,13 +121,13 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label">Target Role Level</label>
-            <input type="text" class="form-control" [(ngModel)]="mockRole" />
+            <label for="mock-role" class="form-label">Target Role Level</label>
+            <input id="mock-role" type="text" class="form-control" [(ngModel)]="mockRole" />
           </div>
 
           <div class="form-group">
-            <label class="form-label">Difficulty</label>
-            <select class="select-control" [(ngModel)]="mockDifficulty">
+            <label for="mock-difficulty" class="form-label">Difficulty</label>
+            <select id="mock-difficulty" class="select-control" [(ngModel)]="mockDifficulty">
               <option value="Beginner">Junior / Entry</option>
               <option value="Intermediate">Mid-Level</option>
               <option value="Advanced">Senior / Lead</option>

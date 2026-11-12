@@ -17,3 +17,6 @@ __pycache__/
 .coverage
 htmlcov/
 
+# Playwright screenshots (kept locally on disk per phase)
+tests/screenshots/
+

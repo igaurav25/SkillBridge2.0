@@ -8,7 +8,7 @@
         <p class="text-xs text-secondary">Craft ATS-friendly, multi-template developer resumes</p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-3 flex-wrap">
         <button class="btn btn-outline btn-sm" (click)="createNewBlank()">+ New Resume</button>
         <button class="btn btn-secondary btn-sm" (click)="populateFromProfile()">Sync Profile Data</button>
         <button class="btn btn-outline btn-sm" (click)="printResume()">🖨️ Download / Print PDF</button>
@@ -20,9 +20,9 @@
 
     <!-- Template Selector Bar -->
     <div class="template-selector-card sb-card p-3 mb-6 flex items-center justify-between flex-wrap gap-4">
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <span class="text-xs font-bold text-muted uppercase">Template Style:</span>
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
           <button
             class="badge template-pill"
             [class.badge-primary]="selectedTemplate === 'modern'"
@@ -61,7 +61,7 @@
       <!-- User's saved resumes list -->
       <div *ngIf="userResumes.length > 0" class="flex items-center gap-2">
         <span class="text-xs text-muted">My Resumes:</span>
-        <select class="select-control text-xs py-1" (change)="loadResume(userResumes[+$any($event.target).value])">
+        <select aria-label="Load saved resume draft" class="select-control text-xs py-1" (change)="loadResume(userResumes[+$any($event.target).value])">
           <option *ngFor="let r of userResumes; let idx = index" [value]="idx">
             {{ r.title }}
           </option>
@@ -77,36 +77,36 @@
 
         <div class="form-group">
           <label class="form-label">Resume Title</label>
-          <input type="text" class="form-control" [(ngModel)]="activeResume.title" />
+          <input aria-label="Resume title" type="text" class="form-control" [(ngModel)]="activeResume.title" />
         </div>
 
         <div class="grid grid-2 gap-3" *ngIf="activeResume.personalDetails">
           <div class="form-group">
             <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.fullName" />
+            <input aria-label="Full name" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.fullName" />
           </div>
           <div class="form-group">
             <label class="form-label">Email</label>
-            <input type="email" class="form-control" [(ngModel)]="activeResume.personalDetails.email" />
+            <input aria-label="Email address" type="email" class="form-control" [(ngModel)]="activeResume.personalDetails.email" />
           </div>
           <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.phone" />
+            <label for="rb-phone" class="form-label">Phone</label>
+            <input id="rb-phone" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.phone" />
           </div>
           <div class="form-group">
-            <label class="form-label">Location</label>
-            <input type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.location" />
+            <label for="rb-location" class="form-label">Location</label>
+            <input id="rb-location" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.location" />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Professional Summary</label>
-          <textarea class="form-control" rows="3" [(ngModel)]="activeResume.summary"></textarea>
+          <label for="rb-summary" class="form-label">Professional Summary</label>
+          <textarea id="rb-summary" class="form-control" rows="3" [(ngModel)]="activeResume.summary"></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Skills (Comma-separated)</label>
-          <input type="text" class="form-control" [(ngModel)]="skillsInput" placeholder="Angular, Node.js, TypeScript, Docker..." />
+          <label for="rb-skills" class="form-label">Skills (Comma-separated)</label>
+          <input id="rb-skills" type="text" class="form-control" [(ngModel)]="skillsInput" placeholder="Angular, Node.js, TypeScript, Docker..." />
         </div>
       </div>
 

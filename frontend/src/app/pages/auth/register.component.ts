@@ -138,7 +138,7 @@ import { AuthService } from '../../services/auth.service';
         transition: all 0.2s ease;
       }
       .role-btn.active {
-        background: var(--primary-500);
+        background: var(--primary-600);
         color: #ffffff;
       }
       .border-top {

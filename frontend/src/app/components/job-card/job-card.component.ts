@@ -12,7 +12,7 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="sb-card sb-card-interactive job-card" [class.new-arrival-glow]="job.isNewArrival" (click)="onCardClick()">
+    <div class="sb-card sb-card-interactive job-card" [class.new-arrival-glow]="job.isNewArrival">
       <!-- Platform Origin Bar -->
       <div class="platform-bar flex items-center justify-between mb-3 pb-2 border-bottom">
         <div class="flex items-center gap-2 flex-wrap">
@@ -22,7 +22,6 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
           </span>
 
           <span class="platform-icon-pill" [ngClass]="getPlatformClass(job.platform)">
-            <img *ngIf="job.platformIcon" [src]="job.platformIcon" class="platform-mini-icon" alt="" (error)="onPlatformIconError($event)" />
             <span>{{ job.platform || 'Verified Portal' }}</span>
           </span>
 
@@ -52,7 +51,7 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
       <div class="card-header flex items-start justify-between gap-4 mb-3">
         <div class="flex items-center gap-3">
           <img
-            [src]="job.companyLogo || job.company?.logo || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80'"
+            [src]="(job.companyLogo || job.company?.logo) && ((job.companyLogo || job.company?.logo || '').startsWith('/uploads/') || (job.companyLogo || job.company?.logo || '').startsWith('data:image/')) ? (job.companyLogo || job.company?.logo) : 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231e293b%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23818cf8%22%20font-family%3D%22system-ui%2Csans-serif%22%3ESB%3C%2Ftext%3E%3C%2Fsvg%3E'"
             alt="{{ job.companyName }} logo"
             class="company-logo"
             (error)="onImgError($event)"
@@ -60,7 +59,7 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
           <div>
             <div class="flex items-center gap-2">
               <span class="company-name text-xs font-semibold text-secondary">{{ job.companyName }}</span>
-              <span *ngIf="job.company?.isVerified || job.isLiveExternal" class="verified-icon text-xs" title="Verified Posting">✓</span>
+              <span *ngIf="job.company?.isVerified" class="verified-icon text-xs" title="Verified Company">✓</span>
               <span *ngIf="job.platformBadge" class="badge badge-neutral text-xs py-0 px-2 font-medium">
                 {{ job.platformBadge }}
               </span>
@@ -174,39 +173,39 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         font-weight: 700;
       }
       .platform-linkedin {
-        background: rgba(10, 102, 194, 0.15);
-        color: #0a66c2;
-        border: 1px solid rgba(10, 102, 194, 0.35);
+        background: rgba(10, 102, 194, 0.22);
+        color: #93c5fd;
+        border: 1px solid rgba(96, 165, 250, 0.45);
       }
       .platform-indeed {
-        background: rgba(33, 100, 244, 0.15);
-        color: #2164f4;
-        border: 1px solid rgba(33, 100, 244, 0.35);
+        background: rgba(33, 100, 244, 0.22);
+        color: #93c5fd;
+        border: 1px solid rgba(96, 165, 250, 0.45);
       }
       .platform-internshala {
-        background: rgba(0, 175, 239, 0.15);
-        color: #0084b4;
-        border: 1px solid rgba(0, 175, 239, 0.35);
+        background: rgba(0, 175, 239, 0.22);
+        color: #7dd3fc;
+        border: 1px solid rgba(56, 189, 248, 0.45);
       }
       .platform-remotive {
-        background: rgba(16, 185, 129, 0.15);
-        color: #10b981;
-        border: 1px solid rgba(16, 185, 129, 0.35);
+        background: rgba(16, 185, 129, 0.22);
+        color: #6ee7b7;
+        border: 1px solid rgba(52, 211, 153, 0.45);
       }
       .platform-gov {
-        background: rgba(245, 158, 11, 0.15);
-        color: #d97706;
-        border: 1px solid rgba(245, 158, 11, 0.4);
+        background: rgba(245, 158, 11, 0.22);
+        color: #fcd34d;
+        border: 1px solid rgba(251, 191, 36, 0.45);
       }
       .platform-tech {
-        background: rgba(139, 92, 246, 0.15);
-        color: #8b5cf6;
-        border: 1px solid rgba(139, 92, 246, 0.35);
+        background: rgba(139, 92, 246, 0.22);
+        color: #ddd6fe;
+        border: 1px solid rgba(167, 139, 250, 0.45);
       }
       .platform-finance {
-        background: rgba(16, 185, 129, 0.15);
-        color: #059669;
-        border: 1px solid rgba(16, 185, 129, 0.35);
+        background: rgba(16, 185, 129, 0.22);
+        color: #6ee7b7;
+        border: 1px solid rgba(52, 211, 153, 0.45);
       }
       .platform-default {
         background: var(--bg-tertiary);
@@ -224,29 +223,29 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         letter-spacing: 0.5px;
       }
       .stream-btech {
-        background: rgba(59, 130, 246, 0.12);
-        color: #3b82f6;
-        border: 1px solid rgba(59, 130, 246, 0.25);
+        background: rgba(59, 130, 246, 0.2);
+        color: #93c5fd;
+        border: 1px solid rgba(96, 165, 250, 0.4);
       }
       .stream-government {
-        background: rgba(234, 88, 12, 0.12);
-        color: #ea580c;
-        border: 1px solid rgba(234, 88, 12, 0.25);
+        background: rgba(234, 88, 12, 0.22);
+        color: #fdba74;
+        border: 1px solid rgba(251, 146, 60, 0.45);
       }
       .stream-bcom {
-        background: rgba(16, 185, 129, 0.12);
-        color: #10b981;
-        border: 1px solid rgba(16, 185, 129, 0.25);
+        background: rgba(16, 185, 129, 0.2);
+        color: #6ee7b7;
+        border: 1px solid rgba(52, 211, 153, 0.4);
       }
       .stream-bba {
-        background: rgba(168, 85, 247, 0.12);
-        color: #a855f7;
-        border: 1px solid rgba(168, 85, 247, 0.25);
+        background: rgba(168, 85, 247, 0.22);
+        color: #e9d5ff;
+        border: 1px solid rgba(192, 132, 252, 0.45);
       }
       .stream-internship {
-        background: rgba(6, 182, 212, 0.12);
-        color: #06b6d4;
-        border: 1px solid rgba(6, 182, 212, 0.25);
+        background: rgba(6, 182, 212, 0.2);
+        color: #67e8f9;
+        border: 1px solid rgba(34, 211, 238, 0.4);
       }
       .stream-default {
         background: var(--bg-tertiary);
@@ -325,7 +324,7 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         animation: slideDownPulse 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
       }
       .new-arrival-pill {
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: linear-gradient(135deg, #047857, #065f46);
         color: #ffffff;
         padding: 2px 8px;
         border-radius: 9999px;
@@ -430,7 +429,7 @@ export class JobCardComponent {
   }
 
   onImgError(event: any) {
-    event.target.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=80';
+    event.target.src = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231e293b%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23818cf8%22%20font-family%3D%22system-ui%2Csans-serif%22%3ESB%3C%2Ftext%3E%3C%2Fsvg%3E';
   }
 
   onPlatformIconError(event: any) {

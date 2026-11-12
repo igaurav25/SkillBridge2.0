@@ -56,7 +56,7 @@ import { RouterModule } from '@angular/router';
             <ul class="footer-links flex flex-col gap-2">
               <li><a routerLink="/interview-prep">Interview Question Bank</a></li>
               <li><a routerLink="/interview-prep">AI Mock Interview Practice</a></li>
-              <li><a routerLink="/admin/dashboard">System Status</a></li>
+              <li><a routerLink="/career-explorer">AI Career Explorer</a></li>
               <li><span class="text-sm text-muted">support&#64;skillbridge.com</span></li>
             </ul>
           </div>

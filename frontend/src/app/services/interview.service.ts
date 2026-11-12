@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,7 +10,7 @@ import { InterviewQuestionItem, MockInterviewSession } from '../models/notificat
 })
 export class InterviewService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/interviews';
+  private readonly API_URL = `${environment.apiUrl}/interviews`;
 
   getQuestions(paramsObj: { category?: string; difficulty?: string; search?: string; page?: number } = {}): Observable<ApiResponse<InterviewQuestionItem[]>> {
     let params = new HttpParams();

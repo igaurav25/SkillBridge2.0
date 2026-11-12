@@ -3,9 +3,9 @@
     <!-- Header with Profile Photo, Name, and Completion Bar -->
     <div class="profile-header sb-card mb-8">
       <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-4 flex-wrap min-w-0 flex-1">
           <!-- Profile Picture with Upload Overlay -->
-          <div class="avatar-container" (click)="avatarFileInput.click()" title="Click to change profile picture">
+          <div class="avatar-container shrink-0" (click)="avatarFileInput.click()" title="Click to change profile picture">
             <img [src]="userAvatar" alt="Profile Picture" class="avatar-xl" />
             <div class="avatar-upload-overlay">
               <span>📷</span>
@@ -16,14 +16,15 @@
           <!-- Hidden File Input for Avatar -->
           <input
             type="file"
+            aria-label="Upload profile avatar"
             #avatarFileInput
             (change)="onAvatarSelected($event)"
             accept="image/png, image/jpeg, image/jpg, image/webp"
             class="hidden"
           />
 
-          <div>
-            <div class="flex items-center gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-2 flex-wrap">
               <h1 class="text-2xl font-bold">{{ authService.currentUser()?.name || editName }}</h1>
               <button
                 class="btn btn-outline btn-xs"
@@ -34,12 +35,12 @@
               </button>
             </div>
             <p class="text-sm text-secondary">{{ profile?.headline || 'No headline set yet • Fill your headline below' }}</p>
-            <div class="text-xs text-muted mt-1 flex items-center gap-3">
+            <div class="text-xs text-muted mt-1 flex items-center gap-3 flex-wrap">
               <span>📧 {{ authService.currentUser()?.email }}</span>
               <button
                 *ngIf="authService.currentUser()?.avatar"
                 type="button"
-                class="text-xs text-secondary underline hover:text-danger"
+                class="btn-link text-xs text-secondary underline hover:text-danger"
                 (click)="resetAvatarToInitials()"
               >
                 Reset to initials photo
@@ -120,7 +121,7 @@
 
           <div class="form-group">
             <label class="form-label">Work Type Preference</label>
-            <select class="select-control" [(ngModel)]="profile.workTypePreference" name="workTypePreference">
+            <select aria-label="Work type preference" class="select-control" [(ngModel)]="profile.workTypePreference" name="workTypePreference">
               <option value="remote">Remote</option>
               <option value="hybrid">Hybrid</option>
               <option value="onsite">On-site</option>
@@ -261,9 +262,10 @@
         <h3 class="text-base font-bold mb-1">Account Display Name</h3>
         <p class="text-xs text-secondary mb-4">Change the full name displayed across your profile, job applications, and recruiter messages.</p>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 flex-wrap">
           <input
             type="text"
+            aria-label="Account display name"
             class="form-control"
             style="max-width: 380px;"
             [(ngModel)]="editName"
@@ -291,6 +293,7 @@
         <div class="flex items-center gap-3 flex-wrap">
           <input
             type="email"
+            aria-label="Account email or Gmail address"
             class="form-control"
             style="max-width: 380px;"
             [(ngModel)]="editEmail"
@@ -462,13 +465,13 @@
     <div class="sb-card modal-card" (click)="$event.stopPropagation()">
       <h3 class="text-base font-bold mb-4">Add Technical Skill</h3>
       <div class="form-group">
-        <label class="form-label">Skill Name</label>
-        <input type="text" class="form-control" [(ngModel)]="newSkill.name" placeholder="e.g. Docker, TypeScript" />
+        <label for="prof-skill-name" class="form-label">Skill Name</label>
+        <input id="prof-skill-name" type="text" class="form-control" [(ngModel)]="newSkill.name" placeholder="e.g. Docker, TypeScript" />
       </div>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="select-control" [(ngModel)]="newSkill.category">
+          <label for="prof-skill-cat" class="form-label">Category</label>
+          <select id="prof-skill-cat" class="select-control" [(ngModel)]="newSkill.category">
             <option value="Language">Language</option>
             <option value="Framework">Framework</option>
             <option value="Database">Database</option>
@@ -478,8 +481,8 @@
           </select>
         </div>
         <div class="form-group">
-          <label class="form-label">Proficiency Level</label>
-          <select class="select-control" [(ngModel)]="newSkill.level">
+          <label for="prof-skill-lvl" class="form-label">Proficiency Level</label>
+          <select id="prof-skill-lvl" class="select-control" [(ngModel)]="newSkill.level">
             <option value="Beginner">Beginner</option>
             <option value="Intermediate">Intermediate</option>
             <option value="Advanced">Advanced</option>
@@ -499,27 +502,27 @@
     <div class="sb-card modal-card" (click)="$event.stopPropagation()">
       <h3 class="text-base font-bold mb-4">Add Education Record</h3>
       <div class="form-group">
-        <label class="form-label">College / University</label>
-        <input type="text" class="form-control" [(ngModel)]="newEdu.college" placeholder="e.g. Stanford University" />
+        <label for="prof-edu-college" class="form-label">College / University</label>
+        <input id="prof-edu-college" type="text" class="form-control" [(ngModel)]="newEdu.college" placeholder="e.g. Stanford University" />
       </div>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Degree</label>
-          <input type="text" class="form-control" [(ngModel)]="newEdu.degree" placeholder="e.g. B.Tech / B.S." />
+          <label for="prof-edu-degree" class="form-label">Degree</label>
+          <input id="prof-edu-degree" type="text" class="form-control" [(ngModel)]="newEdu.degree" placeholder="e.g. B.Tech / B.S." />
         </div>
         <div class="form-group">
-          <label class="form-label">Field of Study</label>
-          <input type="text" class="form-control" [(ngModel)]="newEdu.fieldOfStudy" placeholder="e.g. Computer Science" />
+          <label for="prof-edu-field" class="form-label">Field of Study</label>
+          <input id="prof-edu-field" type="text" class="form-control" [(ngModel)]="newEdu.fieldOfStudy" placeholder="e.g. Computer Science" />
         </div>
       </div>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Graduation Year</label>
-          <input type="number" class="form-control" [(ngModel)]="newEdu.graduationYear" />
+          <label for="prof-edu-year" class="form-label">Graduation Year</label>
+          <input id="prof-edu-year" type="number" class="form-control" [(ngModel)]="newEdu.graduationYear" />
         </div>
         <div class="form-group">
-          <label class="form-label">CGPA / Percentage</label>
-          <input type="text" class="form-control" [(ngModel)]="newEdu.cgpa" placeholder="e.g. 8.5 / 10" />
+          <label for="prof-edu-cgpa" class="form-label">CGPA / Percentage</label>
+          <input id="prof-edu-cgpa" type="text" class="form-control" [(ngModel)]="newEdu.cgpa" placeholder="e.g. 8.5 / 10" />
         </div>
       </div>
       <div class="flex justify-end gap-3 mt-4">
@@ -534,25 +537,25 @@
     <div class="sb-card modal-card" (click)="$event.stopPropagation()">
       <h3 class="text-base font-bold mb-4">Add Project</h3>
       <div class="form-group">
-        <label class="form-label">Project Title</label>
-        <input type="text" class="form-control" [(ngModel)]="newProject.title" placeholder="e.g. SkillBridge AI" />
+        <label for="prof-proj-title" class="form-label">Project Title</label>
+        <input id="prof-proj-title" type="text" class="form-control" [(ngModel)]="newProject.title" placeholder="e.g. SkillBridge AI" />
       </div>
       <div class="form-group">
-        <label class="form-label">Technologies (comma separated)</label>
-        <input type="text" class="form-control" [(ngModel)]="projectTechInput" placeholder="e.g. Angular, Node.js, MongoDB" />
+        <label for="prof-proj-tech" class="form-label">Technologies (comma separated)</label>
+        <input id="prof-proj-tech" type="text" class="form-control" [(ngModel)]="projectTechInput" placeholder="e.g. Angular, Node.js, MongoDB" />
       </div>
       <div class="form-group">
-        <label class="form-label">Description & Highlights</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="newProject.description" placeholder="Describe the problem solved and technical impact..."></textarea>
+        <label for="prof-proj-desc" class="form-label">Description & Highlights</label>
+        <textarea id="prof-proj-desc" class="form-control" rows="3" [(ngModel)]="newProject.description" placeholder="Describe the problem solved and technical impact..."></textarea>
       </div>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Live Demo URL</label>
-          <input type="text" class="form-control" [(ngModel)]="newProject.liveUrl" placeholder="https://..." />
+          <label for="prof-proj-live" class="form-label">Live Demo URL</label>
+          <input id="prof-proj-live" type="text" class="form-control" [(ngModel)]="newProject.liveUrl" placeholder="https://..." />
         </div>
         <div class="form-group">
-          <label class="form-label">GitHub URL</label>
-          <input type="text" class="form-control" [(ngModel)]="newProject.githubUrl" placeholder="https://github.com/..." />
+          <label for="prof-proj-gh" class="form-label">GitHub URL</label>
+          <input id="prof-proj-gh" type="text" class="form-control" [(ngModel)]="newProject.githubUrl" placeholder="https://github.com/..." />
         </div>
       </div>
       <div class="flex justify-end gap-3 mt-4">
@@ -568,27 +571,27 @@
       <h3 class="text-base font-bold mb-4">Add Work Experience</h3>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Title / Role</label>
-          <input type="text" class="form-control" [(ngModel)]="newExp.title" placeholder="e.g. Software Engineer Intern" />
+          <label for="prof-exp-title" class="form-label">Title / Role</label>
+          <input id="prof-exp-title" type="text" class="form-control" [(ngModel)]="newExp.title" placeholder="e.g. Software Engineer Intern" />
         </div>
         <div class="form-group">
-          <label class="form-label">Company</label>
-          <input type="text" class="form-control" [(ngModel)]="newExp.company" placeholder="e.g. TechCorp Labs" />
+          <label for="prof-exp-company" class="form-label">Company</label>
+          <input id="prof-exp-company" type="text" class="form-control" [(ngModel)]="newExp.company" placeholder="e.g. TechCorp Labs" />
         </div>
       </div>
       <div class="grid grid-2 gap-3">
         <div class="form-group">
-          <label class="form-label">Start Date</label>
-          <input type="text" class="form-control" [(ngModel)]="newExp.startDate" placeholder="e.g. Jun 2024" />
+          <label for="prof-exp-start" class="form-label">Start Date</label>
+          <input id="prof-exp-start" type="text" class="form-control" [(ngModel)]="newExp.startDate" placeholder="e.g. Jun 2024" />
         </div>
         <div class="form-group">
-          <label class="form-label">End Date</label>
-          <input type="text" class="form-control" [(ngModel)]="newExp.endDate" placeholder="e.g. Aug 2024 or Present" />
+          <label for="prof-exp-end" class="form-label">End Date</label>
+          <input id="prof-exp-end" type="text" class="form-control" [(ngModel)]="newExp.endDate" placeholder="e.g. Aug 2024 or Present" />
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Description</label>
-        <textarea class="form-control" rows="3" [(ngModel)]="newExp.description" placeholder="Key responsibilities and achievements..."></textarea>
+        <label for="prof-exp-desc" class="form-label">Description</label>
+        <textarea id="prof-exp-desc" class="form-control" rows="3" [(ngModel)]="newExp.description" placeholder="Key responsibilities and achievements..."></textarea>
       </div>
       <div class="flex justify-end gap-3 mt-4">
         <button class="btn btn-outline btn-sm" (click)="showAddExpModal = false">Cancel</button>

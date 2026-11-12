@@ -19,61 +19,58 @@ interface SkillNode {
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="career-visualizer-container rounded-2xl border border-border bg-card/60 backdrop-blur-md overflow-hidden relative" [attr.aria-label]="'Career Skill Graph ' + (is3DActive() ? '3D Mode' : '2D Mode')">
+    <div class="career-visualizer-container" [attr.aria-label]="'Career Skill Graph ' + (is3DActive() ? '3D Mode' : '2D Mode')">
       <!-- Top Control Bar -->
-      <div class="visualizer-header px-4 py-3 border-b border-border flex flex-wrap items-center justify-between gap-3 bg-secondary/30">
-        <div class="flex items-center gap-2">
-          <div class="w-2.5 h-2.5 rounded-full" [ngClass]="is3DActive() ? 'bg-primary animate-pulse' : 'bg-emerald-400'"></div>
-          <h3 class="font-bold text-sm text-foreground flex items-center gap-2">
+      <div class="visualizer-header">
+        <div class="visualizer-title-group">
+          <span class="status-dot" [class.active-3d]="is3DActive()" aria-hidden="true"></span>
+          <h3 class="visualizer-heading">
             <span>{{ is3DActive() ? '🌌 3D Career Skill Orbit' : '🗺️ 2D Interactive Skill Graph' }}</span>
-            <span class="text-xs px-2 py-0.5 rounded-full font-mono border"
-                  [ngClass]="deviceTierBadgeClass()">
+            <span class="tier-pill" [ngClass]="deviceTierBadgeClass()">
               {{ deviceService.deviceTier() | uppercase }} TIER
             </span>
           </h3>
         </div>
 
         <!-- Controls -->
-        <div class="flex items-center gap-2">
-          <!-- Mode Switcher -->
-          <div class="inline-flex p-0.5 rounded-lg bg-background/80 border border-border text-xs font-medium">
+        <div class="visualizer-controls">
+          <div class="mode-switch">
             <button
               type="button"
               (click)="setMode('force-3d')"
-              class="px-2.5 py-1 rounded-md transition-all flex items-center gap-1 min-h-[32px]"
-              [ngClass]="is3DActive() ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'">
-              <span>✨ 3D Orbit</span>
+              class="mode-btn"
+              [class.active]="is3DActive()">
+              ✨ 3D Orbit
             </button>
             <button
               type="button"
               (click)="setMode('force-2d')"
-              class="px-2.5 py-1 rounded-md transition-all flex items-center gap-1 min-h-[32px]"
-              [ngClass]="!is3DActive() ? 'bg-primary text-white shadow-sm' : 'text-muted-foreground hover:text-foreground'">
-              <span>📊 2D Map</span>
+              class="mode-btn"
+              [class.active]="!is3DActive()">
+              📊 2D Map
             </button>
           </div>
 
-          <!-- Reset / Auto Toggle -->
           <button
             type="button"
             (click)="resetView()"
             title="Reset Orientation"
-            class="px-2.5 py-1 rounded-lg text-xs font-medium border border-border bg-card hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors min-h-[32px]">
+            class="reset-btn">
             ↺ Reset
           </button>
         </div>
       </div>
 
       <!-- Canvas Area -->
-      <div class="canvas-wrapper relative w-full h-[340px] sm:h-[400px] md:h-[460px] cursor-grab active:cursor-grabbing touch-none select-none overflow-hidden bg-gradient-to-b from-background/90 to-background/50"
+      <div class="canvas-wrapper"
            (mousedown)="onMouseDown($event)"
            (touchstart)="onTouchStart($event)"
            (wheel)="onWheel($event)">
         
-        <canvas #canvasRef class="w-full h-full block"></canvas>
+        <canvas #canvasRef class="visualizer-canvas"></canvas>
 
         <!-- Subtle 3D Help Overlay on First View -->
-        <div *ngIf="showHint() && is3DActive()" class="absolute bottom-3 left-3 pointer-events-none text-xs text-muted-foreground bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-border flex items-center gap-2">
+        <div *ngIf="showHint() && is3DActive()" class="hint-overlay">
           <span>👆 Drag to rotate</span>
           <span>•</span>
           <span>🔍 Scroll/Pinch to zoom</span>
@@ -82,51 +79,211 @@ interface SkillNode {
         </div>
 
         <!-- Active Node Inspector Panel -->
-        <div *ngIf="selectedNode()" class="node-inspector absolute top-3 right-3 max-w-[260px] p-3 rounded-xl border border-border bg-background/95 backdrop-blur-md shadow-xl text-xs z-10 animate-fade-in">
-          <div class="flex items-start justify-between gap-2 mb-2">
+        <div *ngIf="selectedNode()" class="node-inspector animate-fade-in">
+          <div class="inspector-top">
             <div>
-              <div class="font-bold text-sm text-foreground">{{ selectedNode()?.name }}</div>
-              <div class="text-[10px] uppercase font-mono tracking-wider text-primary">{{ selectedNode()?.category }}</div>
+              <div class="inspector-name">{{ selectedNode()?.name }}</div>
+              <div class="inspector-cat">{{ selectedNode()?.category }}</div>
             </div>
-            <button (click)="selectedNode.set(null)" class="text-muted-foreground hover:text-foreground text-sm font-bold p-1">✕</button>
+            <button type="button" (click)="selectedNode.set(null)" aria-label="Close skill inspector" class="inspector-close">✕</button>
           </div>
-          <div class="space-y-1.5">
-            <div class="flex justify-between text-muted-foreground">
+          <div class="inspector-metrics">
+            <div class="inspector-row">
               <span>Proficiency:</span>
-              <span class="font-semibold text-foreground">{{ selectedNode()?.level }}%</span>
+              <strong>{{ selectedNode()?.level }}%</strong>
             </div>
-            <div class="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
-              <div class="h-full bg-primary rounded-full transition-all duration-500" [style.width.%]="selectedNode()?.level"></div>
+            <div class="inspector-bar-track">
+              <div class="inspector-bar-fill" [style.width.%]="selectedNode()?.level"></div>
             </div>
-            <div class="flex justify-between text-muted-foreground pt-1">
+            <div class="inspector-row">
               <span>Status:</span>
-              <span class="capitalize font-medium" [ngClass]="{
-                'text-emerald-400': selectedNode()?.status === 'mastered',
-                'text-indigo-400': selectedNode()?.status === 'learning',
-                'text-amber-400': selectedNode()?.status === 'recommended'
-              }">{{ selectedNode()?.status }}</span>
+              <span class="inspector-status">{{ selectedNode()?.status }}</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Bottom Quick Legend -->
-      <div class="px-4 py-2 border-t border-border flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground bg-secondary/20">
-        <div class="flex items-center gap-4">
-          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Mastered</span>
-          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> In Progress</span>
-          <span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Next Priority</span>
+      <div class="legend-bar">
+        <div class="legend-items">
+          <span class="legend-item"><span class="legend-dot mastered"></span> Mastered</span>
+          <span class="legend-item"><span class="legend-dot learning"></span> In Progress</span>
+          <span class="legend-item"><span class="legend-dot recommended"></span> Next Priority</span>
         </div>
-        <div class="text-[11px] font-mono">
-          {{ nodes.length }} Skill Nodes • {{ is3DActive() ? 'WebGL/Canvas 3D' : 'Hardware-Safe 2D' }}
+        <div class="legend-meta">
+          {{ nodes.length }} Skill Nodes • {{ is3DActive() ? 'Canvas 3D' : 'Hardware-Safe 2D' }}
         </div>
       </div>
     </div>
   `,
   styles: [`
     .career-visualizer-container {
-      box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.35);
+      border-radius: 16px;
+      border: 1px solid var(--border-card);
+      background: var(--bg-card);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-md);
     }
+    .visualizer-header {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--bg-secondary);
+    }
+    .visualizer-title-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #10b981;
+      flex-shrink: 0;
+    }
+    .status-dot.active-3d {
+      background: var(--primary-500);
+    }
+    .visualizer-heading {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+    .tier-pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-family: monospace;
+      border: 1px solid var(--border-subtle);
+    }
+    .tier-high { background: rgba(16, 185, 129, 0.14); color: var(--text-primary); border-color: rgba(16, 185, 129, 0.4); }
+    .tier-med { background: rgba(99, 102, 241, 0.16); color: var(--text-primary); border-color: rgba(99, 102, 241, 0.4); }
+    .tier-low { background: rgba(245, 158, 11, 0.16); color: var(--text-primary); border-color: rgba(245, 158, 11, 0.4); }
+    .visualizer-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .mode-switch {
+      display: inline-flex;
+      padding: 2px;
+      border-radius: 8px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+    }
+    .mode-btn, .reset-btn {
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      min-height: 34px;
+    }
+    .mode-btn.active {
+      background: var(--primary-600);
+      color: #ffffff;
+    }
+    .reset-btn {
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+    }
+    .reset-btn:hover, .mode-btn:hover:not(.active) {
+      color: var(--text-primary);
+    }
+    .canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      overflow: hidden;
+      background: var(--bg-primary);
+    }
+    @media (min-width: 640px) {
+      .canvas-wrapper { height: 380px; }
+    }
+    @media (min-width: 768px) {
+      .canvas-wrapper { height: 420px; }
+    }
+    .visualizer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .hint-overlay {
+      position: absolute;
+      bottom: 0.75rem;
+      left: 0.75rem;
+      pointer-events: none;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-glass);
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .node-inspector {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      max-width: 240px;
+      padding: 0.75rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-active);
+      background: var(--bg-primary);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.78rem;
+      z-index: 10;
+    }
+    .inspector-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .inspector-name { font-weight: 700; font-size: 0.875rem; color: var(--text-primary); }
+    .inspector-cat { font-size: 0.68rem; text-transform: uppercase; font-family: monospace; color: var(--text-secondary); }
+    .inspector-close { background: transparent; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 700; padding: 0.2rem 0.4rem; }
+    .inspector-metrics { display: flex; flex-direction: column; gap: 0.4rem; }
+    .inspector-row { display: flex; justify-content: space-between; gap: 0.5rem; color: var(--text-secondary); }
+    .inspector-bar-track { width: 100%; height: 6px; background: var(--bg-secondary); border-radius: 999px; overflow: hidden; }
+    .inspector-bar-fill { height: 100%; background: var(--primary-500); border-radius: 999px; }
+    .inspector-status { text-transform: capitalize; font-weight: 600; color: var(--text-primary); }
+    .legend-bar {
+      padding: 0.6rem 1rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      background: var(--bg-secondary);
+    }
+    .legend-items { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    .legend-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 999px; display: inline-block; }
+    .legend-dot.mastered { background: #10b981; }
+    .legend-dot.learning { background: #6366f1; }
+    .legend-dot.recommended { background: #f59e0b; }
+    .legend-meta { font-size: 0.72rem; font-family: monospace; }
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
@@ -183,9 +340,9 @@ export class Career3dVisualizerComponent implements AfterViewInit, OnDestroy {
 
   deviceTierBadgeClass(): string {
     const tier = this.deviceService.deviceTier();
-    if (tier === 'high') return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-    if (tier === 'medium') return 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30';
-    return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+    if (tier === 'high') return 'tier-high';
+    if (tier === 'medium') return 'tier-med';
+    return 'tier-low';
   }
 
   setMode(mode: 'force-3d' | 'force-2d'): void {

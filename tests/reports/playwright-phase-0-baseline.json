@@ -1,0 +1,4937 @@
+{
+  "phase": "phase-0-baseline",
+  "timestamp": "2026-11-11T16:33:51.633Z",
+  "viewportsTested": [
+    1920,
+    1440,
+    1366,
+    1280,
+    1024,
+    768,
+    430,
+    390,
+    375,
+    360
+  ],
+  "totalRoutesChecked": 30,
+  "totalViewportChecks": 300,
+  "routesWithIssues": 30,
+  "findings": [
+    {
+      "role": "guest",
+      "route": "/",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 4
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            },
+            {
+              "tag": "H2",
+              "text": "Stuck in your career prep? Chat with our",
+              "reason": "overflows viewport right edge (429 > 390)"
+            },
+            {
+              "tag": "A",
+              "text": "Check ATS Score 📄",
+              "reason": "overflows viewport right edge (429 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            },
+            {
+              "tag": "H2",
+              "text": "Stuck in your career prep? Chat with our",
+              "reason": "overflows viewport right edge (429 > 375)"
+            },
+            {
+              "tag": "A",
+              "text": "Check ATS Score 📄",
+              "reason": "overflows viewport right edge (429 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            },
+            {
+              "tag": "H2",
+              "text": "Stuck in your career prep? Chat with our",
+              "reason": "overflows viewport right edge (416 > 360)"
+            },
+            {
+              "tag": "A",
+              "text": "Check ATS Score 📄",
+              "reason": "overflows viewport right edge (416 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "guest",
+      "route": "/login",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "guest",
+      "route": "/register",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "guest",
+      "route": "/jobs",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 404 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 500 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 404 ()",
+        "Failed to load resource: the server responded with a status of 500 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 7
+        },
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "help": "Interactive controls must not be nested",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "guest",
+      "route": "/companies",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "guest",
+      "route": "/career-explorer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 28,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 418,
+          "horizontalOverflowPx": 43,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 415,
+          "horizontalOverflowPx": 55,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (415 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/student/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/profile",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        },
+        {
+          "id": "label",
+          "impact": "critical",
+          "help": "Form elements must have labels",
+          "nodes": 1
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1293,
+          "horizontalOverflowPx": 13,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1165,
+          "horizontalOverflowPx": 141,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 778,
+          "horizontalOverflowPx": 10,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 487,
+          "horizontalOverflowPx": 57,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "H1",
+              "text": "Gaurav Sharma",
+              "reason": "overflows viewport right edge (628 > 430)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "✏️ Edit Name",
+              "reason": "overflows viewport right edge (739 > 430)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Reset to initials photo",
+              "reason": "overflows viewport right edge (739 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 463,
+          "horizontalOverflowPx": 73,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            },
+            {
+              "tag": "H1",
+              "text": "Gaurav Sharma",
+              "reason": "overflows viewport right edge (628 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "✏️ Edit Name",
+              "reason": "overflows viewport right edge (739 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Reset to initials photo",
+              "reason": "overflows viewport right edge (739 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 463,
+          "horizontalOverflowPx": 88,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            },
+            {
+              "tag": "H1",
+              "text": "Gaurav Sharma",
+              "reason": "overflows viewport right edge (628 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "✏️ Edit Name",
+              "reason": "overflows viewport right edge (739 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Reset to initials photo",
+              "reason": "overflows viewport right edge (739 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 463,
+          "horizontalOverflowPx": 103,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            },
+            {
+              "tag": "H1",
+              "text": "Gaurav Sharma",
+              "reason": "overflows viewport right edge (576 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "✏️ Edit Name",
+              "reason": "overflows viewport right edge (691 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Reset to initials photo",
+              "reason": "overflows viewport right edge (691 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/resume-builder",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "label",
+          "impact": "critical",
+          "help": "Form elements must have labels",
+          "nodes": 6
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 630,
+          "horizontalOverflowPx": 200,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "🖨️ Download / Print PDF",
+              "reason": "overflows viewport right edge (483 > 430)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "💾 Save Resume",
+              "reason": "overflows viewport right edge (630 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 627,
+          "horizontalOverflowPx": 237,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "🖨️ Download / Print PDF",
+              "reason": "overflows viewport right edge (481 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "💾 Save Resume",
+              "reason": "overflows viewport right edge (627 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Terminal / Tech",
+              "reason": "overflows viewport right edge (422 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 627,
+          "horizontalOverflowPx": 252,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "🖨️ Download / Print PDF",
+              "reason": "overflows viewport right edge (481 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "💾 Save Resume",
+              "reason": "overflows viewport right edge (627 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Terminal / Tech",
+              "reason": "overflows viewport right edge (422 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 624,
+          "horizontalOverflowPx": 264,
+          "clippedCount": 4,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "🖨️ Download / Print PDF",
+              "reason": "overflows viewport right edge (478 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "💾 Save Resume",
+              "reason": "overflows viewport right edge (624 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Terminal / Tech",
+              "reason": "overflows viewport right edge (408 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/resume-analyzer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/applications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/saved-jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/skill-gap",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/career-assistant",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/interview-prep",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/assessments",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/learning-roadmap",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/projects",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/github-analyzer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (1165 > 1024)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (1165 > 768)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (1073 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Scan GitHub 🔍",
+              "reason": "overflows viewport right edge (399 > 390)"
+            },
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (1071 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Scan GitHub 🔍",
+              "reason": "overflows viewport right edge (399 > 375)"
+            },
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (1071 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 3,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "Scan GitHub 🔍",
+              "reason": "overflows viewport right edge (386 > 360)"
+            },
+            {
+              "tag": "H2",
+              "text": "https://github.com/gaurav-sharma-dev  🔗",
+              "reason": "overflows viewport right edge (963 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/career-analytics",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/achievements",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 12
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "student",
+      "route": "/jobs",
+      "consoleErrors": [
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 404 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 400 ()",
+        "Failed to load resource: the server responded with a status of 500 ()",
+        "Failed to load resource: the server responded with a status of 403 ()",
+        "Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 7
+        },
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "help": "Interactive controls must not be nested",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 430,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 33,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 423,
+          "horizontalOverflowPx": 48,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (423 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 420,
+          "horizontalOverflowPx": 60,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (420 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 492,
+          "horizontalOverflowPx": 62,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 461,
+          "horizontalOverflowPx": 71,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 448,
+          "horizontalOverflowPx": 73,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 438,
+          "horizontalOverflowPx": 78,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/post-job",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 492,
+          "horizontalOverflowPx": 62,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 461,
+          "horizontalOverflowPx": 71,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 448,
+          "horizontalOverflowPx": 73,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 438,
+          "horizontalOverflowPx": 78,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/applications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 492,
+          "horizontalOverflowPx": 62,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 461,
+          "horizontalOverflowPx": 71,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 448,
+          "horizontalOverflowPx": 73,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 438,
+          "horizontalOverflowPx": 78,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/candidates",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1440,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1366,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1280,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1024,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 768,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 492,
+          "horizontalOverflowPx": 62,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 461,
+          "horizontalOverflowPx": 71,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 448,
+          "horizontalOverflowPx": 73,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (421 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 438,
+          "horizontalOverflowPx": 78,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (418 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "admin",
+      "route": "/admin/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1590,
+          "horizontalOverflowPx": 150,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1613,
+          "horizontalOverflowPx": 247,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1570,
+          "horizontalOverflowPx": 290,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1550,
+          "horizontalOverflowPx": 526,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 845,
+          "horizontalOverflowPx": 77,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 561,
+          "horizontalOverflowPx": 131,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (447 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 529,
+          "horizontalOverflowPx": 139,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 523,
+          "horizontalOverflowPx": 148,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (389 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 520,
+          "horizontalOverflowPx": 160,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (386 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (442 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "admin",
+      "route": "/admin/users",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1590,
+          "horizontalOverflowPx": 150,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1613,
+          "horizontalOverflowPx": 247,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1570,
+          "horizontalOverflowPx": 290,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1550,
+          "horizontalOverflowPx": 526,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 845,
+          "horizontalOverflowPx": 77,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 561,
+          "horizontalOverflowPx": 131,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (447 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 529,
+          "horizontalOverflowPx": 139,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 523,
+          "horizontalOverflowPx": 148,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (389 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 520,
+          "horizontalOverflowPx": 160,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (386 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (442 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "admin",
+      "route": "/admin/jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1590,
+          "horizontalOverflowPx": 150,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1613,
+          "horizontalOverflowPx": 247,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1570,
+          "horizontalOverflowPx": 290,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1550,
+          "horizontalOverflowPx": 526,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 845,
+          "horizontalOverflowPx": 77,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 561,
+          "horizontalOverflowPx": 131,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (447 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 529,
+          "horizontalOverflowPx": 139,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 523,
+          "horizontalOverflowPx": 148,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (389 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 520,
+          "horizontalOverflowPx": 160,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (386 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (442 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    },
+    {
+      "role": "admin",
+      "route": "/admin/reports",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": [
+        {
+          "viewport": 1920,
+          "viewportWidth": 1920,
+          "scrollWidth": 1920,
+          "horizontalOverflowPx": 0,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1440,
+          "viewportWidth": 1440,
+          "scrollWidth": 1590,
+          "horizontalOverflowPx": 150,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1366,
+          "viewportWidth": 1366,
+          "scrollWidth": 1613,
+          "horizontalOverflowPx": 247,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1280,
+          "viewportWidth": 1280,
+          "scrollWidth": 1570,
+          "horizontalOverflowPx": 290,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 1024,
+          "viewportWidth": 1024,
+          "scrollWidth": 1550,
+          "horizontalOverflowPx": 526,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 768,
+          "viewportWidth": 768,
+          "scrollWidth": 845,
+          "horizontalOverflowPx": 77,
+          "clippedCount": 0,
+          "clippedItems": [],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": true,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 430,
+          "viewportWidth": 430,
+          "scrollWidth": 561,
+          "horizontalOverflowPx": 131,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (447 > 430)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 390,
+          "viewportWidth": 390,
+          "scrollWidth": 529,
+          "horizontalOverflowPx": 139,
+          "clippedCount": 1,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 390)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 375,
+          "viewportWidth": 375,
+          "scrollWidth": 523,
+          "horizontalOverflowPx": 148,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (389 > 375)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (445 > 375)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        },
+        {
+          "viewport": 360,
+          "viewportWidth": 360,
+          "scrollWidth": 520,
+          "horizontalOverflowPx": 160,
+          "clippedCount": 2,
+          "clippedItems": [
+            {
+              "tag": "BUTTON",
+              "text": "Admin Supervisor▼",
+              "reason": "overflows viewport right edge (386 > 360)"
+            },
+            {
+              "tag": "BUTTON",
+              "text": "☰",
+              "reason": "overflows viewport right edge (442 > 360)"
+            }
+          ],
+          "overlapCount": 0,
+          "overlaps": [],
+          "bottomNavBugOnDesktop": false,
+          "skipLinkVisibleWithoutFocus": true
+        }
+      ]
+    }
+  ]
+}

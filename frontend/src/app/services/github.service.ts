@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -30,7 +31,7 @@ export interface GitHubAnalysisResult {
 })
 export class GithubService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/github';
+  private apiUrl = `${environment.apiUrl}/github`;
 
   analyzeProfile(payload: { username?: string; githubUrl?: string }): Observable<{ success: boolean; data: GitHubAnalysisResult }> {
     return this.http.post<{ success: boolean; data: GitHubAnalysisResult }>(`${this.apiUrl}/analyze`, payload);

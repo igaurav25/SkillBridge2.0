@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -9,8 +10,8 @@ import { Job } from '../models/job.model';
 })
 export class JobService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:5000/api/jobs';
-  private readonly SAVED_API_URL = 'http://localhost:5000/api/saved-jobs';
+  private readonly API_URL = `${environment.apiUrl}/jobs`;
+  private readonly SAVED_API_URL = `${environment.apiUrl}/saved-jobs`;
 
   getJobs(filters: Record<string, any> = {}): Observable<ApiResponse<Job[]>> {
     let params = new HttpParams();

@@ -45,8 +45,8 @@ export class StudentDashboardComponent implements OnInit {
 
   // ML & Telemetry Data
   mlTopCareers: CareerRecommendationItem[] = [];
-  careerReadinessScore = 72;
-  careerReadinessLevel = 'Job Ready';
+  careerReadinessScore = 0;
+  careerReadinessLevel = 'Getting Started';
   readinessStrengths: string[] = [];
   readinessWeaknesses: string[] = [];
   userRoadmapProgress: LearningProgress | null = null;
@@ -160,8 +160,8 @@ export class StudentDashboardComponent implements OnInit {
       technicalSkills: skills,
       projectsCount,
       resumeScore,
-      interviewScore: 70,
-      assessmentScore: 75,
+      interviewScore: 0,
+      assessmentScore: 0,
       targetRole: this.profile?.preferredRole || 'Full Stack Developer'
     }).subscribe({
       next: (res) => {

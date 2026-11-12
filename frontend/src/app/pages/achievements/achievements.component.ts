@@ -78,7 +78,9 @@ import { AchievementService, AchievementsData, BadgeItem } from '../../services/
       background: rgba(16, 185, 129, 0.04);
     }
     .badge-locked {
-      opacity: 0.7;
+      opacity: 0.96;
+      filter: grayscale(0.65);
+      border-style: dashed;
     }
     .badge-icon {
       filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));

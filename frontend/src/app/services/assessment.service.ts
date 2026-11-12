@@ -1,3 +1,4 @@
+import { environment } from '../../environments/environment';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -44,7 +45,7 @@ export interface AssessmentResult {
 })
 export class AssessmentService {
   private http = inject(HttpClient);
-  private apiUrl = 'http://localhost:5000/api/assessments';
+  private apiUrl = `${environment.apiUrl}/assessments`;
 
   getAssessments(filters: { category?: string; difficulty?: string } = {}): Observable<{ success: boolean; count: number; data: Assessment[] }> {
     let params = new HttpParams();

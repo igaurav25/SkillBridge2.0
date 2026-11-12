@@ -12,9 +12,10 @@
     <!-- Search & Filters Bar -->
     <div class="sb-card p-4 mb-8">
       <div class="flex items-center gap-4 flex-wrap mb-4">
-        <div class="flex-1 min-w-[260px]">
+        <div class="flex-1" style="min-width: min(100%, 200px);">
           <input
             type="text"
+            aria-label="Search companies by name or keyword"
             class="form-control"
             placeholder="Search by company name or keyword..."
             [(ngModel)]="searchTerm"

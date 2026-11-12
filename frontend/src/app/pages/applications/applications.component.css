@@ -13,7 +13,7 @@
 
 .status-filter-pill:hover,
 .status-filter-pill.active {
-  background: var(--primary-500);
+  background: var(--primary-600);
   color: #ffffff;
   border-color: var(--primary-400);
 }
