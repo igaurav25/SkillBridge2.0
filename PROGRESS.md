@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-1`
+**Current Active Branch:** `redesign/phase-2`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -9,7 +9,7 @@
 
 - [x] **Phase 0**: Audit, bugs, security (`redesign/phase-0`) — *Completed & Verified*
 - [x] **Phase 1**: Design system and app shell (`redesign/phase-1`) — *Completed & Verified*
-- [ ] **Phase 2**: Cinematic landing page + 3D hero (`redesign/phase-2`)
+- [x] **Phase 2**: Cinematic landing page + 3D hero (`redesign/phase-2`) — *Completed & Verified*
 - [ ] **Phase 3**: Student experience (`redesign/phase-3`)
 - [ ] **Phase 4**: AI modules (`redesign/phase-4`)
 - [ ] **Phase 5**: Job marketplace (`redesign/phase-5`)
@@ -45,4 +45,20 @@
   - `node --test backend/tests/regression.test.js`: **9/9 passing**.
   - `$env:AUDIT_PHASE='phase-1'; node tests/run-audit-harness.mjs`: `test_e2e.js` **ALL PASS**; Playwright **30 routes × 10 viewports = 300/300 checks clean (0 issues)**; Lighthouse Slow 4G: `/` Perf **85** (was 76) / LCP **4239ms** (was 6949ms) / CLS **0.0585**, `/jobs` Perf **78** (was 51) / CLS **0.0124** (was 0.8471), `/career-explorer` Perf **80** (was 50) / CLS **0** (was 0.8199), `/login` Perf **86** (was 76) / CLS **0.0542** (was 0.8199).
   - Light-theme (`[data-theme="light"]`) Axe + overflow + Workspace Drawer verification (`1280x800` & `360x800` across `/`, `/jobs`, `/profile`, `/student/dashboard`, `/recruiter/dashboard`, `/admin/dashboard`): **0 serious/critical Axe violations, 0 horizontal overflow, Escape closes drawer cleanly**.
+
+### Phase 2 — Cinematic Landing Page + 3D Hero (`redesign/phase-2`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 3).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-2.json`, `tests/reports/lighthouse-phase-2.json`, `tests/screenshots/phase-2/`, `frontend/public/og-share.png`, `frontend/public/og-share.svg`.
+- **Key Deliverables:**
+  - Headline exact match: `"BUILD YOUR SKILLS. SHAPE YOUR FUTURE."` with CTAs `"Explore Opportunities"` and `"Start Your Journey"`.
+  - All 13 canonical sections implemented: hero + search, platform stats (real aggregate database counts), platform intro, how it works, opportunities, AI career intelligence, resume + ATS, skill gap, mock interviews, student success, recruiter ecosystem, community sample previews (truthfully labeled as sample scenarios), accessible FAQ accordion, and footer.
+  - Three.js Hero Scene (`frontend/src/app/components/hero-scene/hero-scene.component.ts`): Procedural crystalline core, geodesic cage, orbital trajectory rings with 4 milestone nodes, floating particle field, cinematic lighting, desktop mouse parallax, reduced-motion & software-WebGL 2D constellation fallback, background-tab pause, scroll-offscreen pause, and full GPU resource disposal on destroy.
+  - Performance & Lazy Loading: Three.js (`748.99 kB` raw / `155.98 kB` gzip transfer) and GSAP are isolated into lazy chunks via `@defer (on idle)` and dynamic `import()` so they never block initial paint or inflate `main.js`.
+  - Public Stats API (`GET /api/analytics/public-stats`): Real non-PII aggregate counts (`activeJobs`, `companiesCount`, `verifiedCompaniesCount`, `registeredStudents`, `assessmentsCount`, `roadmapsCount`, etc.) with `Cache-Control: public, max-age=60`.
+  - SEO: Canonical meta description, OpenGraph & Twitter Cards, and high-res share banner (`frontend/public/og-share.png`).
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **529.36 kB** raw (**141.04 kB** transfer), `main`: **86.85 kB** raw / **18.97 kB** transfer + 37 lazy chunks (including isolated `three-module` and `hero-scene-component`).
+  - `node --test backend/tests/regression.test.js`: **10/10 passing** (including new public platform stats regression check).
+  - `$env:AUDIT_PHASE='phase-2'; node tests/run-audit-harness.mjs`: `test_e2e.js` **ALL PASS**; Playwright **30 routes × 10 viewports = 300/300 checks clean (0 issues)**; Lighthouse Slow 4G: `/` Perf **76** / LCP **4615ms** / CLS **0.0001**, `/jobs` Perf **81** / LCP **5005ms** / CLS **0.0124**, `/career-explorer` Perf **80** / LCP **4749ms** / CLS **0.0001**, `/login` Perf **85** / LCP **4453ms** / CLS **0**. Best Practices **100**, Accessibility **98–100**, SEO **91–92**.
+  - Dual-theme + GPU verification on mobile & desktop: Adaptive 3D Lite / Interactive 3D Core activates cleanly, 2D constellation fallback functions when forced or reduced-motion enabled, and 0 horizontal overflow down to 360px.
 
