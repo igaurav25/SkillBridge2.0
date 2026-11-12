@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-bottom-nav',
   standalone: true,
   imports: [CommonModule, RouterModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Mobile Bottom Navigation (Hidden on Tablet and Desktop >= 768px) -->
     <nav class="mobile-bottom-nav"
@@ -63,16 +64,17 @@ import { AuthService } from '../../services/auth.service';
       bottom: 0;
       left: 0;
       right: 0;
-      z-index: 600;
+      min-height: var(--bottom-nav-height);
+      z-index: var(--z-bottom-nav);
       background: var(--bg-glass);
       backdrop-filter: blur(18px);
       -webkit-backdrop-filter: blur(18px);
       border-top: 1px solid var(--border-card);
       box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.25);
       padding-top: 0.25rem;
-      padding-bottom: max(0.4rem, env(safe-area-inset-bottom, 0px));
-      padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
-      padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
+      padding-bottom: max(0.4rem, var(--sab));
+      padding-left: max(0.5rem, var(--sal));
+      padding-right: max(0.5rem, var(--sar));
       user-select: none;
     }
     @media (min-width: 768px) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DeviceCapabilityService } from '../../services/device-capability.service';
 
@@ -6,6 +6,7 @@ import { DeviceCapabilityService } from '../../services/device-capability.servic
   selector: 'app-pwa-install-banner',
   standalone: true,
   imports: [CommonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- PWA Install Prompt Banner -->
     <div *ngIf="showBanner()"
@@ -49,13 +50,13 @@ import { DeviceCapabilityService } from '../../services/device-capability.servic
   styles: [`
     .pwa-banner {
       position: fixed;
-      top: 0.75rem;
+      top: max(0.75rem, var(--sat));
       left: 50%;
       transform: translateX(-50%);
-      z-index: 950;
+      z-index: calc(var(--z-toast) - 10);
       width: min(94vw, 28rem);
       padding: 0.85rem 1rem;
-      border-radius: 16px;
+      border-radius: var(--radius-lg);
       border: 1px solid var(--border-active);
       background: var(--bg-glass);
       backdrop-filter: blur(18px);

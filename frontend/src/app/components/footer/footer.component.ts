@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-footer',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule, RouterModule],
   template: `
     <footer class="sb-footer">
@@ -62,11 +63,11 @@ import { RouterModule } from '@angular/router';
           </div>
         </div>
 
-        <div class="footer-bottom flex items-center justify-between mt-8 pt-6">
+        <div class="footer-bottom flex items-center justify-between flex-wrap gap-3 mt-8 pt-6">
           <p class="text-xs text-muted">
-            &copy; 2026 SkillBridge Inc. All rights reserved. Built with Angular 19, Express, MongoDB & Smart AI.
+            &copy; 2026 SkillBridge Inc. All rights reserved. Built with Angular 19, Express, MongoDB &amp; Smart AI.
           </p>
-          <div class="flex items-center gap-4 text-xs text-muted">
+          <div class="flex items-center flex-wrap gap-4 text-xs text-muted">
             <span>Privacy Policy</span>
             <span>•</span>
             <span>Terms of Service</span>

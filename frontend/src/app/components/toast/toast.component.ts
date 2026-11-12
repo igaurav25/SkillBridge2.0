@@ -1,13 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-toast',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CommonModule],
   template: `
-    <div class="toast-container" *ngIf="toastService.toasts().length > 0">
+    <div class="toast-container" *ngIf="toastService.toasts().length > 0" role="status" aria-live="polite">
       <div
         *ngFor="let toast of toastService.toasts()"
         class="toast"

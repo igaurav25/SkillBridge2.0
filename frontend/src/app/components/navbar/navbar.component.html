@@ -11,7 +11,7 @@
       </div>
       <div class="brand-text">
         <span class="brand-name">Skill<span class="text-gradient">Bridge</span></span>
-        <span class="badge badge-primary text-xs">AI</span>
+        <app-sb-badge variant="primary" class="brand-badge">AI</app-sb-badge>
       </div>
     </a>
 
@@ -178,48 +178,103 @@
         </div>
       </ng-template>
 
-      <!-- Mobile Hamburger Toggle Button -->
-      <button class="mobile-toggle-btn" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+      <!-- Workspace Drawer Toggle (Desktop) & Mobile Hamburger Toggle (<=1200px) -->
+      <button
+        type="button"
+        class="icon-btn workspace-drawer-btn"
+        (click)="toggleMobileMenu(); $event.stopPropagation()"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-controls="sb-workspace-drawer"
+        aria-label="Open workspace navigation"
+        title="Workspace & Tools Drawer"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <path d="M15 3v18"/>
+        </svg>
+      </button>
+
+      <button
+        type="button"
+        class="mobile-toggle-btn"
+        (click)="toggleMobileMenu(); $event.stopPropagation()"
+        [attr.aria-expanded]="isMobileMenuOpen"
+        aria-controls="sb-workspace-drawer"
+        aria-label="Toggle navigation drawer"
+      >
         <span *ngIf="!isMobileMenuOpen">☰</span>
         <span *ngIf="isMobileMenuOpen">✕</span>
       </button>
     </div>
   </div>
-
-  <!-- Mobile Drawer Menu & Backdrop Overlay -->
-  <div *ngIf="isMobileMenuOpen" class="mobile-drawer-overlay" (click)="closeMobileMenu()"></div>
-  <div *ngIf="isMobileMenuOpen" class="mobile-drawer">
-    <div class="mobile-links flex flex-col gap-2 p-4">
-      <a routerLink="/jobs" (click)="closeMobileMenu()" class="mobile-link">Explore Jobs</a>
-      <a routerLink="/career-explorer" (click)="closeMobileMenu()" class="mobile-link">Career Explorer 🤖</a>
-      <a routerLink="/assessments" (click)="closeMobileMenu()" class="mobile-link">Skill Assessments 📝</a>
-      <a routerLink="/learning-roadmap" (click)="closeMobileMenu()" class="mobile-link">Learning Roadmap 🗺️</a>
-      <a routerLink="/projects" (click)="closeMobileMenu()" class="mobile-link">Portfolio Projects 💼</a>
-      <a routerLink="/github-analyzer" (click)="closeMobileMenu()" class="mobile-link">GitHub Analyzer 🐙</a>
-      <a routerLink="/career-analytics" (click)="closeMobileMenu()" class="mobile-link">Career Analytics 📈</a>
-      <a routerLink="/achievements" (click)="closeMobileMenu()" class="mobile-link">Achievements 🏆</a>
-      <a routerLink="/companies" (click)="closeMobileMenu()" class="mobile-link">Companies</a>
-      <a routerLink="/skill-gap" (click)="closeMobileMenu()" class="mobile-link">Skill Gap Analyzer ✨</a>
-      <a routerLink="/career-assistant" (click)="closeMobileMenu()" class="mobile-link">AI Career Assistant ✨</a>
-      <a routerLink="/resume-analyzer" (click)="closeMobileMenu()" class="mobile-link">Resume ATS Analyzer</a>
-      <a routerLink="/interview-prep" (click)="closeMobileMenu()" class="mobile-link">Interview Practice</a>
-
-      <div class="dropdown-divider"></div>
-
-      <ng-container *ngIf="authService.isLoggedIn(); else mobileGuest">
-        <a *ngIf="authService.isStudent()" routerLink="/student/dashboard" (click)="closeMobileMenu()" class="mobile-link">Student Dashboard</a>
-        <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/dashboard" (click)="closeMobileMenu()" class="mobile-link">Recruiter Dashboard</a>
-        <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" (click)="closeMobileMenu()" class="mobile-link">Admin Console</a>
-        <a routerLink="/profile" (click)="closeMobileMenu()" class="mobile-link">My Profile</a>
-        <button class="btn btn-danger btn-sm mt-3" (click)="logout()">Sign Out</button>
-      </ng-container>
-
-      <ng-template #mobileGuest>
-        <div class="flex flex-col gap-2 mt-2">
-          <a routerLink="/login" (click)="closeMobileMenu()" class="btn btn-outline">Log In</a>
-          <a routerLink="/register" (click)="closeMobileMenu()" class="btn btn-primary">Sign Up</a>
-        </div>
-      </ng-template>
-    </div>
-  </div>
 </nav>
+
+<!-- Unified Workspace & Mobile Navigation Drawer (outside nav stacking context) -->
+<div *ngIf="isMobileMenuOpen" class="sb-drawer-backdrop" (click)="closeMobileMenu()"></div>
+<aside
+  *ngIf="isMobileMenuOpen"
+  id="sb-workspace-drawer"
+  class="sb-drawer sb-drawer-right workspace-drawer"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Workspace Navigation"
+  (click)="$event.stopPropagation()"
+>
+  <div class="drawer-header flex items-center justify-between p-4">
+    <div class="flex items-center gap-2">
+      <span class="font-bold text-base">Workspace</span>
+      <app-sb-badge variant="cyan">Menu</app-sb-badge>
+    </div>
+    <button type="button" class="btn btn-outline btn-sm" (click)="closeMobileMenu()" aria-label="Close workspace navigation">✕</button>
+  </div>
+  <div class="dropdown-divider"></div>
+  <div class="mobile-links flex flex-col gap-1 p-4">
+    <div class="drawer-section-label">Explore & Practice</div>
+    <a routerLink="/jobs" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">💼 Explore Jobs</a>
+    <a routerLink="/career-explorer" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🤖 Career Explorer</a>
+    <a routerLink="/assessments" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📝 Skill Assessments</a>
+    <a routerLink="/learning-roadmap" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🗺️ Learning Roadmap</a>
+    <a routerLink="/projects" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🧩 Portfolio Projects</a>
+    <a routerLink="/github-analyzer" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🐙 GitHub Analyzer</a>
+    <a routerLink="/career-analytics" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📈 Career Analytics</a>
+    <a routerLink="/achievements" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🏆 Achievements</a>
+    <a routerLink="/companies" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🏢 Companies</a>
+
+    <div class="dropdown-divider"></div>
+    <div class="drawer-section-label">AI Studio Tools</div>
+    <a routerLink="/skill-gap" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">✨ Skill Gap Analyzer</a>
+    <a routerLink="/career-assistant" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">✨ AI Career Assistant</a>
+    <a routerLink="/resume-analyzer" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📄 Resume ATS Analyzer</a>
+    <a routerLink="/interview-prep" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🎤 Interview Practice</a>
+
+    <div class="dropdown-divider"></div>
+
+    <ng-container *ngIf="authService.isLoggedIn(); else mobileGuest">
+      <div class="drawer-section-label">Account & Role</div>
+      <a *ngIf="authService.isStudent()" routerLink="/student/dashboard" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📊 Student Dashboard</a>
+      <a *ngIf="authService.isStudent()" routerLink="/applications" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📨 My Applications</a>
+      <a *ngIf="authService.isStudent()" routerLink="/saved-jobs" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🔖 Saved Jobs</a>
+      <a *ngIf="authService.isStudent()" routerLink="/resume-builder" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🧾 Resume Builder</a>
+
+      <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/dashboard" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">💼 Recruiter Dashboard</a>
+      <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/post-job" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">➕ Post New Job</a>
+      <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/applications" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">👥 Candidate Applications</a>
+      <a *ngIf="authService.isRecruiter()" routerLink="/recruiter/candidates" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🔍 Search Candidates</a>
+
+      <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🛡️ Admin Console</a>
+      <a *ngIf="authService.isAdmin()" routerLink="/admin/users" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">👥 Manage Users</a>
+      <a *ngIf="authService.isAdmin()" routerLink="/admin/jobs" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">📋 Moderate Jobs</a>
+      <a *ngIf="authService.isAdmin()" routerLink="/admin/reports" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🚨 Reports</a>
+
+      <a routerLink="/profile" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">👤 My Profile</a>
+      <button type="button" class="btn btn-danger btn-sm mt-3" (click)="logout(); closeMobileMenu()">Sign Out</button>
+    </ng-container>
+
+    <ng-template #mobileGuest>
+      <div class="flex flex-col gap-2 mt-2">
+        <a routerLink="/login" (click)="closeMobileMenu()" class="btn btn-outline">Log In</a>
+        <a routerLink="/register" (click)="closeMobileMenu()" class="btn btn-primary">Sign Up</a>
+      </div>
+    </ng-template>
+  </div>
+</aside>
