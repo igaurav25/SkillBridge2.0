@@ -31,6 +31,14 @@ export interface User {
   resumeScore?: number;
   applicationsCount?: number;
   savedJobsCount?: number;
+  notificationPreferences?: {
+    jobAlerts?: boolean;
+    interviewReminders?: boolean;
+    applicationUpdates?: boolean;
+    weeklyDigest?: boolean;
+  };
+  themePreference?: 'dark' | 'light' | 'system';
+  preferred3DMode?: 'auto' | 'force-3d' | 'force-2d';
   createdAt?: string;
   updatedAt?: string;
 }

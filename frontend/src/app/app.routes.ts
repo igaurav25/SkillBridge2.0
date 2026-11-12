@@ -31,6 +31,8 @@ export const routes: Routes = [
   { path: 'github-analyzer', loadComponent: () => import('./pages/github-analyzer/github-analyzer.component').then(m => m.GithubAnalyzerComponent), canActivate: [authGuard] },
   { path: 'career-analytics', loadComponent: () => import('./pages/career-analytics/career-analytics.component').then(m => m.CareerAnalyticsComponent), canActivate: [authGuard] },
   { path: 'achievements', loadComponent: () => import('./pages/achievements/achievements.component').then(m => m.AchievementsComponent), canActivate: [authGuard] },
+  { path: 'notifications', loadComponent: () => import('./pages/notifications/notifications.component').then(m => m.NotificationsComponent), canActivate: [authGuard] },
+  { path: 'settings', loadComponent: () => import('./pages/settings/settings.component').then(m => m.SettingsComponent), canActivate: [authGuard] },
 
   // Recruiter Protected
   { path: 'recruiter', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },

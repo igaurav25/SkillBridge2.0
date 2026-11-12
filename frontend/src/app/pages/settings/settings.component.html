@@ -1,0 +1,362 @@
+<div class="sb-section settings-page">
+  <div class="container max-w-4xl">
+    <div class="page-header mb-6">
+      <div class="flex items-center gap-3 flex-wrap">
+        <h1 class="text-3xl font-bold">Account Settings</h1>
+        <app-sb-badge variant="cyan">{{ authService.currentUser()?.role | uppercase }}</app-sb-badge>
+      </div>
+      <p class="text-sm text-secondary mt-1">
+        Manage profile details, security credentials, appearance, notification preferences, and personal data exports.
+      </p>
+    </div>
+
+    <div class="settings-layout">
+      <!-- Navigation Sidebar / Tabs -->
+      <nav class="settings-nav sb-card" aria-label="Settings Categories">
+        <button
+          type="button"
+          class="settings-nav-btn"
+          [class.active]="activeTab() === 'profile'"
+          (click)="setTab('profile')"
+        >
+          <span>👤 Profile Identity</span>
+        </button>
+        <button
+          type="button"
+          class="settings-nav-btn"
+          [class.active]="activeTab() === 'security'"
+          (click)="setTab('security')"
+        >
+          <span>🔐 Security & Password</span>
+        </button>
+        <button
+          type="button"
+          class="settings-nav-btn"
+          [class.active]="activeTab() === 'preferences'"
+          (click)="setTab('preferences')"
+        >
+          <span>⚙️ Theme & Alerts</span>
+        </button>
+        <button
+          type="button"
+          class="settings-nav-btn"
+          [class.active]="activeTab() === 'privacy'"
+          (click)="setTab('privacy')"
+        >
+          <span>🛡️ Data & Privacy</span>
+        </button>
+      </nav>
+
+      <!-- Main Settings Content -->
+      <div class="settings-panel sb-card">
+        <!-- 1. Profile Details -->
+        <section *ngIf="activeTab() === 'profile'" aria-labelledby="profile-settings-title">
+          <h2 id="profile-settings-title" class="text-xl font-bold mb-1">Profile Identity</h2>
+          <p class="text-xs text-muted mb-5">Update your display name, headline, and contact phone.</p>
+
+          <form (ngSubmit)="saveProfile()" class="flex flex-col gap-4">
+            <div class="form-group">
+              <label for="settings-name" class="form-label">Full Name</label>
+              <input
+                id="settings-name"
+                type="text"
+                class="form-control"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+                name="name"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="settings-email" class="form-label">Email Address (Read-only)</label>
+              <input
+                id="settings-email"
+                type="email"
+                class="form-control"
+                [value]="authService.currentUser()?.email || ''"
+                disabled
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="settings-headline" class="form-label">Professional Headline</label>
+              <input
+                id="settings-headline"
+                type="text"
+                class="form-control"
+                placeholder="e.g. Final Year CS Student | Angular & Node.js Developer"
+                [ngModel]="headline()"
+                (ngModelChange)="headline.set($event)"
+                name="headline"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="settings-phone" class="form-label">Phone Number</label>
+              <input
+                id="settings-phone"
+                type="tel"
+                class="form-control"
+                placeholder="+1 (555) 123-4567"
+                [ngModel]="phone()"
+                (ngModelChange)="phone.set($event)"
+                name="phone"
+              />
+            </div>
+
+            <div class="pt-2">
+              <button type="submit" class="btn btn-primary" [disabled]="isSavingProfile()">
+                {{ isSavingProfile() ? 'Saving...' : 'Save Identity Settings' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- 2. Security & Password -->
+        <section *ngIf="activeTab() === 'security'" aria-labelledby="security-settings-title">
+          <h2 id="security-settings-title" class="text-xl font-bold mb-1">Security & Password</h2>
+          <p class="text-xs text-muted mb-5">Use at least 6 characters with a mix of letters and numbers.</p>
+
+          <form (ngSubmit)="savePassword()" class="flex flex-col gap-4">
+            <div class="form-group">
+              <label for="current-pw" class="form-label">Current Password</label>
+              <input
+                id="current-pw"
+                type="password"
+                class="form-control"
+                [(ngModel)]="currentPassword"
+                name="currentPassword"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="new-pw" class="form-label">New Password</label>
+              <input
+                id="new-pw"
+                type="password"
+                class="form-control"
+                [(ngModel)]="newPassword"
+                name="newPassword"
+                minlength="6"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="confirm-pw" class="form-label">Confirm New Password</label>
+              <input
+                id="confirm-pw"
+                type="password"
+                class="form-control"
+                [(ngModel)]="confirmPassword"
+                name="confirmPassword"
+                required
+              />
+            </div>
+
+            <div class="pt-2">
+              <button type="submit" class="btn btn-primary" [disabled]="isSavingPassword()">
+                {{ isSavingPassword() ? 'Updating...' : 'Update Password' }}
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- 3. Preferences: Theme, 3D Mode, Notifications -->
+        <section *ngIf="activeTab() === 'preferences'" aria-labelledby="pref-settings-title">
+          <h2 id="pref-settings-title" class="text-xl font-bold mb-1">Appearance & Notifications</h2>
+          <p class="text-xs text-muted mb-5">Customize interface theme, 3D GPU quality, and alert channels.</p>
+
+          <div class="mb-6">
+            <h3 class="text-sm font-bold mb-2">Interface Theme</h3>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferredTheme() === 'dark'"
+                [class.btn-outline]="preferredTheme() !== 'dark'"
+                (click)="onThemeSelect('dark')"
+              >
+                🌙 Dark Obsidian
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferredTheme() === 'light'"
+                [class.btn-outline]="preferredTheme() !== 'light'"
+                (click)="onThemeSelect('light')"
+              >
+                ☀️ Crisp Light
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferredTheme() === 'system'"
+                [class.btn-outline]="preferredTheme() !== 'system'"
+                (click)="onThemeSelect('system')"
+              >
+                💻 System Default
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="text-sm font-bold mb-2">3D & Visual Performance Mode</h3>
+            <div class="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferred3D() === 'auto'"
+                [class.btn-outline]="preferred3D() !== 'auto'"
+                (click)="on3DSelect('auto')"
+              >
+                Adaptive (Recommended)
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferred3D() === 'force-3d'"
+                [class.btn-outline]="preferred3D() !== 'force-3d'"
+                (click)="on3DSelect('force-3d')"
+              >
+                Force Full 3D
+              </button>
+              <button
+                type="button"
+                class="btn btn-sm"
+                [class.btn-primary]="preferred3D() === 'force-2d'"
+                [class.btn-outline]="preferred3D() !== 'force-2d'"
+                (click)="on3DSelect('force-2d')"
+              >
+                Static 2D Eco Mode
+              </button>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <h3 class="text-sm font-bold mb-3">Notification Triggers</h3>
+            <div class="flex flex-col gap-3">
+              <label class="pref-toggle-row">
+                <div>
+                  <div class="font-semibold text-sm">Job Match Alerts</div>
+                  <div class="text-xs text-muted">Notify when new opportunities match your saved skills.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  [ngModel]="jobAlerts()"
+                  (ngModelChange)="jobAlerts.set($event)"
+                  name="jobAlerts"
+                />
+              </label>
+
+              <label class="pref-toggle-row">
+                <div>
+                  <div class="font-semibold text-sm">Application Status Updates</div>
+                  <div class="text-xs text-muted">Instant notifications when recruiters shortlist or update stages.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  [ngModel]="applicationUpdates()"
+                  (ngModelChange)="applicationUpdates.set($event)"
+                  name="applicationUpdates"
+                />
+              </label>
+
+              <label class="pref-toggle-row">
+                <div>
+                  <div class="font-semibold text-sm">Interview Reminders</div>
+                  <div class="text-xs text-muted">Reminders prior to scheduled mock or recruiter interviews.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  [ngModel]="interviewReminders()"
+                  (ngModelChange)="interviewReminders.set($event)"
+                  name="interviewReminders"
+                />
+              </label>
+
+              <label class="pref-toggle-row">
+                <div>
+                  <div class="font-semibold text-sm">Weekly Digest Summary</div>
+                  <div class="text-xs text-muted">Weekly recap of roadmap milestones and career readiness delta.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  [ngModel]="weeklyDigest()"
+                  (ngModelChange)="weeklyDigest.set($event)"
+                  name="weeklyDigest"
+                />
+              </label>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" [disabled]="isSavingPreferences()" (click)="savePreferences()">
+            {{ isSavingPreferences() ? 'Saving...' : 'Save Preferences' }}
+          </button>
+        </section>
+
+        <!-- 4. Privacy, Export & Account Deletion -->
+        <section *ngIf="activeTab() === 'privacy'" aria-labelledby="privacy-settings-title">
+          <h2 id="privacy-settings-title" class="text-xl font-bold mb-1">Data Portability & Account Privacy</h2>
+          <p class="text-xs text-muted mb-5">Download a machine-readable JSON copy of your records or delete your account permanently.</p>
+
+          <div class="privacy-box mb-6">
+            <h3 class="font-bold text-base mb-1">Export My Data</h3>
+            <p class="text-sm text-secondary mb-3">
+              Downloads your profile, resumes, applications, saved jobs, mock interviews, and skill assessments in JSON format.
+            </p>
+            <button type="button" class="btn btn-outline btn-sm" [disabled]="isExporting()" (click)="exportData()">
+              {{ isExporting() ? 'Preparing Export...' : '⬇ Export My Data (JSON)' }}
+            </button>
+          </div>
+
+          <div class="danger-box">
+            <h3 class="font-bold text-base text-rose mb-1">Danger Zone: Delete Account</h3>
+            <p class="text-sm text-secondary mb-3">
+              Permanently erases your user account, saved resumes, profile history, and application logs. This action cannot be undone.
+            </p>
+            <button type="button" class="btn btn-danger btn-sm" (click)="openDeleteModal()">
+              Delete My Account
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Account Modal -->
+<app-sb-modal
+  [open]="showDeleteModal()"
+  title="Confirm Permanent Account Deletion"
+  maxWidth="460px"
+  (close)="closeDeleteModal()"
+>
+  <p class="text-sm text-secondary mb-4">
+    Enter your current password to confirm deleting <strong>{{ authService.currentUser()?.email }}</strong> and all associated data.
+  </p>
+  <div class="form-group mb-4">
+    <label for="delete-pw-confirm" class="form-label">Current Password</label>
+    <input
+      id="delete-pw-confirm"
+      type="password"
+      class="form-control"
+      [(ngModel)]="deleteConfirmPassword"
+      placeholder="Enter password to confirm"
+    />
+  </div>
+  <div class="flex items-center justify-end gap-2">
+    <button type="button" class="btn btn-outline btn-sm" (click)="closeDeleteModal()">Cancel</button>
+    <button
+      type="button"
+      class="btn btn-danger btn-sm"
+      [disabled]="isDeletingAccount()"
+      (click)="confirmDeleteAccount()"
+    >
+      {{ isDeletingAccount() ? 'Deleting...' : 'Permanently Delete' }}
+    </button>
+  </div>
+</app-sb-modal>
+

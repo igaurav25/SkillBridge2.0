@@ -255,5 +255,42 @@ test('API Regression Suite (Auth, IDOR, Mass Assignment, C++ Search, Admin Priva
   assert.equal(typeof publicStatsJson.data.registeredStudents, 'number');
   assert.ok(publicStatsJson.data.activeJobs >= 5, 'Includes real seeded active jobs');
   assert.equal(publicStatsJson.data.emails, undefined);
+
+  // 11. Account settings: preferences update, password change & data export
+  const prefsRes = await fetch(`${baseUrl}/users/preferences`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${studentAuth.token}`,
+    },
+    body: JSON.stringify({
+      themePreference: 'light',
+      preferred3DMode: 'force-2d',
+      notificationPreferences: { jobAlerts: false, weeklyDigest: true },
+    }),
+  });
+  const prefsJson = await prefsRes.json();
+  assert.equal(prefsRes.status, 200);
+  assert.equal(prefsJson.data.themePreference, 'light');
+  assert.equal(prefsJson.data.notificationPreferences.jobAlerts, false);
+  assert.equal(prefsJson.data.notificationPreferences.weeklyDigest, true);
+
+  const exportRes = await fetch(`${baseUrl}/users/export-data`, {
+    headers: { Authorization: `Bearer ${studentAuth.token}` },
+  });
+  const exportJson = await exportRes.json();
+  assert.equal(exportRes.status, 200);
+  assert.equal(exportJson.data.account.password, undefined);
+  assert.ok(exportJson.data.profile);
+
+  const badPassRes = await fetch(`${baseUrl}/users/password`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${studentAuth.token}`,
+    },
+    body: JSON.stringify({ currentPassword: 'WrongPassword!', newPassword: 'NewPassword123!' }),
+  });
+  assert.equal(badPassRes.status, 401);
 });
 

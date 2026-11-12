@@ -64,6 +64,8 @@ const ROLE_ROUTES = {
     '/github-analyzer',
     '/career-analytics',
     '/achievements',
+    '/notifications',
+    '/settings',
     '/jobs',
   ],
   recruiter: [

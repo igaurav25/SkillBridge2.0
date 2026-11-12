@@ -59,6 +59,22 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    notificationPreferences: {
+      jobAlerts: { type: Boolean, default: true },
+      interviewReminders: { type: Boolean, default: true },
+      applicationUpdates: { type: Boolean, default: true },
+      weeklyDigest: { type: Boolean, default: false },
+    },
+    themePreference: {
+      type: String,
+      enum: ['dark', 'light', 'system'],
+      default: 'dark',
+    },
+    preferred3DMode: {
+      type: String,
+      enum: ['auto', 'force-3d', 'force-2d'],
+      default: 'auto',
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

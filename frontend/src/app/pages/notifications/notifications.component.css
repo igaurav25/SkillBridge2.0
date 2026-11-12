@@ -1,0 +1,79 @@
+.max-w-3xl {
+  max-width: 52rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.filter-bar {
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: 0.75rem;
+}
+
+.tab-btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.tab-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: var(--bg-secondary);
+  border-color: var(--border-active);
+  color: var(--primary-400);
+}
+
+.notification-card {
+  transition: transform var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  border-left: 3px solid transparent;
+}
+
+.notification-card.unread {
+  border-left-color: var(--primary-500);
+  background: var(--bg-secondary);
+}
+
+.notification-card.clickable {
+  cursor: pointer;
+}
+
+.notification-card.clickable:hover {
+  border-color: var(--border-active);
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  display: inline-block;
+}
+
+.btn-xs {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.text-rose {
+  color: var(--accent-rose);
+}
+
+@media (max-width: 600px) {
+  .notification-card {
+    flex-direction: column;
+  }
+  .item-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+

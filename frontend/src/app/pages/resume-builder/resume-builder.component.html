@@ -5,160 +5,421 @@
       <div>
         <span class="badge badge-primary text-xs mb-1">CAREER TOOLING</span>
         <h1 class="text-2xl font-bold">Professional Resume Builder</h1>
-        <p class="text-xs text-secondary">Craft ATS-friendly, multi-template developer resumes</p>
+        <p class="text-xs text-secondary">Craft ATS-optimized, multi-template developer resumes with instant PDF export</p>
       </div>
 
-      <div class="flex items-center gap-3 flex-wrap">
-        <button class="btn btn-outline btn-sm" (click)="createNewBlank()">+ New Resume</button>
-        <button class="btn btn-secondary btn-sm" (click)="populateFromProfile()">Sync Profile Data</button>
-        <button class="btn btn-outline btn-sm" (click)="printResume()">🖨️ Download / Print PDF</button>
-        <button class="btn btn-primary btn-sm" [disabled]="isSaving" (click)="saveResume()">
-          {{ isSaving ? 'Saving...' : '💾 Save Resume' }}
+      <div class="flex items-center gap-2 flex-wrap">
+        <button type="button" class="btn btn-outline btn-sm" (click)="createNewBlank()">+ New</button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="populateFromProfile()">Sync Profile</button>
+        <button
+          *ngIf="activeResume._id"
+          type="button"
+          class="btn btn-outline btn-sm"
+          title="Duplicate this resume"
+          (click)="duplicateResume(activeResume)"
+        >
+          Duplicate
+        </button>
+        <button
+          *ngIf="activeResume._id && !activeResume.isPrimary"
+          type="button"
+          class="btn btn-outline btn-sm"
+          title="Set as your primary resume for job applications"
+          (click)="markPrimary(activeResume)"
+        >
+          ⭐ Set Primary
+        </button>
+        <button
+          *ngIf="activeResume._id"
+          type="button"
+          class="btn btn-outline btn-sm text-danger"
+          title="Delete this resume"
+          (click)="deleteResume(activeResume)"
+        >
+          Delete
+        </button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="printResume()">🖨️ PDF / Print</button>
+        <button type="button" class="btn btn-primary btn-sm" [disabled]="isSaving" (click)="saveResume()">
+          {{ isSaving ? 'Saving...' : '💾 Save' }}
         </button>
       </div>
     </div>
 
-    <!-- Template Selector Bar -->
-    <div class="template-selector-card sb-card p-3 mb-6 flex items-center justify-between flex-wrap gap-4">
-      <div class="flex items-center gap-2 flex-wrap">
-        <span class="text-xs font-bold text-muted uppercase">Template Style:</span>
-        <div class="flex items-center gap-2 flex-wrap">
+    <!-- Template Selector & Active Resume Bar -->
+    <div class="template-selector-card sb-card p-4 mb-6 flex items-center justify-between flex-wrap gap-4">
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="text-xs font-bold text-muted uppercase">Template:</span>
+        <div class="flex items-center gap-2 flex-wrap" role="group" aria-label="Resume template style">
           <button
-            class="badge template-pill"
-            [class.badge-primary]="selectedTemplate === 'modern'"
-            [class.badge-neutral]="selectedTemplate !== 'modern'"
-            (click)="selectedTemplate = 'modern'"
-          >
-            Modern Tech
-          </button>
-          <button
-            class="badge template-pill"
-            [class.badge-primary]="selectedTemplate === 'executive'"
-            [class.badge-neutral]="selectedTemplate !== 'executive'"
-            (click)="selectedTemplate = 'executive'"
-          >
-            Executive
-          </button>
-          <button
+            type="button"
             class="badge template-pill"
             [class.badge-primary]="selectedTemplate === 'minimal'"
             [class.badge-neutral]="selectedTemplate !== 'minimal'"
             (click)="selectedTemplate = 'minimal'"
           >
-            Clean Minimal
+            ATS Minimal Clean
           </button>
           <button
+            type="button"
             class="badge template-pill"
             [class.badge-primary]="selectedTemplate === 'tech'"
             [class.badge-neutral]="selectedTemplate !== 'tech'"
             (click)="selectedTemplate = 'tech'"
           >
-            Terminal / Tech
+            ATS Technical Serif
+          </button>
+          <button
+            type="button"
+            class="badge template-pill"
+            [class.badge-primary]="selectedTemplate === 'modern'"
+            [class.badge-neutral]="selectedTemplate !== 'modern'"
+            (click)="selectedTemplate = 'modern'"
+          >
+            Modern Gradient Split
+          </button>
+          <button
+            type="button"
+            class="badge template-pill"
+            [class.badge-primary]="selectedTemplate === 'executive'"
+            [class.badge-neutral]="selectedTemplate !== 'executive'"
+            (click)="selectedTemplate = 'executive'"
+          >
+            Executive Portfolio Sidebar
           </button>
         </div>
       </div>
 
-      <!-- User's saved resumes list -->
-      <div *ngIf="userResumes.length > 0" class="flex items-center gap-2">
-        <span class="text-xs text-muted">My Resumes:</span>
-        <select aria-label="Load saved resume draft" class="select-control text-xs py-1" (change)="loadResume(userResumes[+$any($event.target).value])">
-          <option *ngFor="let r of userResumes; let idx = index" [value]="idx">
-            {{ r.title }}
+      <div class="flex items-center gap-2" *ngIf="userResumes.length > 0">
+        <span *ngIf="activeResume.isPrimary" class="badge badge-success text-xs">Primary Resume</span>
+        <label for="rb-switch-resume" class="text-xs text-muted">Switch:</label>
+        <select
+          id="rb-switch-resume"
+          class="form-control text-xs"
+          style="width: auto; display: inline-block;"
+          [ngModel]="activeResume._id"
+          (ngModelChange)="loadResume($event)"
+        >
+          <option *ngFor="let r of userResumes" [ngValue]="r">
+            {{ r.title }} {{ r.isPrimary ? '★' : '' }}
           </option>
         </select>
       </div>
     </div>
 
-    <!-- Two Panes: Left Form Editor, Right Live Styled Preview -->
-    <div class="grid grid-2 gap-6">
-      <!-- Left Pane: Editor -->
-      <div class="editor-pane sb-card">
-        <h2 class="text-base font-bold mb-4">Edit Content</h2>
-
-        <div class="form-group">
-          <label class="form-label">Resume Title</label>
-          <input aria-label="Resume title" type="text" class="form-control" [(ngModel)]="activeResume.title" />
+    <!-- Quality Suggestions & ATS Score Bar -->
+    <div class="quality-bar sb-card p-4 mb-6">
+      <div class="flex items-center justify-between flex-wrap gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <div class="score-circle" [class.score-good]="qualityScore >= 80" [class.score-avg]="qualityScore >= 50 && qualityScore < 80">
+            {{ qualityScore }}%
+          </div>
+          <div>
+            <h2 class="text-sm font-bold m-0">ATS Readiness & Quality Checklist</h2>
+            <p class="text-xs text-muted m-0">Real-time heuristics to maximize recruiter & ATS match rate</p>
+          </div>
         </div>
+        <span class="badge" [class.badge-success]="qualityScore >= 80" [class.badge-warning]="qualityScore < 80">
+          {{ qualityScore >= 80 ? 'ATS Optimized' : 'Improvements Suggested' }}
+        </span>
+      </div>
+
+      <div class="quality-grid">
+        <div *ngFor="let s of qualitySuggestions" class="quality-item" [class.passed]="s.passed">
+          <span class="quality-icon">{{ s.passed ? '✓' : '!' }}</span>
+          <div class="quality-info">
+            <span class="quality-label">{{ s.label }}</span>
+            <span class="quality-hint">{{ s.hint }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Panes: Left Form Editor, Right Live Styled Preview -->
+    <div class="builder-layout">
+      <!-- Left Pane: Editor -->
+      <div class="editor-pane sb-card p-5">
+        <h2 class="text-base font-bold mb-4 pb-2 border-b">Edit Resume Content</h2>
+
+        <div class="form-group mb-4">
+          <label class="form-label" for="rb-title">Resume Title / Target Designation</label>
+          <input id="rb-title" type="text" class="form-control" [(ngModel)]="activeResume.title" placeholder="e.g. Senior Frontend Engineer Resume" />
+        </div>
+
+        <div class="section-divider my-4"></div>
+        <h3 class="text-sm font-bold text-primary mb-3">Personal & Contact Info</h3>
 
         <div class="grid grid-2 gap-3" *ngIf="activeResume.personalDetails">
           <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input aria-label="Full name" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.fullName" />
+            <label class="form-label" for="rb-name">Full Name</label>
+            <input id="rb-name" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.fullName" />
           </div>
           <div class="form-group">
-            <label class="form-label">Email</label>
-            <input aria-label="Email address" type="email" class="form-control" [(ngModel)]="activeResume.personalDetails.email" />
+            <label class="form-label" for="rb-email">Email</label>
+            <input id="rb-email" type="email" class="form-control" [(ngModel)]="activeResume.personalDetails.email" />
           </div>
           <div class="form-group">
             <label for="rb-phone" class="form-label">Phone</label>
-            <input id="rb-phone" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.phone" />
+            <input id="rb-phone" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.phone" placeholder="+1 (555) 000-0000" />
           </div>
           <div class="form-group">
             <label for="rb-location" class="form-label">Location</label>
-            <input id="rb-location" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.location" />
+            <input id="rb-location" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.location" placeholder="City, State / Remote" />
+          </div>
+          <div class="form-group">
+            <label for="rb-github" class="form-label">GitHub</label>
+            <input id="rb-github" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.github" placeholder="github.com/username" />
+          </div>
+          <div class="form-group">
+            <label for="rb-linkedin" class="form-label">LinkedIn</label>
+            <input id="rb-linkedin" type="text" class="form-control" [(ngModel)]="activeResume.personalDetails.linkedin" placeholder="linkedin.com/in/username" />
           </div>
         </div>
 
-        <div class="form-group">
+        <div class="section-divider my-4"></div>
+
+        <div class="form-group mb-4">
           <label for="rb-summary" class="form-label">Professional Summary</label>
-          <textarea id="rb-summary" class="form-control" rows="3" [(ngModel)]="activeResume.summary"></textarea>
+          <textarea id="rb-summary" class="form-control" rows="3" [(ngModel)]="activeResume.summary" placeholder="Passionate full-stack developer with 3+ years building high-performance web applications..."></textarea>
         </div>
 
-        <div class="form-group">
-          <label for="rb-skills" class="form-label">Skills (Comma-separated)</label>
-          <input id="rb-skills" type="text" class="form-control" [(ngModel)]="skillsInput" placeholder="Angular, Node.js, TypeScript, Docker..." />
+        <div class="form-group mb-4">
+          <label for="rb-skills" class="form-label">Technical Skills (Comma-separated)</label>
+          <input id="rb-skills" type="text" class="form-control" [(ngModel)]="skillsInput" placeholder="Angular, TypeScript, Node.js, Express, MongoDB, Three.js, Docker, Git" />
+        </div>
+
+        <!-- Experience Editor -->
+        <div class="section-divider my-4"></div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-primary m-0">Experience</h3>
+          <span class="text-xs text-muted">({{ (activeResume.experience || []).length }} added)</span>
+        </div>
+
+        <div *ngFor="let exp of activeResume.experience; let i = index" class="draft-item-card p-3 mb-2">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <strong class="text-primary">{{ exp.title }} — {{ exp.company }}</strong>
+            <button type="button" class="btn-text-danger text-xs" (click)="removeExperience(i)">Remove</button>
+          </div>
+          <p class="text-xs text-muted m-0">{{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}</p>
+        </div>
+
+        <div class="add-subform p-3 mb-4">
+          <span class="text-xs font-bold text-secondary mb-2 block">+ Add Experience</span>
+          <div class="grid grid-2 gap-2 mb-2">
+            <input type="text" class="form-control text-xs" [(ngModel)]="newExp.title" placeholder="Job Title" />
+            <input type="text" class="form-control text-xs" [(ngModel)]="newExp.company" placeholder="Company" />
+          </div>
+          <div class="grid grid-2 gap-2 mb-2">
+            <input type="text" class="form-control text-xs" [(ngModel)]="newExp.startDate" placeholder="Start Date (e.g. 2023)" />
+            <input type="text" class="form-control text-xs" [(ngModel)]="newExp.endDate" placeholder="End Date (or 'Present')" />
+          </div>
+          <textarea class="form-control text-xs mb-2" rows="2" [(ngModel)]="newExp.description" placeholder="Key responsibilities and measurable achievements..."></textarea>
+          <button type="button" class="btn btn-outline btn-sm w-full" (click)="addExperience()">Add to Experience</button>
+        </div>
+
+        <!-- Projects Editor -->
+        <div class="section-divider my-4"></div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-primary m-0">Projects</h3>
+          <span class="text-xs text-muted">({{ (activeResume.projects || []).length }} added)</span>
+        </div>
+
+        <div *ngFor="let proj of activeResume.projects; let i = index" class="draft-item-card p-3 mb-2">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <strong class="text-primary">{{ proj.title }}</strong>
+            <button type="button" class="btn-text-danger text-xs" (click)="removeProject(i)">Remove</button>
+          </div>
+          <p class="text-xs text-secondary m-0 line-clamp-1">{{ proj.description }}</p>
+        </div>
+
+        <div class="add-subform p-3 mb-4">
+          <span class="text-xs font-bold text-secondary mb-2 block">+ Add Project</span>
+          <input type="text" class="form-control text-xs mb-2" [(ngModel)]="newProject.title" placeholder="Project Title" />
+          <textarea class="form-control text-xs mb-2" rows="2" [(ngModel)]="newProject.description" placeholder="Brief description of the project and your role..."></textarea>
+          <input type="text" class="form-control text-xs mb-2" [(ngModel)]="newProject.technologies" placeholder="Tech stack (e.g. Angular, Node.js, WebGL)" />
+          <div class="grid grid-2 gap-2 mb-2">
+            <input type="text" class="form-control text-xs" [(ngModel)]="newProject.liveUrl" placeholder="Live Demo URL" />
+            <input type="text" class="form-control text-xs" [(ngModel)]="newProject.githubUrl" placeholder="GitHub URL" />
+          </div>
+          <button type="button" class="btn btn-outline btn-sm w-full" (click)="addProject()">Add to Projects</button>
+        </div>
+
+        <!-- Education Editor -->
+        <div class="section-divider my-4"></div>
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-primary m-0">Education</h3>
+          <span class="text-xs text-muted">({{ (activeResume.education || []).length }} added)</span>
+        </div>
+
+        <div *ngFor="let edu of activeResume.education; let i = index" class="draft-item-card p-3 mb-2">
+          <div class="flex items-center justify-between text-xs mb-1">
+            <strong class="text-primary">{{ edu.degree || edu.institution }}</strong>
+            <button type="button" class="btn-text-danger text-xs" (click)="removeEducation(i)">Remove</button>
+          </div>
+          <p class="text-xs text-muted m-0">{{ edu.institution || edu.college }} • {{ edu.graduationYear }}</p>
+        </div>
+
+        <div class="add-subform p-3">
+          <span class="text-xs font-bold text-secondary mb-2 block">+ Add Education</span>
+          <div class="grid grid-2 gap-2 mb-2">
+            <input type="text" class="form-control text-xs" [(ngModel)]="newEdu.degree" placeholder="Degree (e.g. B.Tech Computer Science)" />
+            <input type="text" class="form-control text-xs" [(ngModel)]="newEdu.institution" placeholder="University / College" />
+          </div>
+          <div class="grid grid-2 gap-2 mb-2">
+            <input type="number" class="form-control text-xs" [(ngModel)]="newEdu.graduationYear" placeholder="Graduation Year" />
+            <input type="text" class="form-control text-xs" [(ngModel)]="newEdu.gpa" placeholder="GPA / Percentage (Optional)" />
+          </div>
+          <button type="button" class="btn btn-outline btn-sm w-full" (click)="addEducation()">Add to Education</button>
         </div>
       </div>
 
       <!-- Right Pane: Live Interactive Resume Preview -->
       <div class="preview-pane sb-card resume-sheet" [ngClass]="'template-' + selectedTemplate">
-        <div class="resume-header text-center mb-6">
-          <h1 class="preview-name text-2xl font-bold">{{ activeResume.personalDetails?.fullName || 'Your Full Name' }}</h1>
-          <div class="contact-row flex items-center justify-center gap-3 text-xs text-muted mt-2 flex-wrap">
-            <span *ngIf="activeResume.personalDetails?.email">📧 {{ activeResume.personalDetails?.email }}</span>
-            <span *ngIf="activeResume.personalDetails?.phone">📱 {{ activeResume.personalDetails?.phone }}</span>
-            <span *ngIf="activeResume.personalDetails?.location">📍 {{ activeResume.personalDetails?.location }}</span>
-          </div>
-        </div>
-
-        <!-- Summary -->
-        <div class="resume-section mb-5" *ngIf="activeResume.summary">
-          <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Professional Summary</h3>
-          <p class="text-xs text-secondary leading-relaxed">{{ activeResume.summary }}</p>
-        </div>
-
-        <!-- Skills -->
-        <div class="resume-section mb-5" *ngIf="skillsInput">
-          <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Core Competencies & Stack</h3>
-          <div class="flex items-center gap-1 flex-wrap">
-            <span *ngFor="let s of skillsInput.split(',')" class="preview-skill-pill text-xs">
-              {{ s.trim() }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Experience -->
-        <div class="resume-section mb-5" *ngIf="activeResume.experience && activeResume.experience.length > 0">
-          <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Work Experience</h3>
-          <div *ngFor="let exp of activeResume.experience" class="exp-item mb-3">
-            <div class="flex items-center justify-between text-xs">
-              <span class="font-bold text-primary">{{ exp.title }} — {{ exp.company }}</span>
-              <span class="text-muted">{{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}</span>
+        <!-- Template 4: Executive Portfolio Sidebar Layout -->
+        <div *ngIf="selectedTemplate === 'executive'" class="executive-container">
+          <!-- Left Sidebar -->
+          <aside class="executive-sidebar">
+            <div class="mb-5">
+              <h1 class="executive-name">{{ activeResume.personalDetails?.fullName || 'Your Full Name' }}</h1>
+              <p class="executive-title text-xs uppercase tracking-wider text-muted mt-1">{{ activeResume.title }}</p>
             </div>
-            <p class="text-xs text-secondary mt-1">{{ exp.description }}</p>
-          </div>
+
+            <div class="mb-5">
+              <h3 class="exec-heading">Contact</h3>
+              <ul class="exec-contact-list text-xs">
+                <li *ngIf="activeResume.personalDetails?.email">📧 {{ activeResume.personalDetails?.email }}</li>
+                <li *ngIf="activeResume.personalDetails?.phone">📱 {{ activeResume.personalDetails?.phone }}</li>
+                <li *ngIf="activeResume.personalDetails?.location">📍 {{ activeResume.personalDetails?.location }}</li>
+                <li *ngIf="activeResume.personalDetails?.linkedin">💼 {{ activeResume.personalDetails?.linkedin }}</li>
+                <li *ngIf="activeResume.personalDetails?.github">🐙 {{ activeResume.personalDetails?.github }}</li>
+              </ul>
+            </div>
+
+            <div class="mb-5" *ngIf="getSkillsArray().length > 0">
+              <h3 class="exec-heading">Core Skills</h3>
+              <div class="flex flex-wrap gap-1">
+                <span *ngFor="let s of getSkillsArray()" class="preview-skill-pill text-xs">{{ s }}</span>
+              </div>
+            </div>
+
+            <div class="mb-5" *ngIf="(activeResume.education || []).length > 0">
+              <h3 class="exec-heading">Education</h3>
+              <div *ngFor="let edu of activeResume.education" class="mb-3 text-xs">
+                <strong class="block text-primary">{{ edu.degree }}</strong>
+                <span class="text-secondary">{{ edu.institution || edu.college }}</span>
+                <span class="block text-muted">{{ edu.graduationYear }}</span>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Right Body -->
+          <main class="executive-main">
+            <!-- Summary -->
+            <section class="resume-section mb-5" *ngIf="activeResume.summary">
+              <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Executive Summary</h3>
+              <p class="text-xs text-secondary leading-relaxed">{{ activeResume.summary }}</p>
+            </section>
+
+            <!-- Experience -->
+            <section class="resume-section mb-5" *ngIf="(activeResume.experience || []).length > 0">
+              <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Work Experience</h3>
+              <div *ngFor="let exp of activeResume.experience" class="exp-item mb-4">
+                <div class="flex items-center justify-between text-xs mb-1">
+                  <span class="font-bold text-primary">{{ exp.title }} — {{ exp.company }}</span>
+                  <span class="text-muted">{{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}</span>
+                </div>
+                <p class="text-xs text-secondary leading-relaxed">{{ exp.description }}</p>
+              </div>
+            </section>
+
+            <!-- Projects -->
+            <section class="resume-section" *ngIf="(activeResume.projects || []).length > 0">
+              <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Key Projects & Deliverables</h3>
+              <div *ngFor="let p of activeResume.projects" class="project-item mb-4 text-xs">
+                <div class="flex items-center justify-between font-bold text-primary mb-1">
+                  <span>{{ p.title }}</span>
+                  <span *ngIf="p.liveUrl || p.githubUrl" class="text-muted">
+                    {{ p.liveUrl ? 'Live Demo' : 'GitHub' }}
+                  </span>
+                </div>
+                <p class="text-secondary leading-relaxed mb-1">{{ p.description }}</p>
+                <div class="flex flex-wrap gap-1" *ngIf="p.technologies?.length">
+                  <span *ngFor="let tech of p.technologies" class="preview-skill-pill text-xs">{{ tech }}</span>
+                </div>
+              </div>
+            </section>
+          </main>
         </div>
 
-        <!-- Education -->
-        <div class="resume-section" *ngIf="activeResume.education && activeResume.education.length > 0">
-          <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Education</h3>
-          <div *ngFor="let edu of activeResume.education" class="edu-item mb-2 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-primary">{{ edu.degree }} in {{ edu.fieldOfStudy }}</span>
-              <span class="text-muted">{{ edu.graduationYear }}</span>
+        <!-- Templates 1, 2, 3: Single Column (Modern, Tech, Minimal) -->
+        <div *ngIf="selectedTemplate !== 'executive'">
+          <div class="resume-header text-center mb-6">
+            <h1 class="preview-name text-2xl font-bold">{{ activeResume.personalDetails?.fullName || 'Your Full Name' }}</h1>
+            <p *ngIf="selectedTemplate === 'modern'" class="text-xs text-primary font-medium mt-1 uppercase tracking-wider">{{ activeResume.title }}</p>
+            <div class="contact-row flex items-center justify-center gap-3 text-xs text-muted mt-2 flex-wrap">
+              <span *ngIf="activeResume.personalDetails?.email">📧 {{ activeResume.personalDetails?.email }}</span>
+              <span *ngIf="activeResume.personalDetails?.phone">📱 {{ activeResume.personalDetails?.phone }}</span>
+              <span *ngIf="activeResume.personalDetails?.location">📍 {{ activeResume.personalDetails?.location }}</span>
+              <span *ngIf="activeResume.personalDetails?.linkedin">💼 {{ activeResume.personalDetails?.linkedin }}</span>
+              <span *ngIf="activeResume.personalDetails?.github">🐙 {{ activeResume.personalDetails?.github }}</span>
             </div>
-            <div class="text-secondary">{{ edu.college }}</div>
           </div>
+
+          <!-- Summary -->
+          <section class="resume-section mb-5" *ngIf="activeResume.summary">
+            <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Professional Summary</h3>
+            <p class="text-xs text-secondary leading-relaxed">{{ activeResume.summary }}</p>
+          </section>
+
+          <!-- Skills -->
+          <section class="resume-section mb-5" *ngIf="getSkillsArray().length > 0">
+            <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Core Competencies & Technical Stack</h3>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span *ngFor="let s of getSkillsArray()" class="preview-skill-pill text-xs">
+                {{ s }}
+              </span>
+            </div>
+          </section>
+
+          <!-- Experience -->
+          <section class="resume-section mb-5" *ngIf="(activeResume.experience || []).length > 0">
+            <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Work Experience</h3>
+            <div *ngFor="let exp of activeResume.experience" class="exp-item mb-3">
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-bold text-primary">{{ exp.title }} — {{ exp.company }}</span>
+                <span class="text-muted">{{ exp.startDate }} - {{ exp.isCurrent ? 'Present' : exp.endDate }}</span>
+              </div>
+              <p class="text-xs text-secondary leading-relaxed">{{ exp.description }}</p>
+            </div>
+          </section>
+
+          <!-- Projects -->
+          <section class="resume-section mb-5" *ngIf="(activeResume.projects || []).length > 0">
+            <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Featured Projects</h3>
+            <div *ngFor="let p of activeResume.projects" class="project-item mb-3 text-xs">
+              <div class="flex items-center justify-between font-bold text-primary mb-1">
+                <span>{{ p.title }}</span>
+                <span *ngIf="p.liveUrl || p.githubUrl" class="text-muted font-normal">
+                  {{ p.liveUrl ? 'Live Demo' : 'Source Code' }}
+                </span>
+              </div>
+              <p class="text-secondary leading-relaxed mb-1">{{ p.description }}</p>
+              <div class="flex flex-wrap gap-1" *ngIf="p.technologies?.length">
+                <span *ngFor="let tech of p.technologies" class="preview-skill-pill text-xs">{{ tech }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Education -->
+          <section class="resume-section" *ngIf="(activeResume.education || []).length > 0">
+            <h3 class="section-title text-xs font-bold uppercase tracking-wider mb-2">Education</h3>
+            <div *ngFor="let edu of activeResume.education" class="edu-item mb-2 text-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-primary">{{ edu.degree }}</span>
+                <span class="text-muted">{{ edu.graduationYear }}</span>
+              </div>
+              <div class="text-secondary">{{ edu.institution || edu.college }}</div>
+            </div>
+          </section>
         </div>
       </div>
     </div>

@@ -102,6 +102,10 @@
                 <div class="notification-time text-xs text-muted">{{ item.createdAt | date:'shortTime' }}</div>
               </div>
             </div>
+            <div class="dropdown-divider"></div>
+            <div class="p-2 text-center">
+              <a routerLink="/notifications" (click)="closeDropdowns()" class="btn-link text-xs font-semibold">View all notifications →</a>
+            </div>
           </div>
         </div>
 
@@ -142,6 +146,8 @@
                 <a routerLink="/resume-builder" (click)="closeDropdowns()" class="dropdown-item">📄 Resume Builder</a>
                 <a routerLink="/applications" (click)="closeDropdowns()" class="dropdown-item">📨 My Applications</a>
                 <a routerLink="/saved-jobs" (click)="closeDropdowns()" class="dropdown-item">🔖 Saved Jobs</a>
+                <a routerLink="/notifications" (click)="closeDropdowns()" class="dropdown-item">🔔 All Notifications</a>
+                <a routerLink="/settings" (click)="closeDropdowns()" class="dropdown-item">⚙️ Account Settings</a>
               </ng-container>
 
               <!-- Recruiter specific -->
@@ -267,6 +273,8 @@
       <a *ngIf="authService.isAdmin()" routerLink="/admin/reports" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🚨 Reports</a>
 
       <a routerLink="/profile" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">👤 My Profile</a>
+      <a routerLink="/notifications" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">🔔 Notifications</a>
+      <a routerLink="/settings" (click)="closeMobileMenu()" routerLinkActive="active" class="mobile-link">⚙️ Account Settings</a>
       <button type="button" class="btn btn-danger btn-sm mt-3" (click)="logout(); closeMobileMenu()">Sign Out</button>
     </ng-container>
 
