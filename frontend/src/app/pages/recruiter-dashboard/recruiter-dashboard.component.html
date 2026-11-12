@@ -8,7 +8,8 @@
           <span *ngIf="myCompany" class="text-xs font-semibold text-secondary">• {{ myCompany.name }}</span>
         </div>
         <h1 class="text-3xl font-bold">Talent & Hiring Command Center</h1>
-        <p class="text-sm text-secondary">Manage open tech requisitions, review qualified applicants, and source developer candidates.</p>
+        <p class="text-sm text-secondary">Manage open tech requisitions, review qualified applicants, and source
+          developer candidates.</p>
       </div>
 
       <div class="flex items-center gap-3">
@@ -44,39 +45,19 @@
 
     <!-- Navigation Tabs -->
     <div class="recruiter-nav-tabs mb-6 flex items-center gap-2 flex-wrap border-b border-border pb-2">
-      <button
-        class="nav-tab-btn"
-        [class.active]="activeTab === 'overview'"
-        (click)="activeTab = 'overview'"
-      >
+      <button class="nav-tab-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">
         📊 Dashboard Overview
       </button>
-      <button
-        class="nav-tab-btn"
-        [class.active]="activeTab === 'jobs'"
-        (click)="activeTab = 'jobs'"
-      >
+      <button class="nav-tab-btn" [class.active]="activeTab === 'jobs'" (click)="activeTab = 'jobs'">
         💼 Job Postings ({{ postedJobs.length }})
       </button>
-      <button
-        class="nav-tab-btn"
-        [class.active]="activeTab === 'applications'"
-        (click)="activeTab = 'applications'"
-      >
+      <button class="nav-tab-btn" [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">
         📑 Applicant Pipeline ({{ applications.length }})
       </button>
-      <button
-        class="nav-tab-btn"
-        [class.active]="activeTab === 'candidates'"
-        (click)="activeTab = 'candidates'"
-      >
+      <button class="nav-tab-btn" [class.active]="activeTab === 'candidates'" (click)="activeTab = 'candidates'">
         🔍 Candidate Discovery
       </button>
-      <button
-        class="nav-tab-btn"
-        [class.active]="activeTab === 'company'"
-        (click)="activeTab = 'company'"
-      >
+      <button class="nav-tab-btn" [class.active]="activeTab === 'company'" (click)="activeTab = 'company'">
         🏢 Company Profile
       </button>
     </div>
@@ -111,7 +92,8 @@
               <tbody>
                 <tr *ngFor="let app of applications.slice(0, 5)">
                   <td>
-                    <div class="font-bold text-sm">{{ $any(app).candidate?.name || app.user?.name || 'Applicant' }}</div>
+                    <div class="font-bold text-sm">{{ $any(app).candidate?.name || app.user?.name || 'Applicant' }}
+                    </div>
                     <div class="text-xs text-secondary">{{ $any(app).candidate?.email || app.user?.email }}</div>
                   </td>
                   <td class="text-xs font-semibold">{{ app.job?.title }}</td>
@@ -153,7 +135,8 @@
                   <span>{{ shortlistedCount }}</span>
                 </div>
                 <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-accent h-2 rounded-full" [style.width.%]="applications.length ? (shortlistedCount / applications.length * 100) : 0"></div>
+                  <div class="bg-accent h-2 rounded-full"
+                    [style.width.%]="applications.length ? (shortlistedCount / applications.length * 100) : 0"></div>
                 </div>
               </div>
 
@@ -163,7 +146,8 @@
                   <span>{{ interviewCount }}</span>
                 </div>
                 <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-warning h-2 rounded-full" [style.width.%]="applications.length ? (interviewCount / applications.length * 100) : 0"></div>
+                  <div class="bg-warning h-2 rounded-full"
+                    [style.width.%]="applications.length ? (interviewCount / applications.length * 100) : 0"></div>
                 </div>
               </div>
 
@@ -173,7 +157,8 @@
                   <span>{{ hiredCount }}</span>
                 </div>
                 <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-success h-2 rounded-full" [style.width.%]="applications.length ? (hiredCount / applications.length * 100) : 0"></div>
+                  <div class="bg-success h-2 rounded-full"
+                    [style.width.%]="applications.length ? (hiredCount / applications.length * 100) : 0"></div>
                 </div>
               </div>
             </div>
@@ -200,7 +185,8 @@
       <div *ngIf="showInlinePostJob" class="sb-card p-6">
         <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
           <h3 class="font-bold text-lg">Post New Position</h3>
-          <button type="button" class="btn btn-sm btn-outline" aria-label="Close post job form" (click)="showInlinePostJob = false">✕</button>
+          <button type="button" class="btn btn-sm btn-outline" aria-label="Close post job form"
+            (click)="showInlinePostJob = false">✕</button>
         </div>
         <ng-container *ngTemplateOutlet="jobFormContent"></ng-container>
       </div>
@@ -216,7 +202,8 @@
         <div *ngFor="let job of postedJobs" class="sb-card p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-start justify-between gap-3 mb-2">
-              <span class="badge text-xs" [class.badge-success]="job.status === 'active'" [class.badge-secondary]="job.status !== 'active'">
+              <span class="badge text-xs" [class.badge-success]="job.status === 'active'"
+                [class.badge-secondary]="job.status !== 'active'">
                 {{ job.status | uppercase }}
               </span>
               <span class="text-xs text-secondary">{{ job.createdAt | date:'mediumDate' }}</span>
@@ -236,10 +223,12 @@
             </p>
 
             <div class="flex flex-wrap gap-1 mb-4">
-              <span *ngFor="let s of ($any(job).requiredSkills || job.skillsRequired)?.slice(0, 4)" class="badge badge-secondary text-xs">
+              <span *ngFor="let s of ($any(job).requiredSkills || job.skillsRequired)?.slice(0, 4)"
+                class="badge badge-secondary text-xs">
                 {{ s }}
               </span>
-              <span *ngIf="(($any(job).requiredSkills || job.skillsRequired)?.length || 0) > 4" class="badge badge-secondary text-xs">
+              <span *ngIf="(($any(job).requiredSkills || job.skillsRequired)?.length || 0) > 4"
+                class="badge badge-secondary text-xs">
                 +{{ (($any(job).requiredSkills || job.skillsRequired)?.length || 0) - 4 }}
               </span>
             </div>
@@ -263,8 +252,10 @@
       <!-- Filter Bar -->
       <div class="sb-card p-4 flex items-center gap-4 flex-wrap">
         <div>
-          <label for="rec-app-status-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by Status</label>
-          <select id="rec-app-status-filter" class="select-control" [(ngModel)]="appStatusFilter" (change)="applyAppFilters()">
+          <label for="rec-app-status-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by
+            Status</label>
+          <select id="rec-app-status-filter" class="select-control" [(ngModel)]="appStatusFilter"
+            (change)="applyAppFilters()">
             <option value="all">All Application Statuses</option>
             <option value="Applied">Applied</option>
             <option value="Under Review">Under Review</option>
@@ -276,8 +267,10 @@
         </div>
 
         <div>
-          <label for="rec-app-job-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by Position</label>
-          <select id="rec-app-job-filter" class="select-control" [(ngModel)]="appJobFilter" (change)="applyAppFilters()">
+          <label for="rec-app-job-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by
+            Position</label>
+          <select id="rec-app-job-filter" class="select-control" [(ngModel)]="appJobFilter"
+            (change)="applyAppFilters()">
             <option value="all">All Positions</option>
             <option *ngFor="let job of postedJobs" [value]="job._id">{{ job.title }}</option>
           </select>
@@ -313,10 +306,13 @@
                   <span *ngIf="($any(app).resume || app.resumeSnapshot)?.title" class="badge badge-primary text-xs">
                     📄 {{ ($any(app).resume || app.resumeSnapshot)?.title }}
                   </span>
-                  <a *ngIf="$any(app).resume?.fileUrl || app.resumeUrl" [href]="$any(app).resume?.fileUrl || app.resumeUrl" target="_blank" class="text-xs text-primary underline">
+                  <a *ngIf="$any(app).resume?.fileUrl || app.resumeUrl"
+                    [href]="$any(app).resume?.fileUrl || app.resumeUrl" target="_blank"
+                    class="text-xs text-primary underline">
                     View PDF ↗
                   </a>
-                  <span *ngIf="!$any(app).resume && !app.resumeSnapshot && !app.resumeUrl" class="text-xs text-muted">No resume attached</span>
+                  <span *ngIf="!$any(app).resume && !app.resumeSnapshot && !app.resumeUrl" class="text-xs text-muted">No
+                    resume attached</span>
                 </td>
                 <td class="text-xs text-secondary">{{ app.createdAt | date:'mediumDate' }}</td>
                 <td>
@@ -341,38 +337,24 @@
       <!-- Search Filter Bar -->
       <div class="sb-card p-6">
         <h3 class="font-bold text-lg mb-2">Search Developer Talent</h3>
-        <p class="text-xs text-secondary mb-4">Discover students, software engineers, and interns with verified tech skills.</p>
+        <p class="text-xs text-secondary mb-4">Discover students, software engineers, and interns with verified tech
+          skills.</p>
 
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
             <label class="text-xs font-semibold text-secondary block mb-1">Target Skill</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g. Angular, Node.js, Python"
-              [(ngModel)]="candidateSkill"
-              (keyup.enter)="searchCandidates()"
-            />
+            <input type="text" class="form-control" placeholder="e.g. Angular, Node.js, Python"
+              [(ngModel)]="candidateSkill" (keyup.enter)="searchCandidates()" />
           </div>
           <div>
             <label class="text-xs font-semibold text-secondary block mb-1">Preferred Role</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g. Frontend, Backend, AI"
-              [(ngModel)]="candidateRole"
-              (keyup.enter)="searchCandidates()"
-            />
+            <input type="text" class="form-control" placeholder="e.g. Frontend, Backend, AI" [(ngModel)]="candidateRole"
+              (keyup.enter)="searchCandidates()" />
           </div>
           <div>
             <label class="text-xs font-semibold text-secondary block mb-1">Location</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="e.g. Remote, New York, Bengaluru"
-              [(ngModel)]="candidateLocation"
-              (keyup.enter)="searchCandidates()"
-            />
+            <input type="text" class="form-control" placeholder="e.g. Remote, New York, Bengaluru"
+              [(ngModel)]="candidateLocation" (keyup.enter)="searchCandidates()" />
           </div>
           <div class="flex items-end">
             <button class="btn btn-primary w-full" (click)="searchCandidates()">
@@ -391,7 +373,8 @@
         <p class="text-sm text-secondary">No candidates found matching the search criteria.</p>
       </div>
 
-      <div *ngIf="!isSearchingCandidates && candidates.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngIf="!isSearchingCandidates && candidates.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div *ngFor="let cand of candidates" class="sb-card p-6 flex flex-col justify-between">
           <div>
             <div class="flex items-center gap-4 mb-3">
@@ -406,7 +389,8 @@
             </div>
 
             <p class="text-xs text-secondary line-clamp-2 mb-3 leading-relaxed">
-              {{ cand.profile?.about || 'Passionate software developer focused on building scalable, performant applications.' }}
+              {{ cand.profile?.about || 'Passionate software developer focused on building scalable, performant
+              applications.' }}
             </p>
 
             <!-- Skills -->
@@ -421,7 +405,8 @@
             <span class="text-xs text-secondary">
               {{ cand.profile?.education?.[0]?.college || 'Computer Science' }}
             </span>
-            <a *ngIf="cand.profile?.socialLinks?.github" [href]="cand.profile.socialLinks.github" target="_blank" class="btn btn-outline btn-xs">
+            <a *ngIf="cand.profile?.socialLinks?.github" [href]="cand.profile.socialLinks.github" target="_blank"
+              class="btn btn-outline btn-xs">
               GitHub ↗
             </a>
           </div>
@@ -455,7 +440,8 @@
             </div>
             <div>
               <label class="form-label">Headquarters / Location *</label>
-              <input type="text" class="form-control" formControlName="location" placeholder="e.g. San Francisco, CA / Remote" />
+              <input type="text" class="form-control" formControlName="location"
+                placeholder="e.g. San Francisco, CA / Remote" />
             </div>
           </div>
 
@@ -478,13 +464,15 @@
 
           <div>
             <label class="form-label">Company Description</label>
-            <textarea class="form-control" rows="4" formControlName="description" placeholder="Describe your mission, tech stack, and engineering culture..."></textarea>
+            <textarea class="form-control" rows="4" formControlName="description"
+              placeholder="Describe your mission, tech stack, and engineering culture..."></textarea>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="form-label">LinkedIn Page</label>
-              <input type="text" class="form-control" formControlName="linkedin" placeholder="https://linkedin.com/company/..." />
+              <input type="text" class="form-control" formControlName="linkedin"
+                placeholder="https://linkedin.com/company/..." />
             </div>
             <div>
               <label class="form-label">Twitter / X</label>
@@ -504,87 +492,94 @@
 </div>
 
 <ng-template #jobFormContent>
-    <form [formGroup]="jobForm" (ngSubmit)="saveJob()" class="flex flex-col gap-4">
+  <form [formGroup]="jobForm" (ngSubmit)="saveJob()" class="flex flex-col gap-4">
+    <div>
+      <label for="rec-job-title" class="form-label">Job Title *</label>
+      <input id="rec-job-title" type="text" class="form-control" formControlName="title"
+        placeholder="e.g. Junior Angular / Node.js Developer" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label for="rec-job-title" class="form-label">Job Title *</label>
-        <input id="rec-job-title" type="text" class="form-control" formControlName="title" placeholder="e.g. Junior Angular / Node.js Developer" />
+        <label for="rec-job-type" class="form-label">Position Type *</label>
+        <select id="rec-job-type" class="select-control" formControlName="type">
+          <option value="full-time">Full-time Job</option>
+          <option value="internship">Internship</option>
+          <option value="part-time">Part-time</option>
+          <option value="contract">Contract</option>
+        </select>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label for="rec-job-type" class="form-label">Position Type *</label>
-          <select id="rec-job-type" class="select-control" formControlName="type">
-            <option value="full-time">Full-time Job</option>
-            <option value="internship">Internship</option>
-            <option value="part-time">Part-time</option>
-            <option value="contract">Contract</option>
-          </select>
-        </div>
-        <div>
-          <label for="rec-job-mode" class="form-label">Work Mode *</label>
-          <select id="rec-job-mode" class="select-control" formControlName="workMode">
-            <option value="remote">Remote</option>
-            <option value="hybrid">Hybrid</option>
-            <option value="onsite">On-site</option>
-          </select>
-        </div>
-        <div>
-          <label for="rec-job-location" class="form-label">Location *</label>
-          <input id="rec-job-location" type="text" class="form-control" formControlName="location" placeholder="e.g. Remote or City" />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label for="rec-job-exp" class="form-label">Experience Level *</label>
-          <select id="rec-job-exp" class="select-control" formControlName="experienceLevel">
-            <option value="internship">Fresher / Internship</option>
-            <option value="entry">Entry Level (0-2 yrs)</option>
-            <option value="mid">Mid Level (2-5 yrs)</option>
-            <option value="senior">Senior (5+ yrs)</option>
-            <option value="lead">Lead / Principal</option>
-          </select>
-        </div>
-        <div>
-          <label for="rec-job-min-salary" class="form-label">Min Salary / Stipend ($)</label>
-          <input id="rec-job-min-salary" type="number" class="form-control" formControlName="minSalary" />
-        </div>
-        <div>
-          <label for="rec-job-max-salary" class="form-label">Max Salary / Stipend ($)</label>
-          <input id="rec-job-max-salary" type="number" class="form-control" formControlName="maxSalary" />
-        </div>
-      </div>
-
       <div>
-        <label for="rec-job-skills" class="form-label">Required Skills * (comma-separated)</label>
-        <input id="rec-job-skills" type="text" class="form-control" formControlName="skillsRequired" placeholder="e.g. Angular, TypeScript, Node.js, MongoDB, REST APIs" />
+        <label for="rec-job-mode" class="form-label">Work Mode *</label>
+        <select id="rec-job-mode" class="select-control" formControlName="workMode">
+          <option value="remote">Remote</option>
+          <option value="hybrid">Hybrid</option>
+          <option value="onsite">On-site</option>
+        </select>
       </div>
-
       <div>
-        <label for="rec-job-desc" class="form-label">Role Overview & Description *</label>
-        <textarea id="rec-job-desc" class="form-control" rows="4" formControlName="description" placeholder="Summary of this role and what the candidate will work on..."></textarea>
+        <label for="rec-job-location" class="form-label">Location *</label>
+        <input id="rec-job-location" type="text" class="form-control" formControlName="location"
+          placeholder="e.g. Remote or City" />
       </div>
+    </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label for="rec-job-resp" class="form-label">Key Responsibilities (one per line)</label>
-        <textarea id="rec-job-resp" class="form-control" rows="3" formControlName="responsibilities" placeholder="Build scalable features&#10;Write unit tests&#10;Collaborate with product designers"></textarea>
+        <label for="rec-job-exp" class="form-label">Experience Level *</label>
+        <select id="rec-job-exp" class="select-control" formControlName="experienceLevel">
+          <option value="internship">Fresher / Internship</option>
+          <option value="entry">Entry Level (0-2 yrs)</option>
+          <option value="mid">Mid Level (2-5 yrs)</option>
+          <option value="senior">Senior (5+ yrs)</option>
+          <option value="lead">Lead / Principal</option>
+        </select>
       </div>
-
       <div>
-        <label for="rec-job-req" class="form-label">Qualifications & Requirements (one per line)</label>
-        <textarea id="rec-job-req" class="form-control" rows="3" formControlName="requirements" placeholder="Proficiency in modern TypeScript&#10;Strong understanding of REST architecture"></textarea>
+        <label for="rec-job-min-salary" class="form-label">Min Salary / Stipend ($)</label>
+        <input id="rec-job-min-salary" type="number" class="form-control" formControlName="minSalary" />
       </div>
-
       <div>
-        <label for="rec-job-deadline" class="form-label">Application Deadline</label>
-        <input id="rec-job-deadline" type="date" class="form-control" formControlName="deadline" />
+        <label for="rec-job-max-salary" class="form-label">Max Salary / Stipend ($)</label>
+        <input id="rec-job-max-salary" type="number" class="form-control" formControlName="maxSalary" />
       </div>
+    </div>
 
-      <div class="pt-4 border-t border-border flex justify-end gap-3">
-        <button type="button" class="btn btn-outline" (click)="showJobModal = false; showInlinePostJob = false">Cancel</button>
-        <button type="submit" class="btn btn-primary">{{ isEditingJob ? 'Update Position' : 'Publish Position' }}</button>
-      </div>
-    </form>
+    <div>
+      <label for="rec-job-skills" class="form-label">Required Skills * (comma-separated)</label>
+      <input id="rec-job-skills" type="text" class="form-control" formControlName="skillsRequired"
+        placeholder="e.g. Angular, TypeScript, Node.js, MongoDB, REST APIs" />
+    </div>
+
+    <div>
+      <label for="rec-job-desc" class="form-label">Role Overview & Description *</label>
+      <textarea id="rec-job-desc" class="form-control" rows="4" formControlName="description"
+        placeholder="Summary of this role and what the candidate will work on..."></textarea>
+    </div>
+
+    <div>
+      <label for="rec-job-resp" class="form-label">Key Responsibilities (one per line)</label>
+      <textarea id="rec-job-resp" class="form-control" rows="3" formControlName="responsibilities"
+        placeholder="Build scalable features&#10;Write unit tests&#10;Collaborate with product designers"></textarea>
+    </div>
+
+    <div>
+      <label for="rec-job-req" class="form-label">Qualifications & Requirements (one per line)</label>
+      <textarea id="rec-job-req" class="form-control" rows="3" formControlName="requirements"
+        placeholder="Proficiency in modern TypeScript&#10;Strong understanding of REST architecture"></textarea>
+    </div>
+
+    <div>
+      <label for="rec-job-deadline" class="form-label">Application Deadline</label>
+      <input id="rec-job-deadline" type="date" class="form-control" formControlName="deadline" />
+    </div>
+
+    <div class="pt-4 border-t border-border flex justify-end gap-3">
+      <button type="button" class="btn btn-outline"
+        (click)="showJobModal = false; showInlinePostJob = false">Cancel</button>
+      <button type="submit" class="btn btn-primary">{{ isEditingJob ? 'Update Position' : 'Publish Position' }}</button>
+    </div>
+  </form>
 </ng-template>
 
 <!-- MODAL: POST / EDIT JOB -->
@@ -592,7 +587,8 @@
   <div class="modal-card max-w-2xl max-h-[90vh] overflow-y-auto">
     <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
       <h3 class="font-bold text-lg">{{ isEditingJob ? 'Edit Requisition' : 'Post New Position' }}</h3>
-      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal" (click)="showJobModal = false">✕</button>
+      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal"
+        (click)="showJobModal = false">✕</button>
     </div>
 
     <ng-container *ngTemplateOutlet="jobFormContent"></ng-container>
@@ -605,7 +601,8 @@
     <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
       <div>
         <h3 class="font-bold text-lg">Candidate Review</h3>
-        <p class="text-xs text-secondary">{{ $any(selectedApplication).candidate?.name || selectedApplication.user?.name }} • {{ selectedApplication.job?.title }}</p>
+        <p class="text-xs text-secondary">{{ $any(selectedApplication).candidate?.name || selectedApplication.user?.name
+          }} • {{ selectedApplication.job?.title }}</p>
       </div>
       <button class="btn btn-sm btn-outline" (click)="showAppModal = false">✕</button>
     </div>
@@ -617,7 +614,8 @@
     </div>
 
     <!-- Resume snapshot if any -->
-    <div *ngIf="($any(selectedApplication).resume || selectedApplication.resumeSnapshot) as attachedResume" class="mb-4 p-3 border border-border rounded-md text-xs">
+    <div *ngIf="($any(selectedApplication).resume || selectedApplication.resumeSnapshot) as attachedResume"
+      class="mb-4 p-3 border border-border rounded-md text-xs">
       <div class="font-bold mb-1">Resume Attached: {{ attachedResume.title }}</div>
       <p class="text-secondary">{{ attachedResume.summary }}</p>
       <div class="flex flex-wrap gap-1 mt-2">
@@ -642,12 +640,14 @@
 
       <div>
         <label for="rec-notes" class="form-label">Recruiter Internal Feedback / Notes</label>
-        <textarea id="rec-notes" class="form-control" rows="3" [(ngModel)]="recruiterNotes" placeholder="e.g. Strong Angular background, scheduled technical screen for Tuesday..."></textarea>
+        <textarea id="rec-notes" class="form-control" rows="3" [(ngModel)]="recruiterNotes"
+          placeholder="e.g. Strong Angular background, scheduled technical screen for Tuesday..."></textarea>
       </div>
 
       <div class="pt-4 border-t border-border flex justify-end gap-3">
         <button type="button" class="btn btn-outline" (click)="showAppModal = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="updateApplicationStatus()">Update Candidate Status</button>
+        <button type="button" class="btn btn-primary" (click)="updateApplicationStatus()">Update Candidate
+          Status</button>
       </div>
     </div>
   </div>
