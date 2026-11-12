@@ -1,80 +1,50 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, studentGuard, recruiterGuard, adminGuard } from './guards/auth.guard';
-
-// Public Pages
+import { authGuard, guestGuard, recruiterGuard, adminGuard } from './guards/auth.guard';
 import { LandingComponent } from './pages/landing/landing.component';
-import { LoginComponent } from './pages/auth/login.component';
-import { RegisterComponent } from './pages/auth/register.component';
-import { JobListComponent } from './pages/jobs/job-list.component';
-import { JobDetailsComponent } from './pages/jobs/job-details.component';
-import { CompaniesComponent } from './pages/companies/companies.component';
-import { CompanyDetailsComponent } from './pages/companies/company-details.component';
-
-// Student & User Pages
-import { StudentDashboardComponent } from './pages/student-dashboard/student-dashboard.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { ResumeBuilderComponent } from './pages/resume-builder/resume-builder.component';
-import { ResumeAnalyzerComponent } from './pages/resume-analyzer/resume-analyzer.component';
-import { ApplicationsComponent } from './pages/applications/applications.component';
-import { SavedJobsComponent } from './pages/saved-jobs/saved-jobs.component';
-import { SkillGapComponent } from './pages/skill-gap/skill-gap.component';
-import { CareerAssistantComponent } from './pages/career-assistant/career-assistant.component';
-import { InterviewPrepComponent } from './pages/interview-prep/interview-prep.component';
-import { CareerExplorerComponent } from './pages/career-explorer/career-explorer.component';
-import { SkillAssessmentComponent } from './pages/skill-assessment/skill-assessment.component';
-import { LearningRoadmapComponent } from './pages/learning-roadmap/learning-roadmap.component';
-import { ProjectRecommendationsComponent } from './pages/project-recommendations/project-recommendations.component';
-import { GithubAnalyzerComponent } from './pages/github-analyzer/github-analyzer.component';
-import { CareerAnalyticsComponent } from './pages/career-analytics/career-analytics.component';
-import { AchievementsComponent } from './pages/achievements/achievements.component';
-
-// Recruiter & Admin Pages
-import { RecruiterDashboardComponent } from './pages/recruiter-dashboard/recruiter-dashboard.component';
-import { AdminDashboardComponent } from './pages/admin-dashboard/admin-dashboard.component';
 
 export const routes: Routes = [
   // Public
   { path: '', component: LandingComponent },
-  { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
-  { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
-  { path: 'jobs', component: JobListComponent },
-  { path: 'jobs/:id', component: JobDetailsComponent },
-  { path: 'companies', component: CompaniesComponent },
-  { path: 'companies/:id', component: CompanyDetailsComponent },
+  { path: 'login', loadComponent: () => import('./pages/auth/login.component').then(m => m.LoginComponent), canActivate: [guestGuard] },
+  { path: 'register', loadComponent: () => import('./pages/auth/register.component').then(m => m.RegisterComponent), canActivate: [guestGuard] },
+  { path: 'jobs', loadComponent: () => import('./pages/jobs/job-list.component').then(m => m.JobListComponent) },
+  { path: 'jobs/:id', loadComponent: () => import('./pages/jobs/job-details.component').then(m => m.JobDetailsComponent) },
+  { path: 'companies', loadComponent: () => import('./pages/companies/companies.component').then(m => m.CompaniesComponent) },
+  { path: 'companies/:id', loadComponent: () => import('./pages/companies/company-details.component').then(m => m.CompanyDetailsComponent) },
 
   // Student & Candidate Protected
-  { path: 'dashboard', component: StudentDashboardComponent, canActivate: [authGuard] },
-  { path: 'student/dashboard', component: StudentDashboardComponent, canActivate: [authGuard] },
-  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
-  { path: 'resume-builder', component: ResumeBuilderComponent, canActivate: [authGuard] },
-  { path: 'resume-analyzer', component: ResumeAnalyzerComponent, canActivate: [authGuard] },
-  { path: 'applications', component: ApplicationsComponent, canActivate: [authGuard] },
-  { path: 'saved-jobs', component: SavedJobsComponent, canActivate: [authGuard] },
-  { path: 'skill-gap', component: SkillGapComponent, canActivate: [authGuard] },
-  { path: 'career-assistant', component: CareerAssistantComponent, canActivate: [authGuard] },
-  { path: 'interview-prep', component: InterviewPrepComponent, canActivate: [authGuard] },
-  { path: 'career-explorer', component: CareerExplorerComponent },
-  { path: 'assessments', component: SkillAssessmentComponent, canActivate: [authGuard] },
-  { path: 'assessments/:id', component: SkillAssessmentComponent, canActivate: [authGuard] },
-  { path: 'learning-roadmap', component: LearningRoadmapComponent, canActivate: [authGuard] },
-  { path: 'projects', component: ProjectRecommendationsComponent, canActivate: [authGuard] },
-  { path: 'github-analyzer', component: GithubAnalyzerComponent, canActivate: [authGuard] },
-  { path: 'career-analytics', component: CareerAnalyticsComponent, canActivate: [authGuard] },
-  { path: 'achievements', component: AchievementsComponent, canActivate: [authGuard] },
+  { path: 'dashboard', loadComponent: () => import('./pages/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent), canActivate: [authGuard] },
+  { path: 'student/dashboard', loadComponent: () => import('./pages/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent), canActivate: [authGuard] },
+  { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent), canActivate: [authGuard] },
+  { path: 'resume-builder', loadComponent: () => import('./pages/resume-builder/resume-builder.component').then(m => m.ResumeBuilderComponent), canActivate: [authGuard] },
+  { path: 'resume-analyzer', loadComponent: () => import('./pages/resume-analyzer/resume-analyzer.component').then(m => m.ResumeAnalyzerComponent), canActivate: [authGuard] },
+  { path: 'applications', loadComponent: () => import('./pages/applications/applications.component').then(m => m.ApplicationsComponent), canActivate: [authGuard] },
+  { path: 'saved-jobs', loadComponent: () => import('./pages/saved-jobs/saved-jobs.component').then(m => m.SavedJobsComponent), canActivate: [authGuard] },
+  { path: 'skill-gap', loadComponent: () => import('./pages/skill-gap/skill-gap.component').then(m => m.SkillGapComponent), canActivate: [authGuard] },
+  { path: 'career-assistant', loadComponent: () => import('./pages/career-assistant/career-assistant.component').then(m => m.CareerAssistantComponent), canActivate: [authGuard] },
+  { path: 'interview-prep', loadComponent: () => import('./pages/interview-prep/interview-prep.component').then(m => m.InterviewPrepComponent), canActivate: [authGuard] },
+  { path: 'career-explorer', loadComponent: () => import('./pages/career-explorer/career-explorer.component').then(m => m.CareerExplorerComponent) },
+  { path: 'assessments', loadComponent: () => import('./pages/skill-assessment/skill-assessment.component').then(m => m.SkillAssessmentComponent), canActivate: [authGuard] },
+  { path: 'assessments/:id', loadComponent: () => import('./pages/skill-assessment/skill-assessment.component').then(m => m.SkillAssessmentComponent), canActivate: [authGuard] },
+  { path: 'learning-roadmap', loadComponent: () => import('./pages/learning-roadmap/learning-roadmap.component').then(m => m.LearningRoadmapComponent), canActivate: [authGuard] },
+  { path: 'projects', loadComponent: () => import('./pages/project-recommendations/project-recommendations.component').then(m => m.ProjectRecommendationsComponent), canActivate: [authGuard] },
+  { path: 'github-analyzer', loadComponent: () => import('./pages/github-analyzer/github-analyzer.component').then(m => m.GithubAnalyzerComponent), canActivate: [authGuard] },
+  { path: 'career-analytics', loadComponent: () => import('./pages/career-analytics/career-analytics.component').then(m => m.CareerAnalyticsComponent), canActivate: [authGuard] },
+  { path: 'achievements', loadComponent: () => import('./pages/achievements/achievements.component').then(m => m.AchievementsComponent), canActivate: [authGuard] },
 
   // Recruiter Protected
-  { path: 'recruiter', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },
-  { path: 'recruiter/dashboard', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },
-  { path: 'recruiter/post-job', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },
-  { path: 'recruiter/applications', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },
-  { path: 'recruiter/candidates', component: RecruiterDashboardComponent, canActivate: [authGuard, recruiterGuard] },
+  { path: 'recruiter', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },
+  { path: 'recruiter/dashboard', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },
+  { path: 'recruiter/post-job', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },
+  { path: 'recruiter/applications', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },
+  { path: 'recruiter/candidates', loadComponent: () => import('./pages/recruiter-dashboard/recruiter-dashboard.component').then(m => m.RecruiterDashboardComponent), canActivate: [authGuard, recruiterGuard] },
 
   // Admin Protected (Strictly restricted to Admin role only)
-  { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
-  { path: 'admin/dashboard', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
-  { path: 'admin/users', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
-  { path: 'admin/jobs', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
-  { path: 'admin/reports', component: AdminDashboardComponent, canActivate: [authGuard, adminGuard] },
+  { path: 'admin', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/dashboard', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/users', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/jobs', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [authGuard, adminGuard] },
+  { path: 'admin/reports', loadComponent: () => import('./pages/admin-dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent), canActivate: [authGuard, adminGuard] },
 
   // Catch-all
   { path: '**', redirectTo: '' }
