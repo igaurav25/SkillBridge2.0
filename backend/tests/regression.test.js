@@ -242,5 +242,18 @@ test('API Regression Suite (Auth, IDOR, Mass Assignment, C++ Search, Admin Priva
     headers: { Authorization: `Bearer ${recruiterAuth.token}` },
   });
   assert.equal(recAdminTry.status, 403);
+
+  // 10. Public platform stats endpoint returns honest numeric counts with zero PII
+  const publicStatsRes = await fetch(`${baseUrl}/analytics/public-stats`);
+  const publicStatsJson = await publicStatsRes.json();
+  assert.equal(publicStatsRes.status, 200);
+  assert.equal(publicStatsJson.success, true);
+  assert.equal(typeof publicStatsJson.data.activeJobs, 'number');
+  assert.equal(typeof publicStatsJson.data.companiesCount, 'number');
+  assert.equal(typeof publicStatsJson.data.assessmentsCount, 'number');
+  assert.equal(typeof publicStatsJson.data.roadmapsCount, 'number');
+  assert.equal(typeof publicStatsJson.data.registeredStudents, 'number');
+  assert.ok(publicStatsJson.data.activeJobs >= 5, 'Includes real seeded active jobs');
+  assert.equal(publicStatsJson.data.emails, undefined);
 });
 

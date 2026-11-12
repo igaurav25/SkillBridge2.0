@@ -2,8 +2,63 @@ const Profile = require('../models/Profile');
 const Application = require('../models/Application');
 const MockInterviewSession = require('../models/MockInterviewSession');
 const AssessmentAttempt = require('../models/AssessmentAttempt');
+const Assessment = require('../models/Assessment');
 const CareerPrediction = require('../models/CareerPrediction');
 const LearningProgress = require('../models/LearningProgress');
+const LearningRoadmap = require('../models/LearningRoadmap');
+const Job = require('../models/Job');
+const Company = require('../models/Company');
+const User = require('../models/User');
+
+/**
+ * @desc Get public non-sensitive aggregate platform statistics
+ * @route GET /api/analytics/public-stats
+ * @access Public
+ */
+exports.getPublicPlatformStats = async (req, res, next) => {
+  try {
+    const [
+      activeJobs,
+      companiesCount,
+      verifiedCompaniesCount,
+      registeredStudents,
+      recruitersCount,
+      assessmentsCount,
+      roadmapsCount,
+      applicationsCount,
+      mockInterviewsCount,
+    ] = await Promise.all([
+      Job.countDocuments({ status: 'active' }),
+      Company.countDocuments(),
+      Company.countDocuments({ isVerified: true }),
+      User.countDocuments({ role: 'student' }),
+      User.countDocuments({ role: 'recruiter' }),
+      Assessment.countDocuments(),
+      LearningRoadmap.countDocuments(),
+      Application.countDocuments(),
+      MockInterviewSession.countDocuments(),
+    ]);
+
+    res.set('Cache-Control', 'public, max-age=60');
+    res.status(200).json({
+      success: true,
+      data: {
+        activeJobs,
+        companiesCount,
+        verifiedCompaniesCount,
+        registeredStudents,
+        recruitersCount,
+        assessmentsCount,
+        roadmapsCount,
+        applicationsCount,
+        mockInterviewsCount,
+        generatedAt: new Date().toISOString(),
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 /**
  * @desc Get comprehensive student career analytics
