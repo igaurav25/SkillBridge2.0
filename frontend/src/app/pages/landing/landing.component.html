@@ -1,186 +1,445 @@
 <div class="landing-page">
-  <!-- Hero Section -->
+  <!-- 1. Hero Section + 3D Career Core -->
   <section class="hero-section">
-    <div class="container text-center">
-      <div class="hero-badge-wrapper flex justify-center mb-4">
-        <span class="badge badge-primary py-1 px-3 text-xs font-bold">
-          ⚡ NEXT-GEN CAREER PLATFORM POWERED BY AI
-        </span>
-      </div>
-
-      <h1 class="hero-title mb-4">
-        Bridge the Gap Between Your Skills and <br />
-        <span class="text-gradient">Dream Tech Careers</span>
-      </h1>
-
-      <p class="hero-subtitle mb-8">
-        SkillBridge empowers developers and students with AI resume analysis, personalized skill gap roadmaps, verified job matching, and real-time application tracking.
-      </p>
-
-      <!-- Global Hero Search Bar -->
-      <div class="hero-search-card sb-card sb-card-glow mb-6">
-        <form (ngSubmit)="onSearch()" class="hero-search-form flex items-center gap-3">
-          <div class="search-input-group flex-1 flex items-center gap-2">
-            <span class="search-icon">🔍</span>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Job title, skill (e.g. Angular, Node.js), or company"
-              [(ngModel)]="searchTitle"
-              name="searchTitle"
-            />
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="hero-badge-row mb-4">
+            <app-sb-badge variant="primary">AI + ML CAREER INTELLIGENCE</app-sb-badge>
+            <app-sb-badge variant="cyan">Students • Recruiters • Mentors</app-sb-badge>
           </div>
 
-          <div class="search-divider"></div>
+          <h1 class="hero-title mb-4">
+            BUILD YOUR SKILLS.<br />
+            <span class="text-gradient">SHAPE YOUR FUTURE.</span>
+          </h1>
 
-          <div class="search-input-group flex-1 flex items-center gap-2">
-            <span class="search-icon">📍</span>
-            <input
-              type="text"
-              class="search-input"
-              placeholder="Location or 'Remote'"
-              [(ngModel)]="searchLocation"
-              name="searchLocation"
-            />
+          <p class="hero-subtitle mb-6">
+            Measure technical readiness, fix resume and skill gaps with transparent AI + rule-based scoring,
+            rehearse timed mock interviews, and apply directly to verified tech opportunities.
+          </p>
+
+          <div class="hero-cta-row flex items-center gap-3 flex-wrap mb-6">
+            <a routerLink="/jobs" class="btn btn-primary btn-lg">Explore Opportunities</a>
+            <a [routerLink]="journeyTarget" class="btn btn-outline btn-lg">Start Your Journey</a>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-lg">
-            Search Opportunities
-          </button>
-        </form>
-      </div>
+          <!-- Global Hero Search Bar -->
+          <div class="hero-search-card sb-card sb-card-glass mb-4">
+            <form (ngSubmit)="onSearch()" class="hero-search-form flex items-center gap-2">
+              <div class="search-input-group flex-1 flex items-center gap-2">
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <label for="hero-search-title" class="sr-only">Job title or skill</label>
+                <input
+                  id="hero-search-title"
+                  type="text"
+                  class="search-input"
+                  placeholder="Role or skill (Angular, Node.js, ML...)"
+                  [(ngModel)]="searchTitle"
+                  name="searchTitle"
+                />
+              </div>
 
-      <!-- Popular Tags -->
-      <div class="popular-tags flex items-center justify-center gap-2 flex-wrap mb-10">
-        <span class="text-xs text-muted font-semibold">Popular searches:</span>
-        <button
-          *ngFor="let tag of popularSearches"
-          class="badge badge-neutral tag-btn"
-          (click)="quickSearch(tag)"
-        >
-          {{ tag }}
-        </button>
-      </div>
+              <div class="search-divider" aria-hidden="true"></div>
 
-      <!-- Platform Stats Bar -->
-      <div class="stats-row grid grid-4 gap-4 pt-4">
-        <div class="stat-box sb-card">
-          <div class="stat-number text-gradient font-bold text-3xl">5,000+</div>
-          <div class="stat-label text-xs text-secondary mt-1">Tech Jobs & Internships</div>
+              <div class="search-input-group flex-1 flex items-center gap-2">
+                <span class="search-icon" aria-hidden="true">📍</span>
+                <label for="hero-search-location" class="sr-only">Location or Remote</label>
+                <input
+                  id="hero-search-location"
+                  type="text"
+                  class="search-input"
+                  placeholder="Location or Remote"
+                  [(ngModel)]="searchLocation"
+                  name="searchLocation"
+                />
+              </div>
+
+              <button type="submit" class="btn btn-accent">Find Roles</button>
+            </form>
+          </div>
+
+          <div class="popular-tags flex items-center gap-2 flex-wrap">
+            <span class="text-xs text-muted font-semibold">Popular:</span>
+            <button
+              *ngFor="let tag of popularSearches"
+              type="button"
+              class="tag-btn"
+              (click)="quickSearch(tag)"
+            >
+              {{ tag }}
+            </button>
+          </div>
         </div>
-        <div class="stat-box sb-card">
-          <div class="stat-number text-gradient font-bold text-3xl">98%</div>
-          <div class="stat-label text-xs text-secondary mt-1">ATS Parsing Accuracy</div>
-        </div>
-        <div class="stat-box sb-card">
-          <div class="stat-number text-gradient font-bold text-3xl">1,200+</div>
-          <div class="stat-label text-xs text-secondary mt-1">Verified Hiring Partners</div>
-        </div>
-        <div class="stat-box sb-card">
-          <div class="stat-number text-gradient font-bold text-3xl">45,000+</div>
-          <div class="stat-label text-xs text-secondary mt-1">Active Developers</div>
+
+        <!-- Lazy 3D Hero Scene (Fixed Ratio Container for Zero CLS) -->
+        <div class="hero-visual-col">
+          @defer (on idle) {
+            <app-hero-scene></app-hero-scene>
+          } @placeholder {
+            <div class="hero-visual-placeholder" aria-hidden="true">
+              <span>Preparing visual stage…</span>
+            </div>
+          }
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Product Workflow Journey -->
-  <section class="workflow-section py-16">
+  <!-- 2. Live Aggregate Platform Stats (Public Endpoint) -->
+  <section class="sb-section stats-strip-section" aria-labelledby="stats-heading">
     <div class="container">
-      <div class="text-center mb-12">
-        <span class="badge badge-cyan text-xs mb-2">END-TO-END CAREER ECOSYSTEM</span>
-        <h2 class="text-3xl font-bold mb-3">Your Journey to Technical Excellence</h2>
-        <p class="text-secondary max-w-xl mx-auto text-sm">
-          Unlike basic job boards, SkillBridge guides you at every phase of your software career.
+      <div class="flex items-center justify-between gap-4 flex-wrap mb-6">
+        <div>
+          <span class="section-eyebrow">Live Platform Snapshot</span>
+          <h2 id="stats-heading" class="text-2xl font-bold mt-1">Real Ecosystem Totals</h2>
+        </div>
+        <app-sb-badge variant="emerald">Live Database Counts</app-sb-badge>
+      </div>
+
+      <div *ngIf="statsLoading()" class="stats-grid-5">
+        <div class="sb-card" *ngFor="let n of [1,2,3,4,5]">
+          <app-sb-skeleton kind="title" [count]="1"></app-sb-skeleton>
+          <app-sb-skeleton kind="text" [count]="1"></app-sb-skeleton>
+        </div>
+      </div>
+
+      <div *ngIf="!statsLoading() && statsError()" class="sb-card flex items-center justify-between gap-4 flex-wrap">
+        <p class="text-sm text-secondary">Live platform metrics could not be loaded right now.</p>
+        <button type="button" class="btn btn-outline btn-sm" (click)="loadPlatformStats()">Retry Stats</button>
+      </div>
+
+      <div *ngIf="!statsLoading() && platformStats() as stats" class="stats-grid-5" data-reveal>
+        <div class="stat-box sb-card">
+          <div class="stat-number text-gradient">{{ stats.activeJobs }}</div>
+          <div class="stat-label">Active Jobs & Internships</div>
+        </div>
+        <div class="stat-box sb-card">
+          <div class="stat-number text-gradient">{{ stats.companiesCount }}</div>
+          <div class="stat-label">Employer Profiles ({{ stats.verifiedCompaniesCount }} Verified)</div>
+        </div>
+        <div class="stat-box sb-card">
+          <div class="stat-number text-gradient">{{ stats.assessmentsCount }}</div>
+          <div class="stat-label">Skill Assessments</div>
+        </div>
+        <div class="stat-box sb-card">
+          <div class="stat-number text-gradient">{{ stats.roadmapsCount }}</div>
+          <div class="stat-label">Career Roadmaps</div>
+        </div>
+        <div class="stat-box sb-card">
+          <div class="stat-number text-gradient">{{ stats.registeredStudents }}</div>
+          <div class="stat-label">Registered Students</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Platform Intro -->
+  <section class="sb-section" aria-labelledby="intro-heading">
+    <div class="container">
+      <div class="section-header text-center mb-10" data-reveal>
+        <app-sb-badge variant="cyan">WHAT IS SKILLBRIDGE</app-sb-badge>
+        <h2 id="intro-heading" class="text-3xl font-bold mt-3 mb-3">
+          From Skill Diagnosis to Shortlisted Applications
+        </h2>
+        <p class="text-secondary max-w-2xl mx-auto text-sm">
+          SkillBridge unifies career readiness evaluation, ATS-ready resume creation, curated learning paths,
+          and recruiter pipelines inside one synchronized platform.
         </p>
       </div>
 
-      <div class="workflow-grid grid grid-4 gap-6">
-        <div class="workflow-card sb-card">
-          <div class="step-num">01</div>
-          <h3 class="text-base font-bold mb-2">Build & Upload Resume</h3>
-          <p class="text-xs text-secondary mb-3">
-            Use our multi-template resume builder or upload an existing PDF. Our engine extracts your technical stack automatically.
+      <div class="grid grid-3 gap-6" data-reveal>
+        <article class="sb-card sb-card-interactive">
+          <div class="feature-icon" aria-hidden="true">🧭</div>
+          <h3 class="text-lg font-bold mb-2">Verified Skill Signals</h3>
+          <p class="text-sm text-secondary">
+            Combine technical assessments, GitHub analysis, and project portfolios so recruiters see concrete proof instead of keyword stuffing.
           </p>
-          <a routerLink="/resume-builder" class="text-xs font-semibold text-gradient">Launch Builder →</a>
-        </div>
+        </article>
+        <article class="sb-card sb-card-interactive">
+          <div class="feature-icon" aria-hidden="true">🧠</div>
+          <h3 class="text-lg font-bold mb-2">Honest AI + Rule Engine</h3>
+          <p class="text-sm text-secondary">
+            Every recommendation, ATS check, and mock interview labels whether Gemini AI, ML scoring, or the deterministic rule fallback generated it.
+          </p>
+        </article>
+        <article class="sb-card sb-card-interactive">
+          <div class="feature-icon" aria-hidden="true">⚡</div>
+          <h3 class="text-lg font-bold mb-2">Built for Every Screen</h3>
+          <p class="text-sm text-secondary">
+            Designed natively for desktop command centers and responsive 360px+ mobile PWAs without hidden features or clipped controls.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
 
-        <div class="workflow-card sb-card">
-          <div class="step-num">02</div>
-          <h3 class="text-base font-bold mb-2">ATS & Skill Gap Analysis</h3>
-          <p class="text-xs text-secondary mb-3">
-            Compare your profile against target roles (Full Stack, Cloud, AI). Discover missing technologies and tailored roadmaps.
-          </p>
-          <a routerLink="/skill-gap" class="text-xs font-semibold text-gradient">Analyze Skills →</a>
-        </div>
+  <!-- 4. How It Works -->
+  <section class="sb-section alt-surface" aria-labelledby="how-heading">
+    <div class="container">
+      <div class="section-header text-center mb-10" data-reveal>
+        <app-sb-badge variant="primary">HOW IT WORKS</app-sb-badge>
+        <h2 id="how-heading" class="text-3xl font-bold mt-3 mb-2">Four Focused Steps to Job Readiness</h2>
+      </div>
 
-        <div class="workflow-card sb-card">
-          <div class="step-num">03</div>
-          <h3 class="text-base font-bold mb-2">AI-Matched Applications</h3>
-          <p class="text-xs text-secondary mb-3">
-            Discover roles with dynamic match scoring. Generate customized cover letters and submit in one click.
-          </p>
-          <a routerLink="/jobs" class="text-xs font-semibold text-gradient">Discover Jobs →</a>
-        </div>
-
-        <div class="workflow-card sb-card">
-          <div class="step-num">04</div>
-          <h3 class="text-base font-bold mb-2">Interactive Interview Practice</h3>
-          <p class="text-xs text-secondary mb-3">
-            Practice FAANG-level questions and run AI Mock Interviews that grade your answers and provide instant feedback.
-          </p>
-          <a routerLink="/interview-prep" class="text-xs font-semibold text-gradient">Start Practice →</a>
+      <div class="grid grid-4 gap-6" data-reveal>
+        <div class="workflow-card sb-card" *ngFor="let item of workflowSteps">
+          <div class="step-num">{{ item.step }}</div>
+          <h3 class="text-base font-bold mb-2">{{ item.title }}</h3>
+          <p class="text-xs text-secondary mb-4">{{ item.desc }}</p>
+          <a [routerLink]="item.link" class="text-xs font-semibold text-primary-link">{{ item.cta }} →</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured Jobs Marketplace Section -->
-  <section class="featured-jobs-section py-12">
+  <!-- 5. Featured Opportunities -->
+  <section class="sb-section" aria-labelledby="jobs-heading">
     <div class="container">
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between gap-4 flex-wrap mb-8" data-reveal>
         <div>
-          <span class="badge badge-primary text-xs mb-1">CURATED OPPORTUNITIES</span>
-          <h2 class="text-2xl font-bold">Featured Jobs & Internships</h2>
+          <app-sb-badge variant="primary">OPPORTUNITIES</app-sb-badge>
+          <h2 id="jobs-heading" class="text-2xl font-bold mt-2">Latest Jobs & Internships</h2>
         </div>
-        <a routerLink="/jobs" class="btn btn-outline btn-sm">View All {{ featuredJobs.length || 'Jobs' }} →</a>
+        <a routerLink="/jobs" class="btn btn-outline btn-sm">View All Opportunities →</a>
       </div>
 
-      <div *ngIf="isLoading" class="grid grid-2 gap-4">
-        <div class="sb-card skeleton" style="height: 160px;"></div>
-        <div class="sb-card skeleton" style="height: 160px;"></div>
+      <div *ngIf="jobsLoading()" class="grid grid-2 gap-4">
+        <app-sb-skeleton kind="card" height="170px"></app-sb-skeleton>
+        <app-sb-skeleton kind="card" height="170px"></app-sb-skeleton>
       </div>
 
-      <div *ngIf="!isLoading" class="grid grid-2 gap-4">
-        <app-job-card *ngFor="let job of featuredJobs" [job]="job"></app-job-card>
+      <div *ngIf="!jobsLoading() && jobsError()" class="empty-state">
+        <p class="text-sm text-secondary mb-4">Unable to fetch current opportunities right now.</p>
+        <button type="button" class="btn btn-primary btn-sm" (click)="loadFeaturedJobs()">Retry Loading</button>
+      </div>
+
+      <div *ngIf="!jobsLoading() && !jobsError() && featuredJobs().length === 0" class="empty-state">
+        <p class="text-base font-semibold mb-2">No open listings right now</p>
+        <p class="text-sm text-secondary mb-4">Check the full job marketplace or post a role as a verified recruiter.</p>
+        <a routerLink="/jobs" class="btn btn-outline btn-sm">Browse Job Marketplace</a>
+      </div>
+
+      <div *ngIf="!jobsLoading() && !jobsError() && featuredJobs().length > 0" class="grid grid-2 gap-4" data-reveal>
+        <app-job-card *ngFor="let job of featuredJobs()" [job]="job"></app-job-card>
       </div>
     </div>
   </section>
 
-  <!-- Interactive AI Features Spotlight -->
-  <section class="ai-spotlight-section py-16">
+  <!-- 6. AI Career Intelligence -->
+  <section class="sb-section alt-surface" aria-labelledby="ai-heading">
     <div class="container">
-      <div class="sb-card sb-card-glow p-8 ai-banner flex items-center justify-between gap-8 flex-wrap">
-        <div class="ai-banner-content flex-1" style="min-width: 0;">
-          <span class="badge badge-cyan text-xs font-bold mb-2">SKILLBRIDGE AI ADVISOR</span>
-          <h2 class="text-2xl font-bold mb-3">Stuck in your career prep? Chat with our AI Mentor</h2>
-          <p class="text-sm text-secondary mb-6">
-            Get personalized career roadmaps, resume critiques, and interview answers tailored to your specific developer profile.
+      <div class="section-header text-center mb-10" data-reveal>
+        <app-sb-badge variant="cyan">AI CAREER INTELLIGENCE</app-sb-badge>
+        <h2 id="ai-heading" class="text-3xl font-bold mt-3 mb-2">
+          Guidance Grounded in Your Profile & Code
+        </h2>
+        <p class="text-sm text-secondary max-w-2xl mx-auto">
+          Combine ML trajectory modeling, GitHub repository analysis, and AI mentoring — always showing the active evaluation engine.
+        </p>
+      </div>
+
+      <div class="grid grid-4 gap-5" data-reveal>
+        <a [routerLink]="mod.route" class="sb-card sb-card-interactive module-card" *ngFor="let mod of aiModules">
+          <div class="mb-3">
+            <app-sb-badge [variant]="mod.variant">{{ mod.badge }}</app-sb-badge>
+          </div>
+          <h3 class="text-base font-bold mb-2">{{ mod.title }}</h3>
+          <p class="text-xs text-secondary mb-3 flex-1">{{ mod.desc }}</p>
+          <span class="text-xs font-semibold text-primary-link">Launch Tool →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. Resume + ATS & Skill Gap Spotlights -->
+  <section class="sb-section" aria-labelledby="studio-heading">
+    <div class="container">
+      <div class="grid grid-2 gap-6" data-reveal>
+        <!-- Resume + ATS -->
+        <div class="sb-card sb-card-glow spotlight-panel">
+          <app-sb-badge variant="primary">RESUME BUILDER + ATS</app-sb-badge>
+          <h2 id="studio-heading" class="text-2xl font-bold mt-3 mb-2">
+            Craft Clean ATS & Portfolio Resumes
+          </h2>
+          <p class="text-sm text-secondary mb-5">
+            Switch between parser-safe single-column layouts and multi-column portfolio themes, inspect keyword coverage, and export clean PDFs.
           </p>
+          <div class="preview-chip-list mb-5">
+            <span class="chip">Single-Column ATS Clean</span>
+            <span class="chip">ATS Technical Serif</span>
+            <span class="chip">Modern Gradient Split</span>
+            <span class="chip">Executive Sidebar</span>
+          </div>
           <div class="flex items-center gap-3 flex-wrap">
-            <a routerLink="/career-assistant" class="btn btn-accent">Try AI Mentor Now ✨</a>
-            <a routerLink="/resume-analyzer" class="btn btn-outline">Check ATS Score 📄</a>
+            <a routerLink="/resume-builder" class="btn btn-primary btn-sm">Open Resume Builder</a>
+            <a routerLink="/resume-analyzer" class="btn btn-outline btn-sm">Analyze Existing PDF</a>
           </div>
         </div>
 
-        <div class="ai-mockup flex-1">
-          <div class="ai-chat-preview sb-card">
+        <!-- Skill Gap + Roadmap -->
+        <div class="sb-card sb-card-glow spotlight-panel">
+          <app-sb-badge variant="emerald">SKILL GAP & LEARNING ROADMAPS</app-sb-badge>
+          <h3 class="text-2xl font-bold mt-3 mb-2">
+            See Missing Skills Before You Apply
+          </h3>
+          <p class="text-sm text-secondary mb-5">
+            Compare your skill inventory against target software engineering roles to reveal priority gaps and actionable weekly study topics.
+          </p>
+          <div class="mini-gap-bars mb-5" aria-label="Illustrative skill gap comparison preview">
+            <div class="gap-row">
+              <span class="text-xs font-semibold">Core Stack Match</span>
+              <span class="text-xs text-muted">Visual Breakdown</span>
+            </div>
+            <div class="gap-track"><div class="gap-fill gap-fill-primary" style="width: 78%;"></div></div>
+            <div class="gap-row mt-3">
+              <span class="text-xs font-semibold">Testing & Tooling Focus</span>
+              <span class="text-xs text-muted">Next Priority</span>
+            </div>
+            <div class="gap-track"><div class="gap-fill gap-fill-cyan" style="width: 48%;"></div></div>
+          </div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <a routerLink="/skill-gap" class="btn btn-accent btn-sm">Compare My Skills</a>
+            <a routerLink="/learning-roadmap" class="btn btn-outline btn-sm">View Roadmaps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Mock Interviews & Student Success -->
+  <section class="sb-section alt-surface" aria-labelledby="interview-heading">
+    <div class="container">
+      <div class="grid grid-2 gap-6" data-reveal>
+        <!-- Mock Interviews -->
+        <div class="sb-card spotlight-panel">
+          <app-sb-badge variant="purple">INTERVIEW STUDIO</app-sb-badge>
+          <h2 id="interview-heading" class="text-2xl font-bold mt-3 mb-2">
+            Timed AI Mock Interviews With Detailed Rubrics
+          </h2>
+          <p class="text-sm text-secondary mb-4">
+            Select topic, difficulty, and role focus. Receive structured per-answer feedback, follow-up hints, and saved session history.
+          </p>
+          <div class="ai-chat-preview sb-card mb-5">
             <div class="chat-bubble user-bubble text-xs">
-              "How can I transition from frontend to full stack with Angular and Node.js?"
+              Prompt: "How would you optimize an Angular list rendering 5,000 filtered job cards?"
             </div>
-            <div class="chat-bubble ai-bubble text-xs mt-3">
-              <span class="font-bold text-gradient">SkillBridge AI:</span> Master backend routing with Express, study MongoDB indexing (ESR rule), and deploy containerized Docker containers with CI/CD.
+            <div class="chat-bubble ai-bubble text-xs mt-2">
+              <span class="font-bold">Evaluation Focus:</span> Mention OnPush change detection, server-side pagination, trackBy, and deferred viewport rendering.
             </div>
+          </div>
+          <a routerLink="/interview-prep" class="btn btn-primary btn-sm">Launch Interview Practice →</a>
+        </div>
+
+        <!-- Student Success Milestones -->
+        <div class="sb-card spotlight-panel">
+          <app-sb-badge variant="cyan">STUDENT PROGRESSION</app-sb-badge>
+          <h3 class="text-2xl font-bold mt-3 mb-2">
+            Track Real Readiness Milestones Over Time
+          </h3>
+          <p class="text-sm text-secondary mb-4">
+            Monitor profile completeness, assessment history, application funnel stages, and earned achievement badges in a unified dashboard.
+          </p>
+          <ul class="milestone-list mb-5">
+            <li><strong>Profile & Projects:</strong> Structured showcase for code repositories, credentials, and live demos.</li>
+            <li><strong>Application Timeline:</strong> Transparent stage tracking from Applied → Interview → Decision.</li>
+            <li><strong>Skill Benchmarks:</strong> Repeatable assessments to measure progress before interviews.</li>
+          </ul>
+          <a routerLink="/career-analytics" class="btn btn-outline btn-sm">Explore Career Analytics →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Recruiter Ecosystem -->
+  <section class="sb-section" aria-labelledby="recruiter-heading">
+    <div class="container">
+      <div class="sb-card recruiter-banner p-8" data-reveal>
+        <div class="grid grid-2 gap-8 items-center">
+          <div>
+            <app-sb-badge variant="amber">RECRUITER ECOSYSTEM</app-sb-badge>
+            <h2 id="recruiter-heading" class="text-3xl font-bold mt-3 mb-3">
+              Built for Engineering Hiring Teams Too
+            </h2>
+            <p class="text-sm text-secondary mb-5">
+              Publish role listings cleanly, rank incoming applicants by matched technical skills, coordinate interviews,
+              and earn Verified Employer badges reviewed by platform admins.
+            </p>
+            <div class="flex items-center gap-3 flex-wrap">
+              <a routerLink="/register" class="btn btn-primary">Create Recruiter Account</a>
+              <a routerLink="/companies" class="btn btn-outline">Browse Partner Companies</a>
+            </div>
+          </div>
+          <div class="grid grid-2 gap-3">
+            <div class="mini-stat-tile">
+              <div class="font-bold text-sm mb-1">Skill-First Matching</div>
+              <div class="text-xs text-secondary">Surface candidates with verified stack coverage.</div>
+            </div>
+            <div class="mini-stat-tile">
+              <div class="font-bold text-sm mb-1">Stage Pipeline</div>
+              <div class="text-xs text-secondary">Move candidates cleanly with instant status alerts.</div>
+            </div>
+            <div class="mini-stat-tile">
+              <div class="font-bold text-sm mb-1">Verified Companies</div>
+              <div class="text-xs text-secondary">Admin-reviewed company badges build trust.</div>
+            </div>
+            <div class="mini-stat-tile">
+              <div class="font-bold text-sm mb-1">Abuse Protection</div>
+              <div class="text-xs text-secondary">Community scam-report moderation built in.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Sample Community Workflows (Honest Sample Labeling) -->
+  <section class="sb-section alt-surface" aria-labelledby="preview-heading">
+    <div class="container">
+      <div class="section-header text-center mb-8" data-reveal>
+        <app-sb-badge variant="neutral">SAMPLE PREVIEW — ILLUSTRATIVE WORKFLOWS</app-sb-badge>
+        <h2 id="preview-heading" class="text-2xl font-bold mt-3 mb-2">How Roles Use SkillBridge</h2>
+        <p class="text-xs text-muted">
+          Representative sample scenarios showing typical end-to-end workflows inside the platform.
+        </p>
+      </div>
+
+      <div class="grid grid-3 gap-5" data-reveal>
+        <article class="sb-card" *ngFor="let sample of samplePreviews">
+          <div class="text-xs font-bold text-primary-link mb-2">{{ sample.workflow }}</div>
+          <p class="text-sm text-secondary mb-4">"{{ sample.note }}"</p>
+          <div class="text-xs font-semibold text-muted">{{ sample.role }}</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11. Accessible FAQ Accordion -->
+  <section class="sb-section" aria-labelledby="faq-heading">
+    <div class="container">
+      <div class="section-header text-center mb-8" data-reveal>
+        <app-sb-badge variant="primary">FREQUENTLY ASKED QUESTIONS</app-sb-badge>
+        <h2 id="faq-heading" class="text-3xl font-bold mt-3">Clear Answers Before You Sign Up</h2>
+      </div>
+
+      <div class="faq-list" data-reveal>
+        <div class="faq-item sb-card" *ngFor="let faq of faqs; let i = index">
+          <button
+            type="button"
+            class="faq-trigger"
+            (click)="toggleFaq(i)"
+            [attr.aria-expanded]="openFaqIndex() === i"
+            [attr.aria-controls]="'faq-panel-' + i"
+          >
+            <span class="font-bold text-base">{{ faq.q }}</span>
+            <span class="faq-icon" aria-hidden="true">{{ openFaqIndex() === i ? '−' : '+' }}</span>
+          </button>
+          <div
+            [id]="'faq-panel-' + i"
+            class="faq-panel text-sm text-secondary"
+            *ngIf="openFaqIndex() === i"
+          >
+            {{ faq.a }}
           </div>
         </div>
       </div>
