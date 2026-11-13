@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-8`
+**Current Active Branch:** `redesign/phase-9`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -16,7 +16,7 @@
 - [x] **Phase 6**: Recruiter command center (`redesign/phase-6`) — *Completed & Verified*
 - [x] **Phase 7**: Admin control center (`redesign/phase-7`) — *Completed & Verified*
 - [x] **Phase 8**: Mobile: all phones + Android app (`redesign/phase-8`) — *Completed & Verified*
-- [ ] **Phase 9**: Performance and release (`redesign/phase-9`)
+- [x] **Phase 9**: Performance and release (`redesign/phase-9`) — *Completed & Verified*
 - [ ] **Phase 10**: Extra features (ask user which ones before building) (`redesign/phase-10`)
 
 ---
@@ -86,184 +86,6 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `$env:AUDIT_PHASE='phase-3'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **98–100** across audited routes, Best Practices **100**, CLS = **0** on landing and career-explorer.
-
-### Phase 5 — Job Marketplace & Application Tracker (`redesign/phase-5`)
-- **Status:** Complete (awaiting user `"continue"` for Phase 6).
-- **Artifacts & Reports:** `tests/reports/playwright-phase-5.json`, `tests/reports/lighthouse-phase-5.json`, `tests/screenshots/phase-5/`.
-- **Key Deliverables:**
-  - **Job Explorer & Multi-Criteria Filtering (`/jobs`)**:
-    - Real-time search by keywords, job titles, and locations with live polling watcher.
-    - Multi-criteria filter sidebar: Educational streams (B.Tech, BBA, B.Com, Govt, Internships, etc.), courses/degrees dropdown, work mode (`remote`, `hybrid`, `onsite`), opportunity types, experience levels, date posted (`any time`, `past 24h`, `past week`, `past month`), popular skill tags (`React`, `Node.js`, `Python`, `TypeScript`, `Java`, `SQL`, `AWS`, `Docker`, `AI/ML`, `Figma`), and "Hide Expired Listings" toggle.
-    - Sorting controls: Newest First (chronological ordering enforced), Highest Pay, and Most Popular.
-    - Numbered pagination controls (Page 1, 2, 3...) with previous / next navigation and smooth scroll-to-top on page change.
-    - 350+ official platforms directory explorer modal with category filtering and instant portal links.
-  - **Job Card Component (`app-job-card`)**:
-    - Real-time client-side skill match evaluation against candidate's profile skills (`⚡ X% Match`).
-    - Matched skills highlighted in emerald green pills with checkmarks (`✓`).
-    - Truthful verified employer checkmark (`✓ Verified`) shown only when `company.isVerified === true`.
-    - Truthful source platform labeling (`Source: LinkedIn Feeds`, `Source: Direct Recruiter`, etc.).
-    - Expired listing state (`⚠️ CLOSED / EXPIRED`) disabling direct apply when past deadline or closed.
-    - 1-click scam / fraudulent listing report button (`🚩 Report`) opening `ReportModalComponent`.
-  - **Job Details View (`/jobs/:id`)**:
-    - Full position overview, key responsibilities, requirements, and required technical stack.
-    - Comprehensive verified employer info card (industry, headquarters, company size, website link).
-    - Expired posting banner alert notifying candidates when applications are closed.
-    - Direct Apply link for external jobs + internal application modal with saved resume selector & AI cover letter generator (`✨ Generate with AI`).
-    - Integrated fraud/scam report modal (`ReportModalComponent`) with design-token-safe z-index (`var(--z-modal)`).
-  - **Application Tracker (`/applications`)**:
-    - **Dual View Support**: 1-click toggle between **📊 Kanban Board** and **📋 Detailed List** views.
-    - Kanban Board: Visual progression columns (`Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Archived`) with count badges, scheduled interview highlights, and responsive horizontal scroll.
-    - List View: Master-detail view with application search, visual milestone stepper, technical interview meeting details (Google Meet/Zoom), complete status transition timeline history, and attached cover letter review.
-    - Application withdrawal action with confirmation prompt.
-  - **Saved Jobs & Collections (`/saved-jobs`)**:
-    - Category tabs (`All`, `Frontend`, `Backend`, `Full Stack`, `AI`, `Internship`, `High Priority`, `General`).
-    - Live search within saved bookmarks.
-    - Inline note editing (`✏️ Add/Edit Note`) synced to backend via `PUT /api/saved-jobs/:id`.
-    - Direct apply button and view details navigation.
-  - **Backend Hardening & Models**:
-    - Enhanced `backend/src/models/Report.js` to accept both MongoDB ObjectId and external string IDs (`targetId: { type: String, required: true }`).
-    - Hardened `backend/src/controllers/reportController.js` to guard MongoDB queries using `mongoose.Types.ObjectId.isValid`.
-    - Added `workType`, `datePosted`, `skill`, and `hideExpired` filtering to `jobController.getJobs`, `getLivePlatformJobs`, and `searchJobsByCriteria`.
-    - Added `updateSavedJob` endpoint integration in `JobService`.
-    - Added comprehensive Phase 5 regression tests in `backend/tests/regression.test.js`.
-- **Verified Checks:**
-  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.61 kB** raw (**143.36 kB** transfer), `main`: **86.04 kB** raw / **18.60 kB** transfer + 40 lazy chunks.
-  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
-  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
-  - `$env:AUDIT_PHASE='phase-5'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
-  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and **0.0124** on `/jobs`.
-
-### Phase 6 — Recruiter Command Center (`redesign/phase-6`)
-- **Status:** Complete (awaiting user `"continue"` for Phase 7).
-- **Artifacts & Reports:** `tests/reports/playwright-phase-6.json`, `tests/reports/lighthouse-phase-6.json`, `tests/screenshots/phase-6/`.
-- **Key Deliverables:**
-  - **Overview & Analytics Tab**:
-    - Complete recruiting conversion funnel tracking: Views -> Applications -> Under Review -> Shortlisted -> Interviews -> Hired.
-    - 3 live conversion rate indicators: View-to-Apply %, Apply-to-Shortlist %, and Interview-to-Offer %.
-    - Summary metrics: Active Jobs, Total Applicants, Shortlisted, Interview Stage, Hired / Offers.
-    - Next Upcoming Interview card with direct "Join Meeting" action.
-    - Top in-demand technical skills breakdown across recruiter's listings.
-  - **Job Openings & Templates Tab**:
-    - 6 Production Job Templates ("Full-Stack AI Engineer", "Frontend Angular & WebGL Specialist", "Machine Learning Scientist", "Product Designer UI/UX", "Cloud & DevOps Engineer", "Data Analyst & BI Specialist") with 1-click form pre-filling.
-    - Active & Closed status toggle button with live backend sync.
-    - Responsive listings table with views, applicants counters, edit, and delete actions.
-  - **Kanban Pipeline & Bulk Actions Tab (`/recruiter/applications`)**:
-    - **Dual View**: 1-click toggle between **📋 Kanban Board** (6 columns: `Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Rejected`) and **📑 Table List**.
-    - Full HTML5 Drag-and-Drop stage transitions (`onDragStart`, `onDragOver`, `onDrop`).
-    - Keyboard-accessible stage promotion via accessible `<select>` dropdown.
-    - **Bulk Actions Bar**: Select multiple applicants with checkboxes, bulk stage transition, and bulk tagging.
-    - Tagging system ("Top Tier", "Immediate Joiner", "High Potential") with tag chip deletion.
-    - Internal hiring notes with author and timestamp audit log.
-  - **Candidate Discovery & ATS Match Tab (`/recruiter/candidates`)**:
-    - Multi-criteria candidate talent pool search (skills, target role, location).
-    - Candidate Detail Drawer with education, experience, and honest ATS Match Breakdown computed against the recruiter's active requirements.
-  - **Interview Calendar & Scheduler Tab**:
-    - **New Backend Model**: `InterviewSchedule.js` with fields for application, job, candidate, recruiter, round, duration, mode (Google Meet, Zoom, Teams, In-Person, Phone), link, status, notes, and feedback.
-    - Interactive 7-column monthly calendar grid with previous/next month navigation, current day highlight, and interview count pills.
-    - Comprehensive Schedule/Reschedule Modal with meeting link generator and candidate notification triggers.
-    - Agenda list with reschedule, cancel (with reason), and feedback recording.
-  - **Company Profile Tab**:
-    - Comprehensive company branding, industry, company size, culture narrative, official website, and verified employer status.
-- **Verified Checks:**
-  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **536.75 kB** raw (**143.10 kB** transfer), `main`: **86.04 kB** raw / **18.59 kB** transfer + 40 lazy chunks (`recruiter-dashboard-component`: **83.40 kB** raw / **18.29 kB** transfer).
-  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 6 interview schedules, recruiter analytics, tags, and bulk actions tests).
-  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
-  - `node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
-  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
-
-### Phase 7 — Admin Control Center (`redesign/phase-7`)
-- **Status:** Complete (awaiting user `"continue"` for Phase 8).
-- **Artifacts & Reports:** `tests/reports/playwright-phase-7.json`, `tests/reports/lighthouse-phase-7.json`, `tests/screenshots/phase-7/`.
-- **Key Deliverables:**
-  - **New Backend Model & Audit System**:
-    - `backend/src/models/AuditLog.js`: Schema capturing `admin`, `adminName`, `adminEmail`, `action` (`USER_STATUS_CHANGE`, `USER_DELETED`, `COMPANY_VERIFIED`, `COMPANY_UNVERIFIED`, `JOB_STATUS_CHANGE`, `JOB_FEATURED`, `JOB_UNFEATURED`, `JOB_DELETED`, `REPORT_RESOLVED`, `REPORT_DISMISSED`, `REPORT_ACTIONED`, `ADMIN_PROFILE_UPDATE`, `ADMIN_PASSWORD_UPDATE`), `targetType`, `targetId`, `targetName`, `details`, `metadata`, and timestamps.
-    - Automated asynchronous audit log recorder integrated into all administrative mutation operations.
-  - **Enhanced Admin Backend APIs (`backend/src/controllers/adminController.js`, `backend/src/routes/adminRoutes.js`)**:
-    - `GET /api/admin/stats`: Expanded with real aggregate application funnel stages (`funnelStages`), work type modality breakdown (`workTypes`), scam report categories, 7-day continuous user registration timeline (`userTrend`), and recent audit stream.
-    - `GET /api/admin/companies`: Rich company listing with active jobs count, partner verification status, search, and pagination.
-    - `GET /api/admin/applications`: Platform-wide candidate submissions monitoring with status filtering, candidate and opportunity details, and search.
-    - `GET /api/admin/audit-logs`: Paginated, filterable timeline of all platform governance and moderation actions.
-    - `PUT /api/admin/jobs/:id/status`: Job status toggle (`active`, `closed`, `draft`) and featured badge (`isFeatured`) toggle with audit logging.
-    - `DELETE /api/admin/jobs/:id`: Job deletion with administrative audit trail.
-    - `POST /api/admin/reports/:id/action`: Automated fraud and scam report resolution executing cascade actions (`delete_job`, `suspend_user`, `resolve`, `dismiss`, `under_review`) with internal notes and audit logs.
-  - **Frontend Modernization (`frontend/src/app/pages/admin-dashboard/`)**:
-    - **Tab 1: Platform Analytics & Interactive Charts**:
-      - 7-Day User Registration Trend Bar Chart with daily hover tooltips and dynamic scale.
-      - Ecosystem Role Balance (Students vs Recruiters vs Admins) with segmented progress bars.
-      - 6-Stage Application Conversion Funnel (`Applied` -> `Under Review` -> `Shortlisted` -> `Interview` -> `Selected` -> `Rejected`) with conversion rate percentages.
-      - Job Workplace Modality Breakdown (Remote, Hybrid, Onsite).
-      - Scam & Compliance Shield center with pending report alerts.
-    - **Tab 2: User Moderation & Dossier Inspector (`/admin/users`)**:
-      - Real-time search by name, email, or phone.
-      - Role and account status filters.
-      - 1-click status toggling (`Active` / `Suspended`).
-      - Accessible deletion confirmation modal with irreversible warning.
-      - Full Candidate & Recruiter Dossier modal inspecting login credentials, auth provider, career intent, expected compensation, ATS score, and enterprise metrics.
-    - **Tab 3: Job Moderation & Market Integrity (`/admin/jobs`)**:
-      - Multi-criteria filtering by posting status and flagged scam listings.
-      - 1-click `★ Feature` / `☆ Unfeature` marketplace promotion toggle.
-      - Active/Closed listing toggle with live database synchronization.
-      - Scam flag indicators and direct removal actions.
-    - **Tab 4: Corporate Partner Verification (`/admin/companies`)**:
-      - Verification state filter (Verified Partners vs Pending Review).
-      - Instant `✓ Verify Partner` / `Revoke Badge` action with live stats update.
-      - Enterprise detail inspection modal displaying company size, location, website, culture description, and active requisitions.
-    - **Tab 5: Scam Reports & Anti-Fraud Workflow (`/admin/reports`)**:
-      - Filter by report status and target entity (`Job`, `Company`, `User`).
-      - Comprehensive action modal: Resolve flag, dismiss flag, escalate to active review, or trigger 1-click target remediation (`Delete Job Posting`, `Suspend User Account`).
-      - Internal resolution notes and resolver timestamp tracking.
-    - **Tab 6: Platform-Wide Applications Monitor (`/admin/applications`)**:
-      - Comprehensive pipeline monitoring with status filters and candidate search.
-      - Direct resume document link (`View Resume ↗`).
-    - **Tab 7: Administrative Audit Log (`/admin/audit`)**:
-      - Full timestamped chronological event stream with action filtering and search.
-    - **Tab 8: ML Microservice Telemetry**:
-      - Real-time health, memory, and model benchmarks for 4 production AI models.
-    - **Tab 9: Admin Profile & Security Settings**:
-      - Profile display name, login email, phone number updating, avatar upload, and password rotation.
-    - **Accessibility & Design System**:
-      - Strict WCAG AA compliance: All `<select>` dropdowns carry explicit `aria-label` attributes, inputs are explicitly linked to labels, buttons have descriptive names, and zero horizontal overflow exists down to 360px viewport.
-- **Verified Checks:**
-  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.48 kB** raw (**143.29 kB** transfer), `main`: **86.42 kB** raw / **18.66 kB** transfer + 40 lazy chunks (`admin-dashboard-component`: **88.15 kB** raw / **17.62 kB** transfer).
-  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 7 admin stats, audit logs, companies, and applications assertions).
-  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
-  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
-  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
-
-### Phase 8 — Mobile: All Phones + Android App (`redesign/phase-8`)
-- **Status:** Complete (awaiting user `"continue"` for Phase 9).
-- **Artifacts & Reports:** `MOBILE.md`, `tests/reports/playwright-phase-8.json`, `tests/reports/lighthouse-phase-8.json`, `tests/screenshots/phase-8/`, `frontend/public/offline.html`, `frontend/android/`, `frontend/ios/`.
-- **Key Deliverables:**
-  - **Framework Decision**: Comprehensive 5-line comparison documented in `MOBILE.md` selecting **Capacitor-only** over Ionic Angular due to negligible bundle weight (< 15 KB vs ~450 KB), zero DOM rewrites, and 100% native compatibility with Angular 19 signals.
-  - **Installable PWA & Offline Support**:
-    - Web App Manifest (`manifest.json`) with theme color, background color, orientation, high-res maskable icons, and app shortcuts.
-    - Service Worker (`sw.js`) bumped to `skillbridge-pwa-v2.2` pre-caching App Shell assets with Stale-While-Revalidate caching strategy.
-    - Dedicated cinematic offline fallback page (`offline.html`) served automatically if network and cache are unavailable.
-    - Install prompt banner (`pwa-install-banner`) supporting both Chromium `beforeinstallprompt` and iOS Safari Add-to-Home-Screen instructions.
-  - **Real Mobile Shell**:
-    - **Role-Aware Bottom Navigation (`BottomNavComponent`)**: Dynamically renders context-tailored tabs for Student, Recruiter, Admin, and Guest with haptic feedback, active indicators, and safe-area insets (`env(safe-area-inset-bottom)`).
-    - **44px+ Touch Targets**: All navigation tabs, buttons, inputs, and form controls enforce `min-height: 44px; min-width: 44px;` complying with WCAG 2.1 AA.
-    - **iOS Safari Auto-Zoom Prevention**: Inputs on screens `<= 768px` enforce `font-size: 16px !important`, preventing viewport zoom/displacement.
-    - **Bottom-Sheet Modals (`@media (max-width: 640px)`)**: Sliding bottom sheets with rounded top corners, swipe-handle bar, and smooth spring animation.
-    - **Pull-To-Refresh (`PullToRefreshComponent`)**: Touch pull gesture with directional arrow, spinner, and haptic feedback on threshold release.
-  - **Capacitor Native Bridges (`MobileNativeService`)**:
-    - **Android Hardware Back-Button**: Intercepts modal dismissals first, handles double-tap to exit at root paths with toast, or navigates back in browser history.
-    - **Push Notifications Scaffolding**: Registers listeners for device token, error, notification received, and notification action dispatch with credentials checklist in `MOBILE.md`.
-    - **Camera & File Capture**: Native camera and photo picker integration via `@capacitor/camera` with web fallback.
-    - **Secure Token Storage**: Encrypted native preference storage via `@capacitor/preferences` with localStorage fallback.
-    - **Deep Linking**: Intent filters for `skillbridge://` scheme and `https://skillbridge.com/` universal links with auto-dispatch via Angular Router.
-  - **Native Platform Projects**:
-    - Generated Android native Gradle project (`frontend/android/`) configured with SDK 34 permissions (`INTERNET`, `CAMERA`, `POST_NOTIFICATIONS`, `READ_MEDIA_IMAGES`), deep link intent filters, and Gradle wrapper.
-    - Generated iOS native Xcode workspace (`frontend/ios/App/App.xcworkspace`) with Package.swift plugin bindings. Transparently documented that Xcode compilation strictly requires macOS.
-    - Complete APK/AAB build steps documented in `MOBILE.md`.
-- **Verified Checks:**
-  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **562.31 kB** raw (**150.70 kB** transfer), `main`: **100.94 kB** raw / **22.55 kB** transfer + 43 lazy chunks.
-  - `cd frontend; npx cap sync`: exit `0` (synchronized web assets to `android` and `ios`).
-  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
-  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
-  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
-  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0002** on landing and career-explorer.
-  - Dual-theme (`[data-theme="light"]`) spot-checks on `/student/dashboard`, `/profile`, `/resume-builder`, `/notifications`, and `/settings` rendered with 0 layout shift or clipped elements.
 
 ### Phase 4 — AI Modules (`redesign/phase-4`)
 - **Status:** Complete (awaiting user `"continue"` for Phase 5).
@@ -478,6 +300,56 @@
     - Generated Android native Gradle project (`frontend/android/`) configured with SDK 34 permissions (`INTERNET`, `CAMERA`, `POST_NOTIFICATIONS`, `READ_MEDIA_IMAGES`), deep link intent filters, and Gradle wrapper.
     - Generated iOS native Xcode workspace (`frontend/ios/App/App.xcworkspace`) with Package.swift plugin bindings. Transparently documented that Xcode compilation strictly requires macOS.
     - Complete APK/AAB build steps documented in `MOBILE.md`.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **562.31 kB** raw (**150.70 kB** transfer), `main`: **100.94 kB** raw / **22.55 kB** transfer + 43 lazy chunks.
+  - `cd frontend; npx cap sync`: exit `0` (synchronized web assets to `android` and `ios`).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0002** on landing and career-explorer.
+
+### Phase 9 — Performance and Release (`redesign/phase-9`)
+- **Status:** Complete (awaiting user selection of Phase 10 extra features).
+- **Artifacts & Reports:** `README.md`, `.github/workflows/ci.yml`, `tests/reports/playwright-phase-9.json`, `tests/reports/lighthouse-phase-9.json`, `tests/screenshots/phase-9/`.
+- **Key Deliverables:**
+  - **Bundle Analysis & Dead-Code Optimization**:
+    - Strict standalone component tree with Angular 19 Ahead-of-Time (AOT) compilation.
+    - Route-level lazy loading via `loadComponent: () => import(...)` for all 34 secondary routes.
+    - Three.js WebGL and GSAP completely isolated in lazy chunks via `@defer (on idle)` and dynamic `import()`, preventing initial render blocking.
+    - Production bundle sizes: Initial total **562.31 kB** raw / **150.70 kB** transfer (vs Phase 0 baseline **911.66 kB** raw / **196.71 kB** transfer, a **38.3% raw size reduction**), `main.js`: **100.94 kB** raw / **22.55 kB** transfer, `styles.css`: **24.86 kB** raw / **5.52 kB** transfer.
+  - **Database Indexing & Slow-Query Optimization**:
+    - Audited all Mongoose schemas and added compound indexes for high-frequency queries:
+      - `User`: `{ role: 1, createdAt: -1 }`, `{ status: 1, role: 1 }`, `{ createdAt: -1 }`.
+      - `Job`: `{ status: 1, createdAt: -1 }`, `{ recruiter: 1, status: 1, createdAt: -1 }`, `{ company: 1, status: 1 }`, `{ isReported: 1, status: 1 }`, `{ isFeatured: 1, status: 1, createdAt: -1 }`.
+      - `Application`: `{ candidate: 1, createdAt: -1 }`, `{ job: 1, status: 1 }`, `{ recruiter: 1, createdAt: -1 }`, `{ status: 1, createdAt: -1 }`, `{ createdAt: -1 }`.
+      - `Company`: `{ createdBy: 1 }`, `{ isVerified: 1, createdAt: -1 }`.
+      - `AuditLog`: `{ admin: 1, createdAt: -1 }`.
+      - `Notification`: `{ recipient: 1, createdAt: -1 }`.
+      - `SavedJob`: `{ user: 1, createdAt: -1 }`.
+      - `Resume`: `{ user: 1, isPrimary: -1, updatedAt: -1 }`.
+    - Applied `.lean()` across all read queries to eliminate Mongoose document hydration overhead, reducing memory footprint and API latency.
+  - **HTTP Compression, Caching & ETags**:
+    - Added Express `compression` middleware with 1 KB threshold, compressing JSON and text payloads with gzip/deflate.
+    - Configured strong ETag revalidation for automatic HTTP 304 Not Modified responses.
+    - Added caching headers middleware: Default `private, no-cache, must-revalidate` for authenticated user API responses, `no-store` for mutation endpoints, and `public, max-age=300, stale-while-revalidate=600` for public catalogs (`/api/analytics/public-stats`, `/api/jobs/popular/tags`, `/api/jobs/platforms/directory`, `/api/jobs/courses`).
+  - **Server-Side & Client-Side Pagination Everywhere**:
+    - ReDoS-safe, boundary-clamped pagination helper (`parsePagination`) enforced across all list endpoints:
+      - `/api/jobs`: page, limit (max 50).
+      - `/api/jobs/recruiter/myjobs`: page, limit (max 100).
+      - `/api/applications/my`: page, limit (max 100).
+      - `/api/applications/recruiter/all`: page, limit (max 100).
+      - `/api/notifications`: page, limit (max 100).
+      - `/api/companies`: page, limit (max 100).
+      - `/api/saved-jobs`: page, limit (max 100).
+      - `/api/reports/my`: page, limit (max 100).
+      - `/api/admin/users`, `/api/admin/jobs`, `/api/admin/companies`, `/api/admin/reports`, `/api/admin/applications`, `/api/admin/audit-logs`: paginated.
+  - **PWA & Offline Image Optimization**:
+    - Generated PNG icon targets (`icon-192.png`, `icon-512.png`) for iOS Safari touch icons.
+    - Bumped Service Worker to `skillbridge-pwa-v2.3` pre-caching all icons and app shell.
+    - Zero image CLS (`CLS <= 0.0124` across all routes; `0.0002` on landing and career-explorer).
+  - **Documentation & CI/CD**:
+    - Completely overhauled `README.md` with detailed Mermaid architecture diagram, complete environment variables directory (backend & frontend), full scripts directory, mobile cross-platform build instructions, and testing guides.
+    - Created `.github/workflows/ci.yml` running automated backend regression tests, frontend Angular 19 production build, and Capacitor synchronization on push and pull requests.
 - **Verified Checks:**
   - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **562.31 kB** raw (**150.70 kB** transfer), `main`: **100.94 kB** raw / **22.55 kB** transfer + 43 lazy chunks.
   - `cd frontend; npx cap sync`: exit `0` (synchronized web assets to `android` and `ios`).

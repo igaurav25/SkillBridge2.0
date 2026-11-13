@@ -595,25 +595,143 @@ npm start
 
 ---
 
+## 📜 Complete Scripts Directory
+
+| Scope | Command | Description |
+| :--- | :--- | :--- |
+| **Root** | `node test_e2e.js` | Runs the 22-step full-stack integration smoke test suite. |
+| **Root** | `node tests/run-audit-harness.mjs` | Runs the Playwright (35 routes × 10 viewports = 350 checks) & Lighthouse audit harness. |
+| **Backend** | `npm start` | Runs Express backend in production mode via `server.js`. |
+| **Backend** | `npm run dev` | Runs Express backend with hot-reload via `nodemon`. |
+| **Backend** | `npm test` | Runs the Node.js native regression test suite (`node --test tests/regression.test.js`). |
+| **Backend** | `npm run seed` | Seeds fresh in-memory or database records with demo students, recruiters, jobs, and applications. |
+| **Backend** | `npm run seed:features` | Seeds SkillBridge 2.0 interactive assessments, roadmaps, and project blueprints. |
+| **Frontend** | `npm start` | Runs Angular 19 development server at `http://localhost:4200`. |
+| **Frontend** | `npm run build` | Builds optimized production artifacts with Ahead-of-Time (AOT) compilation in `dist/frontend`. |
+| **Frontend** | `npx cap sync` | Synchronizes compiled web artifacts and plugins into native Android (`android/`) and iOS (`ios/`) projects. |
+| **Frontend** | `npx cap open android` | Launches Android Studio pointing to `frontend/android`. |
+| **Frontend** | `npx cap open ios` | Launches Xcode pointing to `frontend/ios/App/App.xcworkspace` (macOS required). |
+
+---
+
 ## 🔐 Environment Configuration
 
-Create or modify `backend/.env`:
+### Backend Environment Variables (`backend/.env`)
 
 ```ini
+# Server Port & Mode
 PORT=5000
 NODE_ENV=development
+
+# Database Connectivity
 MONGODB_URI=mongodb://127.0.0.1:27017/skillbridge
+
+# JWT Authentication
 JWT_SECRET=skillbridge_super_secure_jwt_production_secret_2026_xyz
 JWT_EXPIRE=7d
-CLIENT_URL=http://localhost:4200
 
-# Dual-Engine AI Configuration (Optional):
-# Add your AI API key to enable live LLM generation:
-AI_API_KEY=
+# CORS Allowed Web Clients & Mobile Shells
+CLIENT_URL=http://localhost:4200
+CORS_ALLOWED_ORIGINS=http://localhost:4200,capacitor://localhost,ionic://localhost,http://localhost
+
+# AI Intelligence Layer (Optional - heuristic fallback engine operates automatically when unset)
 GEMINI_API_KEY=
-# Note: If no key is set, the intelligent heuristic fallback engine
-# automatically handles ATS scoring, job matching, mock interviews, and roadmaps.
+AI_API_KEY=
 ```
+
+### Frontend Environment Configuration (`frontend/src/environments/`)
+
+- Development: `frontend/src/environments/environment.ts` (`apiUrl: 'http://localhost:5000/api'`)
+- Production: `frontend/src/environments/environment.prod.ts` (`apiUrl: 'https://your-domain.com/api'`)
+
+---
+
+## 🏗️ Architecture Overview
+
+```mermaid
+flowchart TD
+    subgraph Client ["Client Layer (Web, PWA & Native Mobile)"]
+        Web["Angular 19 SPA (Standalone, Signals, OnPush)"]
+        PWA["PWA Service Worker (App Shell Stale-While-Revalidate, offline.html)"]
+        Three["Three.js 3D Hero Scene (Procedural WebGL, @defer on idle, <= 300KB)"]
+        CapAndroid["Capacitor Android Shell (Native Camera, Push Notifications, Back-Button)"]
+        CapiOS["Capacitor iOS Shell (Safe-Area Insets, Preferences Storage)"]
+    end
+
+    subgraph Gateway ["Backend API Gateway (Node.js & Express)"]
+        Security["Helmet + Rate Limiting + ReDoS Escaping + JWT Auth"]
+        Perf["HTTP Payload Compression (gzip/deflate) + ETag 304 Revalidation"]
+        Cache["Vary Headers + Cache-Control (public catalogs max-age=300, private no-cache)"]
+        Controllers["Controllers (Users, Jobs, Applications, Admin, AI, Roadmaps, Assessments)"]
+    end
+
+    subgraph Data ["Database & AI Engine"]
+        Mongo[("MongoDB with Compound Indexes:
+        - Job: (status, createdAt), (recruiter, status)
+        - Application: (candidate, createdAt), (job, status)
+        - User: (role, createdAt), (status, role)
+        - AuditLog: (action, createdAt), (targetType, createdAt)
+        - Notification: (recipient, read, createdAt)")]
+        DualAI["Dual AI/ML Engine:
+        - Scikit-Learn Python ML Microservice
+        - Google Gemini API (Natural Language Mentoring)
+        - Rule-Based / Heuristic Fallbacks (Truthfully Labeled)"]
+    end
+
+    Web --> Security
+    PWA --> Security
+    CapAndroid --> Security
+    CapiOS --> Security
+    Three -.-> Web
+    Security --> Perf --> Cache --> Controllers
+    Controllers --> Mongo
+    Controllers --> DualAI
+```
+
+---
+
+## 📱 Cross-Platform Mobile Build Guide
+
+SkillBridge is built as a unified cross-platform application utilizing **Capacitor-only** for native iOS and Android shells without Ionic overhead:
+
+### 1. Progressive Web App (PWA)
+- Installable on Chrome, Edge, Safari, and Firefox.
+- Service Worker (`sw.js`) provides app shell pre-caching, Stale-While-Revalidate for static assets, and automatic redirection to `offline.html` when network is unavailable.
+- Responsive bottom navigation (`app-bottom-nav`) with role-tailored tabs (Student, Recruiter, Admin, Guest), safe-area insets (`env(safe-area-inset-bottom)`), and 44px+ touch targets.
+
+### 2. Android App (Capacitor)
+- Native Gradle project pre-configured in `frontend/android/`.
+- Configured with Android SDK 34 permissions: `INTERNET`, `CAMERA`, `POST_NOTIFICATIONS`, `READ_MEDIA_IMAGES`.
+- Hardware back-button handling: Intercepts open modals first, handles double-tap to exit at root paths with toast, or navigates back in Angular Router.
+- **Building APK / AAB**:
+  ```bash
+  cd frontend
+  npm run build
+  npx cap sync android
+  cd android
+  ./gradlew assembleDebug      # Builds debug APK in app/build/outputs/apk/debug/
+  ./gradlew bundleRelease      # Builds production AAB for Google Play Store
+  ```
+
+### 3. iOS App (Capacitor)
+- Native Xcode workspace pre-configured in `frontend/ios/App/App.xcworkspace`.
+- Safe-area insets (`env(safe-area-inset-top)` / `bottom`) and iOS Safari auto-zoom prevention (`font-size: 16px !important` on inputs under 768px).
+- Note: Compiling an `.ipa` or running the iOS Simulator strictly requires macOS with Xcode installed:
+  ```bash
+  cd frontend
+  npm run build
+  npx cap sync ios
+  npx cap open ios
+  ```
+
+---
+
+## ⚙️ Automated CI/CD Workflow
+
+SkillBridge features an automated GitHub Actions CI workflow in `.github/workflows/ci.yml` executing on every push and pull request:
+1. **Backend Tests**: Runs on `ubuntu-latest`, initializes Node.js 20, installs dependencies, and runs `node --test tests/regression.test.js` validating authentication security, IDOR protection, mass assignment guarding, ReDoS escaping, and admin privacy.
+2. **Frontend Build**: Compiles Angular 19 production bundle with strict budgets, validates Ahead-of-Time (AOT) tree-shaking, and verifies Capacitor native project synchronization (`npx cap sync`).
+3. **Smoke Integration**: Validates end-to-end integration and smoke assertions.
 
 ---
 
@@ -625,21 +743,11 @@ SkillBridge includes an automated end-to-end smoke test script (`test_e2e.js`) v
 node test_e2e.js
 ```
 
-### What `test_e2e.js` Validates:
-1. **Frontend Live Check**: Confirms Angular 19 server responds on `http://localhost:4200` (HTTP 200).
-2. **Backend Health Check**: Confirms Express server responds on `http://localhost:5000/api/health`.
-3. **Student Authentication**: Logs in `student@skillbridge.com` and retrieves JWT token.
-4. **Student Profile Verification**: Retrieves profile data and verifies completion percentage.
-5. **Job Search & Filters**: Tests job querying with keyword filtering.
-6. **AI Career Mentor**: Sends prompt to `/api/ai/chat` and validates AI response structure.
-7. **AI Skill Gap Analyzer**: Evaluates target role readiness and extracts missing skills.
-8. **AI Cover Letter Generator**: Generates customized cover letter for a selected job.
-9. **Technical Question Bank & AI Mock Interview**:
-   - Queries interview question bank.
-   - Starts a mock interview session.
-   - Submits a candidate answer and validates real-time scoring and feedback.
-10. **Recruiter Authentication & Candidate Search**: Logs in recruiter and searches student talent pool.
-11. **Admin Authentication & Platform KPIs**: Logs in admin and validates platform statistics.
+### Full-Stack Verification Commands:
+- **Backend Regression Suite**: `node --test backend/tests/regression.test.js`
+- **Frontend Production Build**: `cd frontend && npx ng build --configuration production`
+- **Native Platform Sync**: `cd frontend && npx cap sync`
+- **Full Viewport Audit Harness**: `node tests/run-audit-harness.mjs` (35 routes across 10 viewports: 1920, 1440, 1366, 1280, 1024, 768, 430, 390, 375, 360px).
 
 ---
 

@@ -58,5 +58,7 @@ const companySchema = new mongoose.Schema(
 
 companySchema.index({ name: 'text', industry: 'text', location: 'text' });
 companySchema.index({ isVerified: 1 });
+companySchema.index({ isVerified: 1, createdAt: -1 });
+companySchema.index({ createdBy: 1 });
 
 module.exports = mongoose.model('Company', companySchema);

@@ -1,6 +1,6 @@
 const Company = require('../models/Company');
 const Job = require('../models/Job');
-const { escapeRegex } = require('../utils/securityHelpers');
+const { escapeRegex, parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Get all companies
 // @route   GET /api/companies
@@ -21,8 +21,24 @@ const getCompanies = async (req, res, next) => {
     if (location && location.trim()) query.location = { $regex: escapeRegex(location.trim()), $options: 'i' };
     if (isVerified !== undefined) query.isVerified = isVerified === 'true';
 
-    const companies = await Company.find(query).sort('-createdAt');
-    res.status(200).json({ success: true, count: companies.length, data: companies });
+    const total = await Company.countDocuments(query);
+    let companiesQuery = Company.find(query).sort('-createdAt').lean();
+
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
+      const companies = await companiesQuery.skip(skip).limit(limit);
+      return res.status(200).json({
+        success: true,
+        count: companies.length,
+        total,
+        page,
+        pages: Math.ceil(total / limit) || 1,
+        data: companies,
+      });
+    }
+
+    const companies = await companiesQuery;
+    res.status(200).json({ success: true, count: companies.length, total, data: companies });
   } catch (err) {
     next(err);
   }

@@ -1,4 +1,5 @@
 const SavedJob = require('../models/SavedJob');
+const { parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Get user's saved jobs
 // @route   GET /api/saved-jobs
@@ -9,27 +10,45 @@ const getMySavedJobs = async (req, res, next) => {
     const query = { user: req.user.id };
     if (category && category !== 'All') query.category = category;
 
-    const savedJobs = await SavedJob.find(query)
+    const total = await SavedJob.countDocuments(query);
+    let savedQuery = SavedJob.find(query)
       .populate({
         path: 'job',
         populate: { path: 'company', select: 'name logo location isVerified' },
       })
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .lean();
 
     // Aggregate category counts
-    const categories = ['All', 'Frontend', 'Backend', 'Full Stack', 'AI', 'Internship', 'High Priority', 'General'];
     const counts = await SavedJob.aggregate([
       { $match: { user: req.user._id } },
       { $group: { _id: '$category', count: { $sum: 1 } } },
     ]);
-    const catCountMap = { All: savedJobs.length };
+    const totalAll = await SavedJob.countDocuments({ user: req.user.id });
+    const catCountMap = { All: totalAll };
     counts.forEach((c) => {
       catCountMap[c._id] = c.count;
     });
 
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
+      const savedJobs = await savedQuery.skip(skip).limit(limit);
+      return res.status(200).json({
+        success: true,
+        count: savedJobs.length,
+        total,
+        page,
+        pages: Math.ceil(total / limit) || 1,
+        categoryCounts: catCountMap,
+        data: savedJobs,
+      });
+    }
+
+    const savedJobs = await savedQuery;
     res.status(200).json({
       success: true,
       count: savedJobs.length,
+      total,
       categoryCounts: catCountMap,
       data: savedJobs,
     });

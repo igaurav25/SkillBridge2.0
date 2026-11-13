@@ -122,6 +122,11 @@ jobSchema.index({ jobType: 1 });
 jobSchema.index({ experienceLevel: 1 });
 jobSchema.index({ status: 1 });
 jobSchema.index({ createdAt: -1 });
+jobSchema.index({ status: 1, createdAt: -1 });
+jobSchema.index({ recruiter: 1, status: 1, createdAt: -1 });
+jobSchema.index({ company: 1, status: 1 });
+jobSchema.index({ isReported: 1, status: 1 });
+jobSchema.index({ isFeatured: 1, status: 1, createdAt: -1 });
 jobSchema.index({ 'salary.min': 1 });
 
 module.exports = mongoose.model('Job', jobSchema);

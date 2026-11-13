@@ -1,11 +1,15 @@
 // SkillBridge 2.0 — Universal Service Worker
-const CACHE_NAME = 'skillbridge-pwa-v2.2';
+const CACHE_NAME = 'skillbridge-pwa-v2.3';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
   '/offline.html',
+  '/icons/icon-192.svg',
+  '/icons/icon-512.svg',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
 ];
 
 // Install Event: Precaching App Shell

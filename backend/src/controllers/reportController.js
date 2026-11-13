@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Report = require('../models/Report');
 const Job = require('../models/Job');
+const { parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Create a content report
 // @route   POST /api/reports
@@ -49,8 +50,24 @@ const createReport = async (req, res, next) => {
 // @access  Private
 const getMyReports = async (req, res, next) => {
   try {
-    const reports = await Report.find({ reporter: req.user.id }).sort('-createdAt');
-    res.status(200).json({ success: true, count: reports.length, data: reports });
+    const total = await Report.countDocuments({ reporter: req.user.id });
+    let reportsQuery = Report.find({ reporter: req.user.id }).sort('-createdAt').lean();
+
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
+      const reports = await reportsQuery.skip(skip).limit(limit);
+      return res.status(200).json({
+        success: true,
+        count: reports.length,
+        total,
+        page,
+        pages: Math.ceil(total / limit) || 1,
+        data: reports,
+      });
+    }
+
+    const reports = await reportsQuery;
+    res.status(200).json({ success: true, count: reports.length, total, data: reports });
   } catch (err) {
     next(err);
   }

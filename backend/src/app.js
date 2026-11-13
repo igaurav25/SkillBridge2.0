@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
@@ -83,6 +84,33 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   })
 );
+
+// HTTP payload compression (gzip/deflate) for all responses > 1KB
+app.use(
+  compression({
+    threshold: 1024,
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) return false;
+      return compression.filter(req, res);
+    },
+  })
+);
+
+// Enable robust ETag generation for HTTP 304 revalidation
+app.set('etag', 'strong');
+
+// Default Cache-Control and Vary headers for API traffic
+app.use('/api', (req, res, next) => {
+  res.set('Vary', 'Accept-Encoding, Authorization');
+  if (req.method === 'GET') {
+    if (!res.getHeader('Cache-Control')) {
+      res.set('Cache-Control', 'private, no-cache, must-revalidate');
+    }
+  } else {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  }
+  next();
+});
 
 // Body parser capped at safe size (file uploads handled separately via Multer limits)
 app.use(express.json({ limit: '2mb' }));

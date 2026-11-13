@@ -349,10 +349,27 @@ const deleteJob = async (req, res, next) => {
 // @access  Private (Recruiter / Admin)
 const getRecruiterJobs = async (req, res, next) => {
   try {
-    const jobs = await Job.find({ recruiter: req.user.id }).sort('-createdAt');
+    const total = await Job.countDocuments({ recruiter: req.user.id });
+    let jobsQuery = Job.find({ recruiter: req.user.id }).sort('-createdAt').lean();
+
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
+      const jobs = await jobsQuery.skip(skip).limit(limit);
+      return res.status(200).json({
+        success: true,
+        count: jobs.length,
+        total,
+        page,
+        pages: Math.ceil(total / limit) || 1,
+        data: jobs,
+      });
+    }
+
+    const jobs = await jobsQuery;
     res.status(200).json({
       success: true,
       count: jobs.length,
+      total,
       data: jobs,
     });
   } catch (err) {
@@ -365,6 +382,7 @@ const getRecruiterJobs = async (req, res, next) => {
 // @access  Public
 const getPopularSearches = async (req, res, next) => {
   try {
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
     const popularRoles = [
       'Full Stack Developer',
       'Angular Developer',
@@ -531,6 +549,7 @@ const searchJobsByCriteria = async (req, res, next) => {
 // @access  Public
 const getPlatformsDirectory = async (req, res, next) => {
   try {
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
     const { stream, search } = req.query;
     let platforms = PLATFORMS_350;
 
@@ -570,6 +589,7 @@ const getPlatformsDirectory = async (req, res, next) => {
 // @access  Public
 const getCoursesCatalog = async (req, res, next) => {
   try {
+    res.set('Cache-Control', 'public, max-age=300, stale-while-revalidate=600');
     res.status(200).json({
       success: true,
       count: COURSES_CATALOG.length,

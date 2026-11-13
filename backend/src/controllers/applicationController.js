@@ -4,6 +4,7 @@ const Profile = require('../models/Profile');
 const Resume = require('../models/Resume');
 const Notification = require('../models/Notification');
 const { calculateJobMatch } = require('../services/aiService');
+const { parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Apply for a job
 // @route   POST /api/applications/apply/:jobId
@@ -105,14 +106,15 @@ const applyForJob = async (req, res, next) => {
 // @access  Private (Student)
 const getMyApplications = async (req, res, next) => {
   try {
-    const applications = await Application.find({ candidate: req.user.id })
+    const allApplications = await Application.find({ candidate: req.user.id })
       .populate('job', 'title companyName companyLogo location workType jobType salary deadline status')
       .populate('recruiter', 'name email')
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .lean();
 
-    // Calculate status breakdown
+    // Calculate status breakdown across all candidate applications
     const stats = {
-      total: applications.length,
+      total: allApplications.length,
       applied: 0,
       underReview: 0,
       shortlisted: 0,
@@ -122,7 +124,7 @@ const getMyApplications = async (req, res, next) => {
       withdrawn: 0,
     };
 
-    applications.forEach((app) => {
+    allApplications.forEach((app) => {
       switch (app.status) {
         case 'Applied': stats.applied++; break;
         case 'Under Review': stats.underReview++; break;
@@ -134,11 +136,26 @@ const getMyApplications = async (req, res, next) => {
       }
     });
 
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 15, 100);
+      const paginated = allApplications.slice(skip, skip + limit);
+      return res.status(200).json({
+        success: true,
+        count: paginated.length,
+        total: allApplications.length,
+        page,
+        pages: Math.ceil(allApplications.length / limit) || 1,
+        stats,
+        data: paginated,
+      });
+    }
+
     res.status(200).json({
       success: true,
-      count: applications.length,
+      count: allApplications.length,
+      total: allApplications.length,
       stats,
-      data: applications,
+      data: allApplications,
     });
   } catch (err) {
     next(err);
@@ -223,11 +240,13 @@ const getRecruiterApplications = async (req, res, next) => {
     if (status && status !== 'all') query.status = status;
     if (jobId && jobId !== 'all') query.job = jobId;
 
+    const total = await Application.countDocuments(query);
     const applications = await Application.find(query)
       .populate('job', 'title location workType jobType')
       .populate('candidate', 'name email avatar headline')
       .populate('resume')
-      .sort('-createdAt');
+      .sort('-createdAt')
+      .lean();
 
     // Metrics for recruiter dashboard
     const stats = {
@@ -238,9 +257,24 @@ const getRecruiterApplications = async (req, res, next) => {
       hired: applications.filter((a) => a.status === 'Selected').length,
     };
 
+    if (req.query.page !== undefined) {
+      const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 20, 100);
+      const paginated = applications.slice(skip, skip + limit);
+      return res.status(200).json({
+        success: true,
+        count: paginated.length,
+        total,
+        page,
+        pages: Math.ceil(total / limit) || 1,
+        stats,
+        data: paginated,
+      });
+    }
+
     res.status(200).json({
       success: true,
       count: applications.length,
+      total,
       stats,
       data: applications,
     });

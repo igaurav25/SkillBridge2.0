@@ -1,23 +1,33 @@
 const Notification = require('../models/Notification');
+const { parsePagination } = require('../utils/securityHelpers');
 
 // @desc    Get user's notifications
 // @route   GET /api/notifications
 // @access  Private
 const getMyNotifications = async (req, res, next) => {
   try {
-    const notifications = await Notification.find({ recipient: req.user.id })
-      .sort('-createdAt')
-      .limit(50);
+    const { page, limit, skip } = parsePagination(req.query.page, req.query.limit || 50, 100);
 
-    const unreadCount = await Notification.countDocuments({
-      recipient: req.user.id,
-      read: false,
-    });
+    const [notifications, total, unreadCount] = await Promise.all([
+      Notification.find({ recipient: req.user.id })
+        .sort('-createdAt')
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      Notification.countDocuments({ recipient: req.user.id }),
+      Notification.countDocuments({
+        recipient: req.user.id,
+        read: false,
+      }),
+    ]);
 
     res.status(200).json({
       success: true,
       unreadCount,
       count: notifications.length,
+      total,
+      page,
+      pages: Math.ceil(total / limit) || 1,
       data: notifications,
     });
   } catch (err) {

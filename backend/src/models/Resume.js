@@ -126,5 +126,6 @@ const resumeSchema = new mongoose.Schema(
 );
 
 resumeSchema.index({ user: 1 });
+resumeSchema.index({ user: 1, isPrimary: -1, updatedAt: -1 });
 
 module.exports = mongoose.model('Resume', resumeSchema);
