@@ -14,6 +14,8 @@ export interface AIAnalysisResult {
   suggestedJobRoles: string[];
   suggestedProjects: string[];
   suggestedTechnologies: string[];
+  bulletRewrites?: { original: string; rewritten: string; impactNote: string }[];
+  engine?: 'AI-generated' | 'Rule-based estimate';
   analyzedAt?: string;
 }
 

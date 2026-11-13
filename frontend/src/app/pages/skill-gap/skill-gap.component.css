@@ -1,46 +1,58 @@
 .skill-gap-page {
-  min-height: calc(100vh - 160px);
+  min-height: calc(100dvh - 160px);
 }
 
 .role-pill {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-card);
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 0.45rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.role-pill:hover,
 .role-pill.active {
-  background: var(--primary-600);
+  background: #4338ca;
   color: #ffffff;
-  border-color: var(--primary-400);
+  font-weight: 600;
 }
 
-.text-emerald {
-  color: var(--accent-emerald);
+.readiness-meter {
+  font-family: var(--font-mono, monospace);
 }
 
-.text-amber {
-  color: var(--accent-amber);
+.progress-bar-container {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-purple, #8b5cf6), var(--accent-cyan, #06b6d4));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.step-badge {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--border-subtle);
 }
 
 .roadmap-card {
   border: 1px solid var(--border-subtle);
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .roadmap-card:hover {
-  border-color: var(--border-active);
-  transform: translateX(4px);
+  border-color: var(--primary-500);
 }
 
-.step-badge {
-  min-width: 32px;
-}
-
-.border-subtle {
-  border: 1px solid var(--border-subtle);
+.bg-danger-subtle {
+  background: rgba(239, 68, 68, 0.08);
 }

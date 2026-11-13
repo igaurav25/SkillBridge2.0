@@ -9,10 +9,11 @@
     </div>
 
     <!-- Role Selection Tabs -->
-    <div class="roles-bar sb-card p-3 mb-8 flex items-center justify-center gap-2 flex-wrap">
+    <div class="roles-bar sb-card p-3 mb-8 flex items-center justify-center gap-2 flex-wrap" role="group" aria-label="Target engineering role picker">
       <button
         *ngFor="let r of targetRoles"
-        class="badge role-pill"
+        type="button"
+        class="badge role-pill cursor-pointer"
         [class.active]="selectedRole === r.title"
         (click)="selectRole(r.title)"
       >
@@ -21,15 +22,44 @@
     </div>
 
     <!-- Loading Skeleton -->
-    <div *ngIf="isAnalyzing" class="sb-card skeleton" style="height: 350px;"></div>
+    <div *ngIf="isAnalyzing" class="sb-card p-6 flex flex-col gap-4 mb-8">
+      <div class="flex items-center justify-between">
+        <div class="skeleton" style="width: 200px; height: 32px;"></div>
+        <div class="skeleton" style="width: 80px; height: 32px;"></div>
+      </div>
+      <div class="skeleton" style="width: 100%; height: 12px; border-radius: 999px;"></div>
+      <div class="skeleton" style="width: 100%; height: 50px;"></div>
+      <div class="grid grid-2 gap-4 mt-2">
+        <div class="skeleton" style="height: 120px;"></div>
+        <div class="skeleton" style="height: 120px;"></div>
+      </div>
+    </div>
 
-    <!-- Gap Results View (Section 15) -->
+    <!-- Error State -->
+    <div *ngIf="hasError" class="p-4 bg-danger-subtle border border-danger rounded-lg mb-8 flex items-center justify-between gap-4">
+      <div>
+        <h4 class="font-bold text-sm text-danger m-0">Analysis Interrupted</h4>
+        <p class="text-xs text-secondary m-0 mt-0.5">{{ errorMessage }}</p>
+      </div>
+      <button type="button" class="btn btn-outline btn-xs" (click)="runAnalysis()">Retry</button>
+    </div>
+
+    <!-- Gap Results View -->
     <div *ngIf="!isAnalyzing && gapAnalysis" class="flex flex-col gap-6">
       <!-- Readiness Summary Score Card -->
       <div class="sb-card p-6 bg-secondary">
         <div class="flex items-center justify-between flex-wrap gap-4 mb-3">
           <div>
-            <span class="badge badge-primary text-xs mb-1">READINESS EVALUATION</span>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="badge badge-primary text-xs">READINESS EVALUATION</span>
+              <span
+                class="badge text-xs font-mono"
+                [class.badge-primary]="gapAnalysis.engine === 'AI-generated'"
+                [class.badge-neutral]="gapAnalysis.engine !== 'AI-generated'"
+              >
+                {{ gapAnalysis.engine === 'AI-generated' ? '✨ Gemini AI' : '⚙️ Rule-based estimate' }}
+              </span>
+            </div>
             <h2 class="text-2xl font-bold">{{ gapAnalysis.targetRole }} Readiness</h2>
           </div>
           <div class="readiness-meter text-3xl font-bold text-gradient">
@@ -41,31 +71,43 @@
           <div class="progress-bar-fill" [style.width.%]="gapAnalysis.readinessScore"></div>
         </div>
 
-        <p class="text-sm text-secondary leading-relaxed">
+        <p class="text-sm text-secondary leading-relaxed m-0">
           {{ gapAnalysis.actionPlan }}
         </p>
       </div>
 
       <!-- Existing vs Missing Skills Grid -->
       <div class="grid grid-2 gap-6">
-        <div class="sb-card">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-emerald font-bold">✓</span>
-            <h3 class="text-sm font-bold">Existing Profile Skills</h3>
+        <div class="sb-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-emerald font-bold">✓</span>
+              <h3 class="text-sm font-bold m-0">Existing Profile Skills</h3>
+            </div>
+            <span class="text-xs text-muted">({{ gapAnalysis.existingSkills.length }} matching)</span>
           </div>
-          <div class="flex items-center gap-2 flex-wrap">
+          <div *ngIf="gapAnalysis.existingSkills.length === 0" class="text-xs text-muted">
+            No overlapping skills in your profile yet. Add technical skills in your Profile to benchmark.
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
             <span *ngFor="let s of gapAnalysis.existingSkills" class="badge badge-emerald text-xs">
               {{ s }}
             </span>
           </div>
         </div>
 
-        <div class="sb-card">
-          <div class="flex items-center gap-2 mb-3">
-            <span class="text-amber font-bold">•</span>
-            <h3 class="text-sm font-bold">Missing Industry Prerequisites</h3>
+        <div class="sb-card p-5">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-amber font-bold">•</span>
+              <h3 class="text-sm font-bold m-0">Missing Industry Prerequisites</h3>
+            </div>
+            <span class="text-xs text-muted">({{ gapAnalysis.missingSkills.length }} gaps)</span>
           </div>
-          <div class="flex items-center gap-2 flex-wrap">
+          <div *ngIf="gapAnalysis.missingSkills.length === 0" class="text-xs text-emerald">
+            ✓ Complete alignment with standard industry prerequisites for this role!
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
             <span *ngFor="let s of gapAnalysis.missingSkills" class="badge badge-amber text-xs">
               {{ s }}
             </span>
@@ -73,41 +115,59 @@
         </div>
       </div>
 
-      <!-- Suggested Learning Roadmap Order (Section 15) -->
-      <div class="sb-card">
-        <div class="flex items-center justify-between mb-4">
+      <!-- Suggested Learning Roadmap Order -->
+      <div class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
           <div>
-            <h3 class="text-base font-bold">Recommended Learning Sequence</h3>
-            <p class="text-xs text-secondary">Step-by-step path to close your technical gaps</p>
+            <h3 class="text-base font-bold m-0">Recommended Learning Sequence</h3>
+            <p class="text-xs text-secondary m-0 mt-0.5">Priority roadmap to close your technical gaps</p>
           </div>
-          <span class="badge badge-cyan text-xs">AI Optimized</span>
+          <a routerLink="/learning-roadmap" class="btn btn-outline btn-xs">
+            Open Interactive Roadmap 🗺️
+          </a>
         </div>
 
-        <div class="roadmap-timeline flex flex-col gap-4">
+        <div class="roadmap-timeline flex flex-col gap-3">
           <div *ngFor="let item of gapAnalysis.learningOrder" class="roadmap-card p-4 bg-secondary rounded flex items-start gap-4">
-            <div class="step-badge font-mono font-bold text-gradient text-lg">
+            <div class="step-badge font-mono font-bold text-gradient text-lg shrink-0">
               0{{ item.step }}
             </div>
-            <div class="flex-1">
-              <div class="flex items-center justify-between mb-1">
-                <h4 class="font-bold text-sm text-primary">{{ item.skill }}</h4>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-primary m-0">{{ item.skill }}</h4>
+                  <span class="badge text-xs" [ngClass]="getPriorityBadgeClass(item.priority)">
+                    {{ item.priority || 'Recommended' }}
+                  </span>
+                </div>
                 <span class="badge badge-neutral text-xs">Est. {{ item.duration }}</span>
               </div>
-              <p class="text-xs text-secondary">{{ item.reason }}</p>
+              <p class="text-xs text-secondary m-0">{{ item.reason }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Suggested Portfolio Projects -->
-      <div class="sb-card">
-        <h3 class="text-base font-bold mb-3">Suggested Proof-of-Work Projects</h3>
+      <!-- Suggested Hands-on Projects -->
+      <div *ngIf="gapAnalysis.suggestedProjects && gapAnalysis.suggestedProjects.length > 0" class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="text-base font-bold m-0">Recommended Hands-on Projects</h3>
+            <p class="text-xs text-secondary m-0 mt-0.5">Build and deploy these projects to verify your skills</p>
+          </div>
+          <a routerLink="/projects" class="text-xs text-cyan hover:underline">
+            Browse All Projects →
+          </a>
+        </div>
+
         <div class="grid grid-2 gap-4">
-          <div *ngFor="let proj of gapAnalysis.suggestedProjects" class="p-4 bg-secondary rounded border-subtle">
-            <h4 class="font-bold text-sm mb-1">🔨 {{ proj.title }}</h4>
-            <p class="text-xs text-secondary mb-3">{{ proj.description }}</p>
-            <div class="flex items-center gap-1 flex-wrap">
-              <span *ngFor="let sk of proj.skills" class="badge badge-primary text-xs">{{ sk }}</span>
+          <div *ngFor="let proj of gapAnalysis.suggestedProjects" class="p-4 bg-secondary rounded-lg border border-subtle flex flex-col justify-between">
+            <div>
+              <h4 class="font-bold text-sm text-primary mb-1">{{ proj.title }}</h4>
+              <p class="text-xs text-secondary mb-3 leading-relaxed">{{ proj.description }}</p>
+            </div>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span *ngFor="let sk of proj.skills" class="badge badge-neutral text-xs">{{ sk }}</span>
             </div>
           </div>
         </div>

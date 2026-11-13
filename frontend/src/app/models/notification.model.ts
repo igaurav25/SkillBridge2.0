@@ -26,6 +26,26 @@ export interface InterviewQuestionItem {
   tags: string[];
 }
 
+export interface MockAnswerEvaluation {
+  score: number;
+  feedback: string;
+  strengths: string[];
+  areasToImprove: string[];
+  suggestedAnswer: string;
+  engine?: 'AI-generated' | 'Rule-based estimate';
+  starBreakdown?: {
+    situationTask: string;
+    action: string;
+    resultImpact: string;
+  };
+  rubric?: {
+    technicalAccuracy: number;
+    communication: number;
+    completeness: number;
+    productionReadiness: number;
+  };
+}
+
 export interface MockQuestion {
   question: string;
   category?: string;
@@ -34,6 +54,18 @@ export interface MockQuestion {
   feedback?: string;
   suggestedAnswer?: string;
   answeredAt?: string;
+  engine?: 'AI-generated' | 'Rule-based estimate';
+  starBreakdown?: {
+    situationTask: string;
+    action: string;
+    resultImpact: string;
+  };
+  rubric?: {
+    technicalAccuracy: number;
+    communication: number;
+    completeness: number;
+    productionReadiness: number;
+  };
 }
 
 export interface MockInterviewSession {

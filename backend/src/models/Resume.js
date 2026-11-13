@@ -105,6 +105,14 @@ const resumeSchema = new mongoose.Schema(
       suggestedJobRoles: [{ type: String }],
       suggestedProjects: [{ type: String }],
       suggestedTechnologies: [{ type: String }],
+      bulletRewrites: [
+        {
+          original: { type: String, default: '' },
+          rewritten: { type: String, default: '' },
+          impactNote: { type: String, default: '' },
+        },
+      ],
+      engine: { type: String, default: 'Rule-based estimate' },
       analyzedAt: { type: Date },
     },
     isPrimary: {

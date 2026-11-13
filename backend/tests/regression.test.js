@@ -7,7 +7,7 @@ const { validateSecurityConfig, getJwtSecret } = require('../src/utils/jwt');
 const { getGeminiApiKey } = require('../src/config/ai');
 const { escapeRegex, parsePagination, pickFields } = require('../src/utils/securityHelpers');
 const { errorHandler } = require('../src/middleware/errorMiddleware');
-const { evaluateMockInterview, careerChat, generateCoverLetter } = require('../src/services/aiService');
+const { evaluateMockInterview, careerChat, generateCoverLetter, analyzeResume } = require('../src/services/aiService');
 const app = require('../src/app');
 const { connectDB, disconnectDB } = require('../src/config/db');
 const { seedAll } = require('../src/utils/seedRunner');
@@ -112,6 +112,8 @@ test('AI Honesty & Anti-Spam: evaluates unique content and labels fallback engin
     const spamEval = await evaluateMockInterview('Explain Closures', 'yes '.repeat(60));
     assert.equal(spamEval.engine, 'Rule-based estimate');
     assert.ok(spamEval.score < 50, `Spam score should be < 50, got ${spamEval.score}`);
+    assert.ok(spamEval.starBreakdown && typeof spamEval.starBreakdown.situationTask === 'string', 'STAR breakdown present');
+    assert.ok(spamEval.rubric && typeof spamEval.rubric.technicalAccuracy === 'number', 'Rubric scores present');
 
     const chatRes = await careerChat('Hello', [], {});
     assert.equal(chatRes.engine, 'Rule-based estimate');
@@ -120,6 +122,11 @@ test('AI Honesty & Anti-Spam: evaluates unique content and labels fallback engin
     const clRes = await generateCoverLetter({}, { title: 'SDE' }, 'Focus on Node.js');
     assert.equal(clRes.engine, 'Rule-based estimate');
     assert.ok(!clRes.coverLetter.includes('Gaurav Sharma'), 'Must not contain hardcoded fallback name');
+
+    const resumeRes = await analyzeResume('JavaScript Developer with Angular experience. Built e-commerce project.');
+    assert.equal(resumeRes.engine, 'Rule-based estimate');
+    assert.ok(Array.isArray(resumeRes.bulletRewrites) && resumeRes.bulletRewrites.length > 0, 'Bullet rewrites present');
+    assert.ok(resumeRes.bulletRewrites[0].rewritten.length > 10, 'Valid rewritten bullet text');
   } finally {
     process.env.GEMINI_API_KEY = prevKey;
   }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResumeService } from '../../services/resume.service';
@@ -13,10 +13,12 @@ import { AIAnalysisResult } from '../../models/resume.model';
   imports: [CommonModule, FormsModule],
   templateUrl: './resume-analyzer.component.html',
   styleUrls: ['./resume-analyzer.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResumeAnalyzerComponent {
   private resumeService = inject(ResumeService);
   private profileService = inject(ProfileService);
+  private cdr = inject(ChangeDetectorRef);
   authService = inject(AuthService);
   private toast = inject(ToastService);
 
@@ -25,6 +27,8 @@ export class ResumeAnalyzerComponent {
   selectedFile: File | null = null;
   fileName = '';
   isAnalyzing = false;
+  hasError = false;
+  errorMessage = '';
   analysis: AIAnalysisResult | null = null;
 
   availableRoles = [
@@ -41,6 +45,7 @@ export class ResumeAnalyzerComponent {
     if (file) {
       this.selectedFile = file;
       this.fileName = file.name;
+      this.cdr.markForCheck();
     }
   }
 
@@ -51,6 +56,10 @@ export class ResumeAnalyzerComponent {
     }
 
     this.isAnalyzing = true;
+    this.hasError = false;
+    this.errorMessage = '';
+    this.cdr.markForCheck();
+
     const formData = new FormData();
     if (this.selectedFile) {
       formData.append('resume', this.selectedFile);
@@ -65,11 +74,19 @@ export class ResumeAnalyzerComponent {
         this.isAnalyzing = false;
         if (res.data?.aiAnalysis) {
           this.analysis = res.data.aiAnalysis;
-          this.toast.success('Resume analyzed successfully by AI!');
+          this.toast.success('Resume analyzed successfully!');
+        } else {
+          this.hasError = true;
+          this.errorMessage = 'Analysis completed with no score payload.';
         }
+        this.cdr.markForCheck();
       },
-      error: () => {
+      error: (err) => {
         this.isAnalyzing = false;
+        this.hasError = true;
+        this.errorMessage = err?.error?.message || 'Server error while scanning resume.';
+        this.toast.error('Failed to analyze resume. Please try again.');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -130,14 +147,22 @@ export class ResumeAnalyzerComponent {
         }
 
         this.resumeText = text.trim();
+        this.cdr.markForCheck();
       },
       error: () => {
         this.toast.error('Could not fetch profile details.');
+        this.cdr.markForCheck();
       },
     });
   }
 
-  loadSampleDemoText() {
-    this.populateFromProfile();
+  copyText(text: string) {
+    if (navigator?.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.toast.success('Rewritten bullet copied to clipboard!');
+      }).catch(() => {
+        this.toast.info('Copied text.');
+      });
+    }
   }
 }

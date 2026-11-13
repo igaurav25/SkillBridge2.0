@@ -4,13 +4,14 @@
       <span class="badge badge-primary text-xs font-bold mb-2">ENGINEERING READINESS</span>
       <h1 class="text-3xl font-bold mb-2">Technical Interview Preparation</h1>
       <p class="text-sm text-secondary max-w-xl mx-auto">
-        Study verified interview questions and practice typed responses with our real-time AI evaluator.
+        Study verified interview questions and practice typed responses with our real-time AI evaluator and STAR scoring framework.
       </p>
     </div>
 
     <!-- Toggle Modes Bar (Bank vs AI Mock Practice) -->
-    <div class="mode-toggle-card sb-card p-2 mb-8 flex items-center justify-center gap-3">
+    <div class="mode-toggle-card sb-card p-2 mb-8 flex items-center justify-center gap-3 flex-wrap">
       <button
+        type="button"
         class="btn btn-sm"
         [class.btn-primary]="activeView === 'bank'"
         [class.btn-outline]="activeView !== 'bank'"
@@ -19,6 +20,7 @@
         📚 Question Bank & Practice
       </button>
       <button
+        type="button"
         class="btn btn-sm"
         [class.btn-accent]="activeView === 'mock'"
         [class.btn-outline]="activeView !== 'mock'"
@@ -31,10 +33,11 @@
     <!-- VIEW 1: Question Bank -->
     <div *ngIf="activeView === 'bank'" class="flex flex-col gap-6">
       <!-- Categories Bar -->
-      <div class="categories-bar sb-card p-3 flex items-center gap-2 flex-wrap">
+      <div class="categories-bar sb-card p-3 flex items-center gap-2 flex-wrap" role="group" aria-label="Question categories">
         <button
           *ngFor="let cat of categories"
-          class="badge cat-btn"
+          type="button"
+          class="badge cat-btn cursor-pointer"
           [class.active]="selectedCategory === cat"
           (click)="selectedCategory = cat; fetchQuestions()"
         >
@@ -44,32 +47,33 @@
 
       <!-- Search & Difficulty -->
       <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex-1">
+        <div class="flex-1 min-w-[200px]">
           <input
             type="text"
             class="form-control"
             placeholder="Search topic or question (e.g. Signals, Event Loop, SOLID)..."
             [(ngModel)]="searchTerm"
             (keyup.enter)="fetchQuestions()"
+            aria-label="Search questions"
           />
         </div>
-        <select aria-label="Filter questions by difficulty" class="select-control" style="width: auto;" [(ngModel)]="selectedDifficulty" (change)="fetchQuestions()">
+        <select aria-label="Filter questions by difficulty" class="select-control form-control" style="width: auto;" [(ngModel)]="selectedDifficulty" (change)="fetchQuestions()">
           <option value="All">All Difficulties</option>
           <option value="Beginner">Beginner</option>
           <option value="Intermediate">Intermediate</option>
           <option value="Advanced">Advanced</option>
         </select>
-        <button class="btn btn-primary btn-sm" (click)="fetchQuestions()">Search</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchQuestions()">Search</button>
       </div>
 
       <!-- Question Accordion List -->
       <div class="questions-list flex flex-col gap-3">
-        <div *ngFor="let q of questions" class="sb-card question-card">
-          <div class="flex items-center justify-between cursor-pointer" (click)="toggleAnswer(q._id)">
-            <div class="flex items-center gap-3">
+        <div *ngFor="let q of questions" class="sb-card question-card p-4">
+          <div class="flex items-center justify-between cursor-pointer flex-wrap gap-2" (click)="toggleAnswer(q._id)">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="badge badge-primary text-xs">{{ q.category }}</span>
               <span class="badge badge-neutral text-xs">{{ q.difficulty }}</span>
-              <h3 class="text-sm font-bold">{{ q.question }}</h3>
+              <h3 class="text-sm font-bold m-0">{{ q.question }}</h3>
             </div>
             <span class="arrow-toggle text-sm text-muted">
               {{ openQuestionId === q._id ? '▲' : '▼' }}
@@ -83,34 +87,34 @@
 
             <div *ngIf="q.codeSnippet" class="code-snippet-box mb-3">
               <h5 class="text-xs text-muted font-bold uppercase mb-1">Code Example:</h5>
-              <pre class="bg-primary p-3 rounded font-mono text-xs overflow-x-auto text-secondary">{{ q.codeSnippet }}</pre>
+              <pre class="bg-primary p-3 rounded font-mono text-xs overflow-x-auto text-secondary border border-subtle">{{ q.codeSnippet }}</pre>
             </div>
 
-            <div *ngIf="q.explanation" class="text-xs text-muted bg-secondary p-2 rounded">
+            <div *ngIf="q.explanation" class="text-xs text-muted bg-secondary p-2.5 rounded border border-subtle">
               <strong>Key takeaway:</strong> {{ q.explanation }}
             </div>
           </div>
         </div>
 
-        <div *ngIf="questions.length === 0 && !isLoading" class="empty-state">
+        <div *ngIf="questions.length === 0 && !isLoading" class="sb-card p-6 text-center text-muted text-sm">
           No questions found matching your filter criteria.
         </div>
       </div>
     </div>
 
-    <!-- VIEW 2: AI Mock Interview (Section 22) -->
+    <!-- VIEW 2: AI Mock Interview -->
     <div *ngIf="activeView === 'mock'" class="mock-interview-section flex flex-col gap-6">
       <!-- Session Start Configuration Card -->
-      <div *ngIf="!activeMockSession" class="sb-card sb-card-glow p-6">
+      <div *ngIf="!activeMockSession && !isSessionFinished" class="sb-card sb-card-glow p-6">
         <h2 class="text-xl font-bold mb-2">Simulate a Real Technical Interview</h2>
         <p class="text-xs text-secondary mb-6">
-          Our AI interviewer will present questions, listen to your typed response, and provide instant FAANG-style scoring, constructive critique, and model solutions.
+          Our AI interviewer presents real engineering problems, evaluates your typed or spoken answers, and produces comprehensive STAR-method feedback, rubric breakdowns, and downloadable session transcripts.
         </p>
 
         <div class="grid grid-3 gap-4 mb-6">
           <div class="form-group">
             <label for="mock-track" class="form-label">Interview Track</label>
-            <select id="mock-track" class="select-control" [(ngModel)]="mockCategory">
+            <select id="mock-track" class="select-control form-control" [(ngModel)]="mockCategory">
               <option value="JavaScript">JavaScript</option>
               <option value="Angular">Angular 19</option>
               <option value="Node.js">Node.js & Express</option>
@@ -122,12 +126,12 @@
 
           <div class="form-group">
             <label for="mock-role" class="form-label">Target Role Level</label>
-            <input id="mock-role" type="text" class="form-control" [(ngModel)]="mockRole" />
+            <input id="mock-role" type="text" class="form-control" [(ngModel)]="mockRole" placeholder="e.g. Senior Frontend Engineer" />
           </div>
 
           <div class="form-group">
             <label for="mock-difficulty" class="form-label">Difficulty</label>
-            <select id="mock-difficulty" class="select-control" [(ngModel)]="mockDifficulty">
+            <select id="mock-difficulty" class="select-control form-control" [(ngModel)]="mockDifficulty">
               <option value="Beginner">Junior / Entry</option>
               <option value="Intermediate">Mid-Level</option>
               <option value="Advanced">Senior / Lead</option>
@@ -135,97 +139,285 @@
           </div>
         </div>
 
-        <button class="btn btn-primary btn-lg w-full" (click)="startMockInterview()">
+        <button type="button" class="btn btn-primary btn-lg w-full" (click)="startMockInterview()">
           Launch Live AI Mock Session ⚡
         </button>
       </div>
 
-      <!-- Active Mock Session Flow -->
-      <div *ngIf="activeMockSession" class="sb-card p-6">
-        <div class="flex items-center justify-between mb-4 border-bottom pb-3">
-          <div>
-            <span class="badge badge-cyan text-xs mb-1">MOCK SESSION: {{ activeMockSession.category }}</span>
-            <h2 class="text-lg font-bold">Question {{ currentQIndex + 1 }} of {{ activeMockSession.questions.length }}</h2>
+      <!-- Past Sessions Summary (if available & idle) -->
+      <div *ngIf="!activeMockSession && !isSessionFinished && pastSessions.length > 0" class="sb-card p-6">
+        <h3 class="text-base font-bold mb-3">Past Mock Interview Sessions</h3>
+        <div class="flex flex-col gap-3">
+          <div *ngFor="let s of pastSessions.slice(0, 5)" class="p-3 bg-secondary rounded-lg border border-subtle flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="badge badge-primary text-xs">{{ s.category }}</span>
+                <span class="badge badge-neutral text-xs">{{ s.difficulty }}</span>
+                <strong class="text-sm text-primary">{{ s.targetRole }}</strong>
+              </div>
+              <span class="text-xs text-muted">{{ s.createdAt | date:'mediumDate' }} • {{ s.questions.length }} Questions</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-bold text-cyan">{{ s.totalScore }}% Score</span>
+              <span class="badge" [class.badge-success]="s.status === 'completed'" [class.badge-neutral]="s.status !== 'completed'">
+                {{ s.status === 'completed' ? 'Completed' : 'In Progress' }}
+              </span>
+            </div>
           </div>
-          <button class="btn btn-outline btn-sm text-xs" (click)="activeMockSession = null">Quit Session</button>
+        </div>
+      </div>
+
+      <!-- Active Mock Session Flow -->
+      <div *ngIf="activeMockSession && !isSessionFinished" class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4 border-bottom pb-3 flex-wrap gap-3">
+          <div>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="badge badge-cyan text-xs">MOCK SESSION: {{ activeMockSession.category }}</span>
+              <span class="badge badge-neutral text-xs">{{ activeMockSession.difficulty }}</span>
+            </div>
+            <h2 class="text-lg font-bold m-0">Question {{ currentQIndex + 1 }} of {{ activeMockSession.questions.length }}</h2>
+          </div>
+
+          <!-- Timer & Session Actions -->
+          <div class="flex items-center gap-3">
+            <div class="timer-badge flex items-center gap-1.5 p-1.5 px-3 rounded-full bg-secondary border border-subtle text-xs font-mono font-bold" [class.timer-urgent]="timerSeconds < 30">
+              <span>⏱️</span>
+              <span>{{ formattedTimer }}</span>
+              <button
+                type="button"
+                class="timer-control-btn ml-1"
+                (click)="isTimerRunning ? pauseTimer() : startTimer()"
+                [title]="isTimerRunning ? 'Pause timer' : 'Resume timer'"
+              >
+                {{ isTimerRunning ? '⏸' : '▶' }}
+              </button>
+            </div>
+            <button type="button" class="btn btn-outline btn-xs" (click)="quitSession()">Quit</button>
+          </div>
         </div>
 
         <!-- Question Prompt -->
-        <div class="question-prompt-box p-4 bg-secondary rounded mb-6">
-          <p class="text-base font-bold text-primary">
+        <div class="question-prompt-box p-4 bg-secondary rounded mb-6 border border-subtle">
+          <p class="text-base font-bold text-primary m-0 leading-relaxed">
             "{{ activeMockSession.questions[currentQIndex].question }}"
           </p>
         </div>
 
-        <!-- Answer Textarea -->
+        <!-- Answer Textarea & Voice Input -->
         <div *ngIf="!latestEvaluation" class="answer-input-box mb-6">
-          <label class="form-label mb-2 block font-semibold text-sm">Type your technical explanation below:</label>
+          <div class="flex items-center justify-between mb-2 flex-wrap gap-2">
+            <label class="form-label font-semibold text-sm m-0" for="mock-answer">
+              Type or dictate your technical explanation:
+            </label>
+            <button
+              type="button"
+              class="btn btn-outline btn-xs flex items-center gap-1"
+              [class.btn-accent]="isListening"
+              (click)="toggleSpeech()"
+            >
+              <span>{{ isListening ? '🔴 Recording...' : '🎙️ Dictate' }}</span>
+            </button>
+          </div>
+
           <textarea
+            id="mock-answer"
             class="form-control"
             rows="6"
-            placeholder="Structure your answer with key concepts, trade-offs, and examples..."
+            placeholder="Structure your answer clearly: Define the concept, explain the engineering implementation, discuss trade-offs, and mention measurable outcomes..."
             [(ngModel)]="userAnswerText"
           ></textarea>
 
-          <div class="flex justify-end mt-4">
+          <div class="flex items-center justify-between mt-4 flex-wrap gap-3">
+            <span class="text-xs text-muted">
+              💡 Tip: Include real architectural terminology and time/space trade-offs for high rubric scoring.
+            </span>
             <button
+              type="button"
               class="btn btn-primary"
               [disabled]="isEvaluatingAnswer || !userAnswerText.trim()"
               (click)="submitMockAnswer()"
             >
-              {{ isEvaluatingAnswer ? 'AI Evaluating...' : 'Submit & Score Answer 🚀' }}
+              {{ isEvaluatingAnswer ? 'AI Evaluating Answer...' : 'Submit & Score Answer 🚀' }}
             </button>
           </div>
         </div>
 
         <!-- AI Evaluation Result -->
         <div *ngIf="latestEvaluation" class="evaluation-result-box flex flex-col gap-4">
-          <div class="p-4 bg-secondary rounded border-glow">
-            <div class="flex items-center justify-between mb-2">
-              <h3 class="font-bold text-base">AI Evaluation & Score</h3>
+          <div class="p-5 bg-secondary rounded-lg border-glow">
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div class="flex items-center gap-2">
+                <h3 class="font-bold text-base m-0">Evaluation & STAR Analysis</h3>
+                <span
+                  class="badge text-xs font-mono"
+                  [class.badge-primary]="latestEvaluation.engine === 'AI-generated'"
+                  [class.badge-neutral]="latestEvaluation.engine !== 'AI-generated'"
+                >
+                  {{ latestEvaluation.engine === 'AI-generated' ? '✨ Gemini AI' : '⚙️ Rule-based estimate' }}
+                </span>
+              </div>
               <span class="badge badge-emerald text-sm font-bold">
-                {{ latestEvaluation.score }}% Rating
+                {{ latestEvaluation.score }}% Overall Rating
               </span>
             </div>
-            <p class="text-sm text-secondary mb-3">{{ latestEvaluation.feedback }}</p>
 
-            <div class="grid grid-2 gap-3 mb-3">
-              <div class="p-2 bg-primary rounded">
-                <span class="text-xs font-bold text-emerald">Strengths:</span>
-                <ul class="text-xs text-secondary pl-4 mt-1">
+            <p class="text-sm text-secondary mb-4 leading-relaxed">{{ latestEvaluation.feedback }}</p>
+
+            <!-- 4-Pillar Rubric Breakdown -->
+            <div class="rubric-grid grid grid-4 gap-3 mb-4" *ngIf="latestEvaluation.rubric">
+              <div class="p-2.5 bg-primary rounded border border-subtle">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span>Accuracy</span>
+                  <span>{{ latestEvaluation.rubric.technicalAccuracy }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="latestEvaluation.rubric.technicalAccuracy"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-primary rounded border border-subtle">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span>Communication</span>
+                  <span>{{ latestEvaluation.rubric.communication }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="latestEvaluation.rubric.communication"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-primary rounded border border-subtle">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span>Completeness</span>
+                  <span>{{ latestEvaluation.rubric.completeness }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="latestEvaluation.rubric.completeness"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-primary rounded border border-subtle">
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span>Production Ready</span>
+                  <span>{{ latestEvaluation.rubric.productionReadiness }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" [style.width.%]="latestEvaluation.rubric.productionReadiness"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- STAR Framework Breakdown -->
+            <div class="star-section p-3 bg-primary rounded mb-4 border border-subtle" *ngIf="latestEvaluation.starBreakdown">
+              <h4 class="text-xs font-bold text-cyan uppercase tracking-wider mb-2">STAR Framework Alignment</h4>
+              <div class="grid grid-3 gap-3 text-xs">
+                <div>
+                  <strong class="text-primary block mb-0.5">S/T: Situation & Task</strong>
+                  <span class="text-secondary">{{ latestEvaluation.starBreakdown.situationTask }}</span>
+                </div>
+                <div>
+                  <strong class="text-primary block mb-0.5">A: Action & Engineering</strong>
+                  <span class="text-secondary">{{ latestEvaluation.starBreakdown.action }}</span>
+                </div>
+                <div>
+                  <strong class="text-primary block mb-0.5">R: Result & Impact</strong>
+                  <span class="text-secondary">{{ latestEvaluation.starBreakdown.resultImpact }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Strengths & Areas to Improve -->
+            <div class="grid grid-2 gap-3 mb-4">
+              <div class="p-3 bg-primary rounded border border-subtle">
+                <span class="text-xs font-bold text-emerald block mb-1">✓ Key Strengths:</span>
+                <ul class="text-xs text-secondary pl-4 m-0 flex flex-col gap-1">
                   <li *ngFor="let str of latestEvaluation.strengths">{{ str }}</li>
                 </ul>
               </div>
-              <div class="p-2 bg-primary rounded">
-                <span class="text-xs font-bold text-amber">Areas to Improve:</span>
-                <ul class="text-xs text-secondary pl-4 mt-1">
+              <div class="p-3 bg-primary rounded border border-subtle">
+                <span class="text-xs font-bold text-amber block mb-1">• Areas to Improve:</span>
+                <ul class="text-xs text-secondary pl-4 m-0 flex flex-col gap-1">
                   <li *ngFor="let imp of latestEvaluation.areasToImprove">{{ imp }}</li>
                 </ul>
               </div>
             </div>
 
-            <div class="model-answer p-3 bg-primary rounded">
-              <span class="text-xs font-bold text-cyan">Ideal Model Answer:</span>
-              <p class="text-xs text-secondary mt-1">{{ latestEvaluation.suggestedAnswer }}</p>
+            <!-- Model Answer Accordion -->
+            <div class="model-answer-section border-top pt-3">
+              <div class="flex items-center justify-between cursor-pointer" (click)="showModelAnswer = !showModelAnswer">
+                <span class="text-xs font-bold text-cyan">
+                  {{ showModelAnswer ? 'Hide Ideal Model Answer' : '👁️ Reveal Ideal Model Answer' }}
+                </span>
+                <span class="text-xs text-muted">{{ showModelAnswer ? '▲' : '▼' }}</span>
+              </div>
+              <div *ngIf="showModelAnswer" class="p-3 bg-primary rounded mt-2 text-xs text-secondary leading-relaxed border border-subtle">
+                {{ latestEvaluation.suggestedAnswer }}
+              </div>
             </div>
           </div>
 
-          <div class="flex justify-end">
-            <button
-              *ngIf="currentQIndex + 1 < activeMockSession.questions.length"
-              class="btn btn-primary"
-              (click)="nextQuestion()"
-            >
-              Next Question →
-            </button>
-            <button
-              *ngIf="currentQIndex + 1 >= activeMockSession.questions.length"
-              class="btn btn-success"
-              (click)="activeMockSession = null; fetchPastMockSessions()"
-            >
-              Complete Session & Save Scorecard ✓
-            </button>
+          <!-- Bottom Session Navigation -->
+          <div class="flex items-center justify-between pt-2">
+            <button type="button" class="btn btn-outline btn-sm" (click)="quitSession()">Quit Session</button>
+            <div class="flex items-center gap-2">
+              <button
+                *ngIf="currentQIndex + 1 < activeMockSession.questions.length"
+                type="button"
+                class="btn btn-primary btn-sm"
+                (click)="nextQuestion()"
+              >
+                Next Question →
+              </button>
+              <button
+                *ngIf="currentQIndex + 1 >= activeMockSession.questions.length"
+                type="button"
+                class="btn btn-success btn-sm"
+                (click)="finishSession()"
+              >
+                Complete Session & View Scorecard ✓
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Comprehensive Scorecard & Transcript View -->
+      <div *ngIf="isSessionFinished && activeMockSession" class="sb-card p-6">
+        <div class="text-center mb-6">
+          <span class="badge badge-success text-xs font-bold mb-2">SESSION COMPLETE</span>
+          <h2 class="text-2xl font-bold mb-1">Interview Performance Scorecard</h2>
+          <p class="text-xs text-secondary">
+            Track: <strong>{{ activeMockSession.category }}</strong> • Difficulty: <strong>{{ activeMockSession.difficulty }}</strong>
+          </p>
+        </div>
+
+        <div class="scorecard-hero p-6 bg-secondary rounded-xl text-center mb-6 border border-subtle">
+          <div class="text-4xl font-extrabold text-gradient mb-1">
+            {{ activeMockSession.totalScore }}%
+          </div>
+          <div class="text-sm font-semibold text-primary mb-2">Overall Interview Rating</div>
+          <p class="text-xs text-secondary max-w-lg mx-auto m-0">
+            {{ activeMockSession.overallFeedback }}
+          </p>
+        </div>
+
+        <h3 class="text-sm font-bold text-primary mb-3">Question-by-Question Breakdown</h3>
+        <div class="flex flex-col gap-3 mb-6">
+          <div *ngFor="let q of activeMockSession.questions; let i = index" class="p-3 bg-secondary rounded border border-subtle">
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-bold text-primary">Q{{ i + 1 }}: {{ q.question }}</span>
+              <span class="badge badge-primary text-xs">{{ q.score ?? 0 }}%</span>
+            </div>
+            <p class="text-xs text-secondary m-0 line-clamp-2"><strong>Your Answer:</strong> {{ q.userAnswer }}</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <button type="button" class="btn btn-outline btn-sm" (click)="quitSession()">
+            Start Another Session 🔄
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="downloadTranscript()">
+            📥 Download Complete Transcript (.txt)
+          </button>
         </div>
       </div>
     </div>

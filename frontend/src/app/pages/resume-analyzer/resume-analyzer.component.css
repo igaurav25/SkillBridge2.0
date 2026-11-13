@@ -1,5 +1,5 @@
 .analyzer-page {
-  min-height: calc(100vh - 160px);
+  min-height: calc(100dvh - 160px);
 }
 
 .upload-dropzone {
@@ -11,7 +11,7 @@
 
 .upload-dropzone:hover {
   border-color: var(--primary-500);
-  background: var(--bg-tertiary);
+  background: var(--bg-tertiary, rgba(255, 255, 255, 0.04));
 }
 
 .dropzone-icon {
@@ -26,14 +26,40 @@
   border: 1px solid var(--border-subtle);
 }
 
+.progress-bar-container {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-500), var(--accent-cyan, #06b6d4));
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
 .text-emerald {
-  color: var(--accent-emerald);
+  color: var(--accent-emerald, #10b981);
 }
 
 .text-amber {
-  color: var(--accent-amber);
+  color: var(--accent-amber, #f59e0b);
 }
 
 .border-top {
   border-top: 1px solid var(--border-subtle);
+}
+
+.bg-danger-subtle {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.rewrite-card {
+  transition: border-color 0.2s ease;
+}
+
+.rewrite-card:hover {
+  border-color: var(--primary-500);
 }

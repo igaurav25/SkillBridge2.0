@@ -258,6 +258,7 @@ async function main() {
 
       const onConsole = (msg) => {
         if (msg.type() === 'error') {
+          console.log(`[BROWSER CONSOLE ERROR on ${route}]:`, msg.text(), msg.location());
           consoleErrors.push(msg.text());
         }
       };
@@ -290,6 +291,9 @@ async function main() {
         const axeRes = await new AxeBuilder({ page })
           .withTags(['wcag2a', 'wcag2aa'])
           .analyze();
+        for (const v of axeRes.violations.filter(v => v.impact === 'critical' || v.impact === 'serious')) {
+          console.log(`[AXE VIOLATION on ${route}]: ${v.id} - ${v.help}`, v.nodes.map(n => ({ target: n.target, html: n.html })));
+        }
         axeViolationsDesktop = axeRes.violations
           .filter(v => v.impact === 'critical' || v.impact === 'serious')
           .map(v => ({ id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length }));

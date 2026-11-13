@@ -8,6 +8,7 @@ export interface SkillGapAnalysisResult {
     skill: string;
     duration: string;
     reason: string;
+    priority?: 'Critical' | 'Recommended' | 'Elective';
   }[];
   suggestedProjects: {
     title: string;
@@ -16,6 +17,7 @@ export interface SkillGapAnalysisResult {
   }[];
   suggestedTechnologies: string[];
   actionPlan: string;
+  engine?: 'AI-generated' | 'Rule-based estimate';
 }
 
 export interface ReportItem {

@@ -74,7 +74,19 @@ Return a valid JSON object only (no markdown code blocks, just raw JSON) matchin
   "suggestedImprovements": ["Quantify impact with numbers (e.g. reduced load time by 30%)", "Add a link to live deployed projects"],
   "suggestedJobRoles": ["Frontend Developer", "Full Stack Engineer", "Junior Web Developer"],
   "suggestedProjects": ["Full Stack E-Commerce with Stripe", "Realtime Collaborative Workspace"],
-  "suggestedTechnologies": ["Docker", "TypeScript", "PostgreSQL"]
+  "suggestedTechnologies": ["Docker", "TypeScript", "PostgreSQL"],
+  "bulletRewrites": [
+    {
+      "original": "Worked on frontend features using Angular and fixed bugs.",
+      "rewritten": "Architected 6 responsive Angular 19 views utilizing OnPush and Signals, reducing client render latency by 35% for 12,000+ monthly active users.",
+      "impactNote": "Applies Google's X-Y-Z formula (Accomplished [X] measured by [Y] by doing [Z]) with quantifiable metrics."
+    },
+    {
+      "original": "Built backend REST APIs and connected to database.",
+      "rewritten": "Engineered 14 secure RESTful endpoints in Node.js/Express with JWT auth and MongoDB aggregation, boosting query throughput by 40%.",
+      "impactNote": "Highlights architectural ownership, security hardening, and database optimization."
+    }
+  ]
 }`;
 
   const geminiResult = await callGemini(prompt, 'Respond only with pure JSON.');
@@ -138,6 +150,23 @@ Return a valid JSON object only (no markdown code blocks, just raw JSON) matchin
       'Realtime Collaborative API with Database Integration',
     ],
     suggestedTechnologies: missing.slice(0, 4),
+    bulletRewrites: [
+      {
+        original: 'Built user interface components and integrated backend data.',
+        rewritten: `Architected responsive, accessible UI modules with ${detected.includes('Angular') ? 'Angular Signals' : 'TypeScript'}, decreasing layout shift (CLS) to 0 and boosting page speed by 30%.`,
+        impactNote: 'Transforms passive duty into an action-driven technical achievement with measurable Core Web Vitals outcome.',
+      },
+      {
+        original: 'Developed server-side API routes and managed database queries.',
+        rewritten: `Engineered scalable REST endpoints with structured rate limiting and schema indexing in ${detected.includes('MongoDB') ? 'MongoDB' : 'database'}, handling concurrent traffic with 99.9% uptime.`,
+        impactNote: 'Demonstrates enterprise backend resilience, defensive architecture, and quantitative impact.',
+      },
+      {
+        original: 'Wrote unit tests and helped troubleshoot bugs.',
+        rewritten: 'Implemented automated regression test suites, catching critical edge cases and elevating codebase confidence across releases.',
+        impactNote: 'Emphasizes proactive software engineering rigor and reliability engineering.',
+      },
+    ],
   };
 };
 
@@ -274,7 +303,8 @@ Return pure JSON with this structure:
     step: index + 1,
     skill,
     duration: index === 0 ? '1-2 weeks' : '2-3 weeks',
-    reason: `Critical requirement for senior-level ${targetRole} roles and interviews.`,
+    priority: index === 0 ? 'Critical' : (index < 3 ? 'Recommended' : 'Elective'),
+    reason: `Core technical capability expected in ${targetRole} screening rounds.`,
   }));
 
   const actionPlan = existing.length > 0
@@ -485,7 +515,18 @@ Evaluate the answer thoroughly. Return a pure JSON object:
   "feedback": "Detailed 2-3 sentence constructive feedback highlighting strengths and what was missed.",
   "strengths": ["Mentioned key concepts", "Accurate technical terminology"],
   "areasToImprove": ["Could have included a code example or edge-case handling"],
-  "suggestedAnswer": "Comprehensive model answer that would score 100% in a FAANG-level interview."
+  "suggestedAnswer": "Comprehensive model answer that would score 100% in a FAANG-level interview.",
+  "starBreakdown": {
+    "situationTask": "Clear framing of problem parameters and architecture constraints.",
+    "action": "Specific engineering methodology, algorithm, or framework utilized.",
+    "resultImpact": "Quantifiable outcome, latency improvement, or failure prevention consideration."
+  },
+  "rubric": {
+    "technicalAccuracy": 85,
+    "communication": 80,
+    "completeness": 85,
+    "productionReadiness": 90
+  }
 }`;
 
   const geminiResult = await callGemini(prompt, 'Respond only with pure JSON.');
@@ -512,6 +553,11 @@ Evaluate the answer thoroughly. Return a pure JSON object:
   }
   score = Math.min(95, uniqueCount === 0 ? 0 : score);
 
+  const technicalAccuracy = Math.min(95, Math.max(30, score + (uniqueCount > 15 ? 5 : -5)));
+  const communication = Math.min(95, Math.max(25, Math.round(score * 0.95)));
+  const completeness = Math.min(95, Math.max(20, Math.round(score * 0.9)));
+  const productionReadiness = Math.min(95, Math.max(20, Math.round(score * 0.85)));
+
   return {
     engine: 'Rule-based estimate',
     score,
@@ -529,6 +575,17 @@ Evaluate the answer thoroughly. Return a pure JSON object:
       'Discuss time/space complexity or performance implications where applicable',
     ],
     suggestedAnswer: `In production software engineering, ${question} is handled by utilizing best practices: 1) Ensuring idempotency and clean separation of concerns, 2) Mitigating edge-cases through robust input validation and unit tests, and 3) Monitoring memory and execution overhead.`,
+    starBreakdown: {
+      situationTask: uniqueCount >= 8 ? 'Clearly established the technical problem statement and context.' : 'Context and problem constraints could be defined more explicitly.',
+      action: uniqueCount >= 8 ? 'Described implementation approach and technical keywords.' : 'Action steps and execution logic need deeper explanation.',
+      resultImpact: uniqueCount >= 18 ? 'Mentioned technical trade-offs or measurable outcomes.' : 'Add quantifiable metrics, performance impact, or operational lessons learned.',
+    },
+    rubric: {
+      technicalAccuracy,
+      communication,
+      completeness,
+      productionReadiness,
+    },
   };
 };
 

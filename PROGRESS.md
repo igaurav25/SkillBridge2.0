@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-3`
+**Current Active Branch:** `redesign/phase-4`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -11,7 +11,7 @@
 - [x] **Phase 1**: Design system and app shell (`redesign/phase-1`) — *Completed & Verified*
 - [x] **Phase 2**: Cinematic landing page + 3D hero (`redesign/phase-2`) — *Completed & Verified*
 - [x] **Phase 3**: Student experience (`redesign/phase-3`) — *Completed & Verified*
-- [ ] **Phase 4**: AI modules (`redesign/phase-4`)
+- [x] **Phase 4**: AI modules (`redesign/phase-4`) — *Completed & Verified*
 - [ ] **Phase 5**: Job marketplace (`redesign/phase-5`)
 - [ ] **Phase 6**: Recruiter command center (`redesign/phase-6`)
 - [ ] **Phase 7**: Admin control center (`redesign/phase-7`)
@@ -87,3 +87,47 @@
   - `$env:AUDIT_PHASE='phase-3'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **98–100** across audited routes, Best Practices **100**, CLS = **0** on landing and career-explorer.
   - Dual-theme (`[data-theme="light"]`) spot-checks on `/student/dashboard`, `/profile`, `/resume-builder`, `/notifications`, and `/settings` rendered with 0 layout shift or clipped elements.
+
+### Phase 4 — AI Modules (`redesign/phase-4`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 5).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-4.json`, `tests/reports/lighthouse-phase-4.json`, `tests/screenshots/phase-4/`.
+- **Key Deliverables:**
+  - **Career Assistant (`/career-assistant`)**:
+    - Contextual header with candidate target goal and skill portfolio metrics.
+    - Real-time streaming/typing animation (character chunk reveal at 15ms) with 1-click "Skip ⏭️" action.
+    - Clear honest engine badges: `✨ Gemini AI` (AI-generated) vs `⚙️ Rule-based estimate` (heuristic fallback).
+    - Code blocks formatted in clean monospaced layout with syntax contrast.
+    - Topic-categorized prompt drawer (Career & Roadmaps, Resume & ATS, Technical Interviews).
+    - Robust error boundary with 1-click "Retry Message" keeping the user's failed query intact.
+    - OnPush change detection architecture.
+  - **Resume Analyzer (`/resume-analyzer`)**:
+    - Full 5-pillar ATS breakdown: Overall Profile Strength, Skills Match, Projects Impact, Experience Relevance, and Keywords Density.
+    - Keyword matching tags distinguishing verified detected skills from missing industry prerequisites.
+    - Suggested high-impact bullet rewrites applying Google's X-Y-Z formula (`Accomplished [X] measured by [Y] by doing [Z]`) with Before vs After diffs and 1-click clipboard copy.
+    - Loading skeletons for analysis state and honest engine labeling.
+    - OnPush change detection architecture.
+  - **Skill Gap Analyzer (`/skill-gap`)**:
+    - Interactive target role switcher pills with instant re-evaluation.
+    - Visual comparison: Existing Profile Skills vs Missing Industry Prerequisites.
+    - Step-by-step learning sequence with duration estimates and explicit priority badges (`Critical`, `Recommended`, `Elective`).
+    - Recommended hands-on projects with required tech stacks and direct navigation to `/projects`.
+    - Honest engine labeling and OnPush change detection.
+  - **Technical Interview Prep (`/interview-prep`)**:
+    - Dual mode: Comprehensive searchable question bank + AI Mock Interview simulator.
+    - Interactive live countdown timer with pause/resume controls and visual urgency alert.
+    - Web Speech / dictation toggle allowing spoken answers as well as typed responses.
+    - 4-pillar rubric score breakdown: Technical Accuracy, Communication Clarity, Completeness, and Production Readiness.
+    - STAR method alignment analysis: Situation & Task framing, Action & Engineering Strategy, and Result & Impact metrics.
+    - Toggleable "Ideal Model Answer" reveal.
+    - Complete Session Scorecard with 1-click **Download Transcript (.txt)** export.
+    - Honest engine labeling and OnPush change detection.
+  - **Backend & Models**:
+    - Enhanced `backend/src/services/aiService.js` with structured bullet rewrites for resume parsing, STAR framework breakdown, and rubric scoring for interview evaluations.
+    - Updated `backend/src/models/Resume.js` schema with `bulletRewrites` and `engine`.
+    - Added regression tests in `backend/tests/regression.test.js` validating STAR breakdown, rubric metrics, and bullet rewrites.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **533.46 kB** raw (**142.36 kB** transfer), `main`: **86.04 kB** raw / **18.59 kB** transfer + 39 lazy chunks.
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `$env:AUDIT_PHASE='phase-4'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **98–100** across audited routes, Best Practices **100**, CLS = **0** on landing and career-explorer.

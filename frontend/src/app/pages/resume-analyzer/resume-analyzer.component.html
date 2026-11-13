@@ -4,15 +4,15 @@
       <span class="badge badge-cyan text-xs mb-2 font-bold">AI INTELLIGENCE</span>
       <h1 class="text-3xl font-bold mb-2">Resume Upload & ATS Analyzer</h1>
       <p class="text-sm text-secondary max-w-xl mx-auto">
-        Screen your resume against applicant tracking systems. Detect missing keywords, calculate role compatibility, and receive actionable suggestions.
+        Screen your resume against modern applicant tracking systems. Detect keyword gaps, calculate role compatibility, and receive high-converting bullet rewrites.
       </p>
     </div>
 
     <!-- Upload & Role Selector Card -->
-    <div class="sb-card sb-card-glow mb-8">
+    <div class="sb-card sb-card-glow mb-8 p-6">
       <div class="form-group mb-4">
-        <label class="form-label">Select Your Target Engineering Role</label>
-        <select aria-label="Target job role for ATS analysis" class="select-control" [(ngModel)]="targetRole">
+        <label class="form-label" for="ra-target-role">Target Engineering Role</label>
+        <select id="ra-target-role" aria-label="Target job role for ATS analysis" class="select-control form-control" [(ngModel)]="targetRole">
           <option *ngFor="let r of availableRoles" [value]="r">{{ r }}</option>
         </select>
       </div>
@@ -33,21 +33,23 @@
 
       <!-- Or Paste Text Directly -->
       <div class="form-group mb-4">
-        <div class="flex items-center justify-between mb-1">
-          <label class="form-label">Or Paste Plain Resume Text Below</label>
+        <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+          <label class="form-label m-0" for="ra-text">Or Paste Plain Resume Text Below</label>
           <button type="button" class="btn-link text-xs font-bold text-gradient" (click)="populateFromProfile()">
             ⚡ Import Details From My Profile
           </button>
         </div>
         <textarea
+          id="ra-text"
           class="form-control"
           rows="5"
-          placeholder="Paste plain text of your resume..."
+          placeholder="Paste plain text of your resume or import from profile..."
           [(ngModel)]="resumeText"
         ></textarea>
       </div>
 
       <button
+        type="button"
         class="btn btn-primary btn-lg w-full"
         [disabled]="isAnalyzing || (!selectedFile && !resumeText.trim())"
         (click)="analyzeResume()"
@@ -56,14 +58,44 @@
       </button>
     </div>
 
-    <!-- AI Analysis Results Dashboard (Section 7) -->
-    <div *ngIf="analysis" class="analysis-results flex flex-col gap-6">
+    <!-- Loading Skeleton -->
+    <div *ngIf="isAnalyzing" class="sb-card p-6 flex flex-col gap-4 mb-8">
+      <div class="flex items-center justify-between">
+        <div class="skeleton" style="width: 180px; height: 28px;"></div>
+        <div class="skeleton" style="width: 80px; height: 28px;"></div>
+      </div>
+      <div class="skeleton" style="width: 100%; height: 60px;"></div>
+      <div class="grid grid-4 gap-4">
+        <div class="skeleton" style="height: 72px;" *ngFor="let i of [1,2,3,4]"></div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="hasError" class="p-4 bg-danger-subtle border border-danger rounded-lg mb-8 flex items-center justify-between gap-4">
+      <div>
+        <h4 class="font-bold text-sm text-danger m-0">Evaluation Failed</h4>
+        <p class="text-xs text-secondary m-0 mt-0.5">{{ errorMessage }}</p>
+      </div>
+      <button type="button" class="btn btn-outline btn-xs" (click)="analyzeResume()">Retry Scan</button>
+    </div>
+
+    <!-- AI Analysis Results Dashboard -->
+    <div *ngIf="!isAnalyzing && analysis" class="analysis-results flex flex-col gap-6">
       <!-- Main Score Box -->
       <div class="sb-card p-6 bg-secondary">
         <div class="flex items-center justify-between flex-wrap gap-4 mb-4">
           <div>
-            <span class="badge badge-primary text-xs mb-1">EVALUATION SUMMARY</span>
-            <h2 class="text-xl font-bold">Profile Strength: {{ analysis.profileStrength }}%</h2>
+            <div class="flex items-center gap-2 mb-1">
+              <span class="badge badge-primary text-xs">EVALUATION SUMMARY</span>
+              <span
+                class="badge text-xs font-mono"
+                [class.badge-primary]="analysis.engine === 'AI-generated'"
+                [class.badge-neutral]="analysis.engine !== 'AI-generated'"
+              >
+                {{ analysis.engine === 'AI-generated' ? '✨ Gemini AI' : '⚙️ Rule-based estimate' }}
+              </span>
+            </div>
+            <h2 class="text-xl font-bold">Overall ATS Profile Strength: {{ analysis.profileStrength }}%</h2>
           </div>
           <div class="overall-score-badge text-2xl font-bold text-gradient">
             {{ analysis.profileStrength }} / 100
@@ -116,18 +148,24 @@
 
       <!-- Skills Detected vs Missing -->
       <div class="grid grid-2 gap-6">
-        <div class="sb-card">
-          <h3 class="text-sm font-bold text-emerald mb-3">✓ Detected Skills in Resume</h3>
-          <div class="flex items-center gap-2 flex-wrap">
+        <div class="sb-card p-5">
+          <h3 class="text-sm font-bold text-emerald mb-3">✓ Detected Keywords in Resume</h3>
+          <div *ngIf="analysis.detectedSkills.length === 0" class="text-xs text-muted">
+            No technical skills matching {{ targetRole }} were detected in the text.
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
             <span *ngFor="let s of analysis.detectedSkills" class="badge badge-emerald text-xs">
               {{ s }}
             </span>
           </div>
         </div>
 
-        <div class="sb-card">
+        <div class="sb-card p-5">
           <h3 class="text-sm font-bold text-amber mb-3">• Missing Keywords for {{ targetRole }}</h3>
-          <div class="flex items-center gap-2 flex-wrap">
+          <div *ngIf="analysis.missingSkills.length === 0" class="text-xs text-emerald">
+            ✓ Your resume contains all target keywords for this role benchmark.
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
             <span *ngFor="let s of analysis.missingSkills" class="badge badge-amber text-xs">
               {{ s }}
             </span>
@@ -137,14 +175,14 @@
 
       <!-- Strengths & Weak Sections -->
       <div class="grid grid-2 gap-6">
-        <div class="sb-card">
+        <div class="sb-card p-5">
           <h3 class="text-sm font-bold mb-3">💪 Key Strengths</h3>
           <ul class="text-xs text-secondary flex flex-col gap-2 pl-4">
             <li *ngFor="let s of analysis.strengths">{{ s }}</li>
           </ul>
         </div>
 
-        <div class="sb-card">
+        <div class="sb-card p-5">
           <h3 class="text-sm font-bold mb-3">⚠️ Weak Sections & Flags</h3>
           <ul class="text-xs text-secondary flex flex-col gap-2 pl-4">
             <li *ngFor="let w of analysis.weakSections">{{ w }}</li>
@@ -152,15 +190,51 @@
         </div>
       </div>
 
+      <!-- Suggested Bullet Rewrites (X-Y-Z formula) -->
+      <div *ngIf="analysis.bulletRewrites && analysis.bulletRewrites.length > 0" class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="text-base font-bold m-0">Suggested High-Impact Bullet Rewrites</h3>
+            <p class="text-xs text-secondary m-0 mt-0.5">
+              Transform weak responsibilities into quantifiable achievements via Google's X-Y-Z formula
+            </p>
+          </div>
+          <span class="badge badge-primary text-xs">ATS Formula</span>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div *ngFor="let rewrite of analysis.bulletRewrites" class="rewrite-card p-4 rounded-lg bg-secondary border border-subtle">
+            <div class="mb-2">
+              <span class="text-xs font-bold text-danger uppercase block mb-1">Before (Passive):</span>
+              <p class="text-xs text-secondary line-through m-0 font-mono">{{ rewrite.original }}</p>
+            </div>
+
+            <div class="mb-2 pt-2 border-t border-subtle">
+              <div class="flex items-center justify-between gap-2 mb-1">
+                <span class="text-xs font-bold text-emerald uppercase">After (High-Impact ATS):</span>
+                <button type="button" class="btn btn-outline btn-xs" (click)="copyText(rewrite.rewritten)">
+                  📋 Copy Bullet
+                </button>
+              </div>
+              <p class="text-xs text-primary font-medium m-0 font-mono leading-relaxed">{{ rewrite.rewritten }}</p>
+            </div>
+
+            <div class="text-xs text-muted mt-2 italic">
+              💡 {{ rewrite.impactNote }}
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Actionable Suggestions -->
-      <div class="sb-card">
+      <div class="sb-card p-6">
         <h3 class="text-base font-bold mb-3">💡 ATS Optimization Checklist</h3>
         <ul class="text-xs text-secondary flex flex-col gap-2 pl-4 mb-4">
           <li *ngFor="let tip of analysis.atsSuggestions">{{ tip }}</li>
           <li *ngFor="let imp of analysis.suggestedImprovements">{{ imp }}</li>
         </ul>
 
-        <div class="border-top pt-4 mt-2">
+        <div class="border-top pt-4 mt-2" *ngIf="analysis.suggestedProjects?.length">
           <h4 class="text-xs font-bold uppercase text-muted mb-2">Recommended Next Projects to Build:</h4>
           <div class="flex items-center gap-2 flex-wrap">
             <span *ngFor="let p of analysis.suggestedProjects" class="badge badge-neutral text-xs">
