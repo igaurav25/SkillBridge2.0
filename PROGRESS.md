@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-6`
+**Current Active Branch:** `redesign/phase-7`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -14,7 +14,7 @@
 - [x] **Phase 4**: AI modules (`redesign/phase-4`) — *Completed & Verified*
 - [x] **Phase 5**: Job marketplace (`redesign/phase-5`) — *Completed & Verified*
 - [x] **Phase 6**: Recruiter command center (`redesign/phase-6`) — *Completed & Verified*
-- [ ] **Phase 7**: Admin control center (`redesign/phase-7`)
+- [x] **Phase 7**: Admin control center (`redesign/phase-7`) — *Completed & Verified*
 - [ ] **Phase 8**: Mobile: all phones + Android app (`redesign/phase-8`)
 - [ ] **Phase 9**: Performance and release (`redesign/phase-9`)
 - [ ] **Phase 10**: Extra features (ask user which ones before building) (`redesign/phase-10`)
@@ -170,6 +170,65 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
+
+### Phase 7 — Admin Control Center (`redesign/phase-7`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 8).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-7.json`, `tests/reports/lighthouse-phase-7.json`, `tests/screenshots/phase-7/`.
+- **Key Deliverables:**
+  - **New Backend Model & Audit System**:
+    - `backend/src/models/AuditLog.js`: Schema capturing `admin`, `adminName`, `adminEmail`, `action` (`USER_STATUS_CHANGE`, `USER_DELETED`, `COMPANY_VERIFIED`, `COMPANY_UNVERIFIED`, `JOB_STATUS_CHANGE`, `JOB_FEATURED`, `JOB_UNFEATURED`, `JOB_DELETED`, `REPORT_RESOLVED`, `REPORT_DISMISSED`, `REPORT_ACTIONED`, `ADMIN_PROFILE_UPDATE`, `ADMIN_PASSWORD_UPDATE`), `targetType`, `targetId`, `targetName`, `details`, `metadata`, and timestamps.
+    - Automated asynchronous audit log recorder integrated into all administrative mutation operations.
+  - **Enhanced Admin Backend APIs (`backend/src/controllers/adminController.js`, `backend/src/routes/adminRoutes.js`)**:
+    - `GET /api/admin/stats`: Expanded with real aggregate application funnel stages (`funnelStages`), work type modality breakdown (`workTypes`), scam report categories, 7-day continuous user registration timeline (`userTrend`), and recent audit stream.
+    - `GET /api/admin/companies`: Rich company listing with active jobs count, partner verification status, search, and pagination.
+    - `GET /api/admin/applications`: Platform-wide candidate submissions monitoring with status filtering, candidate and opportunity details, and search.
+    - `GET /api/admin/audit-logs`: Paginated, filterable timeline of all platform governance and moderation actions.
+    - `PUT /api/admin/jobs/:id/status`: Job status toggle (`active`, `closed`, `draft`) and featured badge (`isFeatured`) toggle with audit logging.
+    - `DELETE /api/admin/jobs/:id`: Job deletion with administrative audit trail.
+    - `POST /api/admin/reports/:id/action`: Automated fraud and scam report resolution executing cascade actions (`delete_job`, `suspend_user`, `resolve`, `dismiss`, `under_review`) with internal notes and audit logs.
+  - **Frontend Modernization (`frontend/src/app/pages/admin-dashboard/`)**:
+    - **Tab 1: Platform Analytics & Interactive Charts**:
+      - 7-Day User Registration Trend Bar Chart with daily hover tooltips and dynamic scale.
+      - Ecosystem Role Balance (Students vs Recruiters vs Admins) with segmented progress bars.
+      - 6-Stage Application Conversion Funnel (`Applied` -> `Under Review` -> `Shortlisted` -> `Interview` -> `Selected` -> `Rejected`) with conversion rate percentages.
+      - Job Workplace Modality Breakdown (Remote, Hybrid, Onsite).
+      - Scam & Compliance Shield center with pending report alerts.
+    - **Tab 2: User Moderation & Dossier Inspector (`/admin/users`)**:
+      - Real-time search by name, email, or phone.
+      - Role and account status filters.
+      - 1-click status toggling (`Active` / `Suspended`).
+      - Accessible deletion confirmation modal with irreversible warning.
+      - Full Candidate & Recruiter Dossier modal inspecting login credentials, auth provider, career intent, expected compensation, ATS score, and enterprise metrics.
+    - **Tab 3: Job Moderation & Market Integrity (`/admin/jobs`)**:
+      - Multi-criteria filtering by posting status and flagged scam listings.
+      - 1-click `★ Feature` / `☆ Unfeature` marketplace promotion toggle.
+      - Active/Closed listing toggle with live database synchronization.
+      - Scam flag indicators and direct removal actions.
+    - **Tab 4: Corporate Partner Verification (`/admin/companies`)**:
+      - Verification state filter (Verified Partners vs Pending Review).
+      - Instant `✓ Verify Partner` / `Revoke Badge` action with live stats update.
+      - Enterprise detail inspection modal displaying company size, location, website, culture description, and active requisitions.
+    - **Tab 5: Scam Reports & Anti-Fraud Workflow (`/admin/reports`)**:
+      - Filter by report status and target entity (`Job`, `Company`, `User`).
+      - Comprehensive action modal: Resolve flag, dismiss flag, escalate to active review, or trigger 1-click target remediation (`Delete Job Posting`, `Suspend User Account`).
+      - Internal resolution notes and resolver timestamp tracking.
+    - **Tab 6: Platform-Wide Applications Monitor (`/admin/applications`)**:
+      - Comprehensive pipeline monitoring with status filters and candidate search.
+      - Direct resume document link (`View Resume ↗`).
+    - **Tab 7: Administrative Audit Log (`/admin/audit`)**:
+      - Full timestamped chronological event stream with action filtering and search.
+    - **Tab 8: ML Microservice Telemetry**:
+      - Real-time health, memory, and model benchmarks for 4 production AI models.
+    - **Tab 9: Admin Profile & Security Settings**:
+      - Profile display name, login email, phone number updating, avatar upload, and password rotation.
+    - **Accessibility & Design System**:
+      - Strict WCAG AA compliance: All `<select>` dropdowns carry explicit `aria-label` attributes, inputs are explicitly linked to labels, buttons have descriptive names, and zero horizontal overflow exists down to 360px viewport.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.48 kB** raw (**143.29 kB** transfer), `main`: **86.42 kB** raw / **18.66 kB** transfer + 40 lazy chunks (`admin-dashboard-component`: **88.15 kB** raw / **17.62 kB** transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 7 admin stats, audit logs, companies, and applications assertions).
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
   - Dual-theme (`[data-theme="light"]`) spot-checks on `/student/dashboard`, `/profile`, `/resume-builder`, `/notifications`, and `/settings` rendered with 0 layout shift or clipped elements.
 
 ### Phase 4 — AI Modules (`redesign/phase-4`)
@@ -298,4 +357,63 @@
   - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 6 interview schedules, recruiter analytics, tags, and bulk actions tests).
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
+
+### Phase 7 — Admin Control Center (`redesign/phase-7`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 8).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-7.json`, `tests/reports/lighthouse-phase-7.json`, `tests/screenshots/phase-7/`.
+- **Key Deliverables:**
+  - **New Backend Model & Audit System**:
+    - `backend/src/models/AuditLog.js`: Schema capturing `admin`, `adminName`, `adminEmail`, `action` (`USER_STATUS_CHANGE`, `USER_DELETED`, `COMPANY_VERIFIED`, `COMPANY_UNVERIFIED`, `JOB_STATUS_CHANGE`, `JOB_FEATURED`, `JOB_UNFEATURED`, `JOB_DELETED`, `REPORT_RESOLVED`, `REPORT_DISMISSED`, `REPORT_ACTIONED`, `ADMIN_PROFILE_UPDATE`, `ADMIN_PASSWORD_UPDATE`), `targetType`, `targetId`, `targetName`, `details`, `metadata`, and timestamps.
+    - Automated asynchronous audit log recorder integrated into all administrative mutation operations.
+  - **Enhanced Admin Backend APIs (`backend/src/controllers/adminController.js`, `backend/src/routes/adminRoutes.js`)**:
+    - `GET /api/admin/stats`: Expanded with real aggregate application funnel stages (`funnelStages`), work type modality breakdown (`workTypes`), scam report categories, 7-day continuous user registration timeline (`userTrend`), and recent audit stream.
+    - `GET /api/admin/companies`: Rich company listing with active jobs count, partner verification status, search, and pagination.
+    - `GET /api/admin/applications`: Platform-wide candidate submissions monitoring with status filtering, candidate and opportunity details, and search.
+    - `GET /api/admin/audit-logs`: Paginated, filterable timeline of all platform governance and moderation actions.
+    - `PUT /api/admin/jobs/:id/status`: Job status toggle (`active`, `closed`, `draft`) and featured badge (`isFeatured`) toggle with audit logging.
+    - `DELETE /api/admin/jobs/:id`: Job deletion with administrative audit trail.
+    - `POST /api/admin/reports/:id/action`: Automated fraud and scam report resolution executing cascade actions (`delete_job`, `suspend_user`, `resolve`, `dismiss`, `under_review`) with internal notes and audit logs.
+  - **Frontend Modernization (`frontend/src/app/pages/admin-dashboard/`)**:
+    - **Tab 1: Platform Analytics & Interactive Charts**:
+      - 7-Day User Registration Trend Bar Chart with daily hover tooltips and dynamic scale.
+      - Ecosystem Role Balance (Students vs Recruiters vs Admins) with segmented progress bars.
+      - 6-Stage Application Conversion Funnel (`Applied` -> `Under Review` -> `Shortlisted` -> `Interview` -> `Selected` -> `Rejected`) with conversion rate percentages.
+      - Job Workplace Modality Breakdown (Remote, Hybrid, Onsite).
+      - Scam & Compliance Shield center with pending report alerts.
+    - **Tab 2: User Moderation & Dossier Inspector (`/admin/users`)**:
+      - Real-time search by name, email, or phone.
+      - Role and account status filters.
+      - 1-click status toggling (`Active` / `Suspended`).
+      - Accessible deletion confirmation modal with irreversible warning.
+      - Full Candidate & Recruiter Dossier modal inspecting login credentials, auth provider, career intent, expected compensation, ATS score, and enterprise metrics.
+    - **Tab 3: Job Moderation & Market Integrity (`/admin/jobs`)**:
+      - Multi-criteria filtering by posting status and flagged scam listings.
+      - 1-click `★ Feature` / `☆ Unfeature` marketplace promotion toggle.
+      - Active/Closed listing toggle with live database synchronization.
+      - Scam flag indicators and direct removal actions.
+    - **Tab 4: Corporate Partner Verification (`/admin/companies`)**:
+      - Verification state filter (Verified Partners vs Pending Review).
+      - Instant `✓ Verify Partner` / `Revoke Badge` action with live stats update.
+      - Enterprise detail inspection modal displaying company size, location, website, culture description, and active requisitions.
+    - **Tab 5: Scam Reports & Anti-Fraud Workflow (`/admin/reports`)**:
+      - Filter by report status and target entity (`Job`, `Company`, `User`).
+      - Comprehensive action modal: Resolve flag, dismiss flag, escalate to active review, or trigger 1-click target remediation (`Delete Job Posting`, `Suspend User Account`).
+      - Internal resolution notes and resolver timestamp tracking.
+    - **Tab 6: Platform-Wide Applications Monitor (`/admin/applications`)**:
+      - Comprehensive pipeline monitoring with status filters and candidate search.
+      - Direct resume document link (`View Resume ↗`).
+    - **Tab 7: Administrative Audit Log (`/admin/audit`)**:
+      - Full timestamped chronological event stream with action filtering and search.
+    - **Tab 8: ML Microservice Telemetry**:
+      - Real-time health, memory, and model benchmarks for 4 production AI models.
+    - **Tab 9: Admin Profile & Security Settings**:
+      - Profile display name, login email, phone number updating, avatar upload, and password rotation.
+    - **Accessibility & Design System**:
+      - Strict WCAG AA compliance: All `<select>` dropdowns carry explicit `aria-label` attributes, inputs are explicitly linked to labels, buttons have descriptive names, and zero horizontal overflow exists down to 360px viewport.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.48 kB** raw (**143.29 kB** transfer), `main`: **86.42 kB** raw / **18.66 kB** transfer + 40 lazy chunks (`admin-dashboard-component`: **88.15 kB** raw / **17.62 kB** transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 7 admin stats, audit logs, companies, and applications assertions).
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.

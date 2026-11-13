@@ -1,7 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { AdminService } from '../../services/admin.service';
 import { CompanyService } from '../../services/company.service';
 import { JobService } from '../../services/job.service';
@@ -11,6 +11,40 @@ import { ProfileService } from '../../services/profile.service';
 import { User } from '../../models/user.model';
 import { Company } from '../../models/company.model';
 import { ReportItem } from '../../models/skill.model';
+import { AuditLog } from '../../models/audit-log.model';
+
+export interface AdminUser extends User {
+  loginEmail?: string;
+  loginPhone?: string;
+  authProvider?: string;
+  passwordStatus?: string;
+  preferredRole?: string;
+  preferredStream?: string;
+  preferredLocation?: string;
+  expectedSalary?: string;
+  targetSkills?: string[];
+  education?: string;
+  resumeScore?: number;
+  applicationsCount?: number;
+  savedJobsCount?: number;
+  companyName?: string;
+  industry?: string;
+  website?: string;
+  companySize?: string;
+  totalJobsPosted?: number;
+  isVerified?: boolean;
+}
+
+export type AdminTab =
+  | 'overview'
+  | 'users'
+  | 'jobs'
+  | 'companies'
+  | 'reports'
+  | 'applications'
+  | 'audit'
+  | 'ml_monitoring'
+  | 'settings';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -27,32 +61,96 @@ export class AdminDashboardComponent implements OnInit {
   authService = inject(AuthService);
   private profileService = inject(ProfileService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  activeTab: 'overview' | 'users' | 'jobs' | 'companies' | 'reports' | 'ml_monitoring' | 'settings' = 'overview';
+  activeTab: AdminTab = 'overview';
 
-  get unverifiedCompaniesCount(): number {
-    return this.companies.filter((c) => !c.isVerified).length;
-  }
-
+  // Platform Metrics & Analytics
   stats: any = {
     totalUsers: 0,
     totalStudents: 0,
     totalRecruiters: 0,
     totalCompanies: 0,
+    verifiedCompanies: 0,
     totalJobs: 0,
     activeJobs: 0,
+    reportedJobs: 0,
     totalApplications: 0,
     pendingReports: 0,
+    roleStats: [],
+    recentApplications: [],
+    funnelStages: {
+      Applied: 0,
+      'Under Review': 0,
+      Shortlisted: 0,
+      Interview: 0,
+      Selected: 0,
+      Rejected: 0,
+      Withdrawn: 0,
+    },
+    workTypes: { remote: 0, hybrid: 0, onsite: 0 },
+    reportsByCategory: {},
+    userTrend: [],
+    recentAuditLogs: [],
   };
 
+  // Datasets
+  users: AdminUser[] = [];
+  jobs: any[] = [];
+  companies: any[] = [];
+  reports: ReportItem[] = [];
+  applications: any[] = [];
+  auditLogs: AuditLog[] = [];
   mlMonitoringData: any = null;
 
-  users: User[] = [];
-  jobs: any[] = [];
-  companies: Company[] = [];
-  reports: ReportItem[] = [];
-
+  // Loading States
   isLoading = true;
+  isLoadingUsers = false;
+  isLoadingJobs = false;
+  isLoadingCompanies = false;
+  isLoadingReports = false;
+  isLoadingApplications = false;
+  isLoadingAudit = false;
+
+  // Filter States
+  userRoleFilter = 'all';
+  userStatusFilter = 'all';
+  userSearch = '';
+
+  jobStatusFilter = 'all';
+  jobSearch = '';
+  jobReportedOnly = false;
+
+  companyVerificationFilter = 'all';
+  companySearch = '';
+
+  reportStatusFilter = 'all';
+  reportTargetFilter = 'all';
+
+  appStatusFilter = 'all';
+  appSearch = '';
+
+  auditActionFilter = 'all';
+  auditTargetFilter = 'all';
+  auditSearch = '';
+
+  // Modals & Drawers
+  selectedUserForDetails: any | null = null;
+  showUserDetailsModal = false;
+
+  selectedCompanyForDetails: any | null = null;
+  showCompanyDetailsModal = false;
+
+  selectedReport: ReportItem | null = null;
+  reportActionChoice = 'resolve';
+  reportActionNotes = '';
+  showReportModal = false;
+
+  // Deletion Confirmation Modal
+  showDeleteModal = false;
+  deleteType: 'user' | 'job' = 'user';
+  itemToDelete: { id: string; name: string; extra?: string } | null = null;
+  isDeleting = false;
 
   // Admin Profile & Security State
   adminId = '';
@@ -72,37 +170,41 @@ export class AdminDashboardComponent implements OnInit {
 
   isUploadingAdminAvatar = false;
 
-  // Selected user for full dossier inspection modal
-  selectedUserForDetails: any | null = null;
-  showUserDetailsModal = false;
-
-  // Users filter
-  userRoleFilter = 'all';
-  userSearch = '';
-
-  // Jobs filter
-  jobFilter = 'all';
-
-  // Reports filter
-  reportStatusFilter = 'all';
-
-  // Report resolution modal
-  selectedReport: ReportItem | null = null;
-  reportActionStatus = 'Resolved';
-  reportActionNotes = '';
-  showReportModal = false;
-
   ngOnInit() {
-    const segments = this.route.snapshot.url.map((s) => s.path);
-    if (segments.includes('users')) this.activeTab = 'users';
-    else if (segments.includes('jobs')) this.activeTab = 'jobs';
-    else if (segments.includes('reports')) this.activeTab = 'reports';
+    this.route.url.subscribe((segments) => {
+      const path = segments.map((s) => s.path).join('/');
+      if (path.includes('users')) this.activeTab = 'users';
+      else if (path.includes('jobs')) this.activeTab = 'jobs';
+      else if (path.includes('reports')) this.activeTab = 'reports';
+      else if (path.includes('companies')) this.activeTab = 'companies';
+      else if (path.includes('applications')) this.activeTab = 'applications';
+      else if (path.includes('audit')) this.activeTab = 'audit';
+    });
+
     this.initAdminProfile();
     this.loadAll();
   }
 
+  @HostListener('document:keydown.escape')
+  handleEscape() {
+    if (this.showUserDetailsModal) this.closeUserDetails();
+    if (this.showCompanyDetailsModal) this.closeCompanyDetails();
+    if (this.showReportModal) this.closeReportModal();
+    if (this.showDeleteModal) this.cancelDelete();
+  }
+
+  switchTab(tab: AdminTab) {
+    this.activeTab = tab;
+    if (tab === 'ml_monitoring' && !this.mlMonitoringData) {
+      this.loadMLMonitoring();
+    } else if (tab === 'applications' && this.applications.length === 0) {
+      this.fetchApplications();
+    } else if (tab === 'audit' && this.auditLogs.length === 0) {
+      this.fetchAuditLogs();
+    }
+  }
+
   initAdminProfile() {
-    // 1. Fetch freshly from dedicated admin profile endpoint
     this.adminService.getProfile().subscribe({
       next: (res) => {
         if (res.data) {
@@ -113,7 +215,6 @@ export class AdminDashboardComponent implements OnInit {
         }
       },
       error: () => {
-        // Fallback to authService user state
         const user = this.authService.currentUser();
         if (user) {
           this.adminId = user._id || '';
@@ -129,9 +230,330 @@ export class AdminDashboardComponent implements OnInit {
     const user = this.authService.currentUser();
     if (user?.avatar) return user.avatar;
     const name = encodeURIComponent(user?.name || this.adminName || 'Admin');
-    return `https://ui-avatars.com/api/?name=${name}&background=ef4444&color=fff&bold=true`;
+    return `https://ui-avatars.com/api/?name=${name}&background=6366f1&color=fff&bold=true`;
   }
 
+  loadAll() {
+    this.isLoading = true;
+    this.fetchStats();
+    this.fetchUsers();
+    this.fetchJobs();
+    this.fetchCompanies();
+    this.fetchReports();
+    this.fetchApplications();
+    this.fetchAuditLogs();
+  }
+
+  fetchStats() {
+    this.adminService.getStats().subscribe({
+      next: (res) => {
+        if (res.data) {
+          this.stats = {
+            ...this.stats,
+            ...res.data,
+            funnelStages: res.data.funnelStages || this.stats.funnelStages,
+            workTypes: res.data.workTypes || this.stats.workTypes,
+            reportsByCategory: res.data.reportsByCategory || this.stats.reportsByCategory,
+            userTrend: res.data.userTrend || this.stats.userTrend,
+            recentAuditLogs: res.data.recentAuditLogs || [],
+          };
+        }
+      }
+    });
+  }
+
+  fetchUsers() {
+    this.isLoadingUsers = true;
+    this.adminService.getUsers({
+      role: this.userRoleFilter !== 'all' ? this.userRoleFilter : undefined,
+      status: this.userStatusFilter !== 'all' ? this.userStatusFilter : undefined,
+      search: this.userSearch.trim() || undefined,
+    }).subscribe({
+      next: (res) => {
+        this.users = res.data || [];
+        this.isLoadingUsers = false;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.isLoadingUsers = false;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  fetchJobs() {
+    this.isLoadingJobs = true;
+    this.adminService.getAllJobs({
+      status: this.jobStatusFilter !== 'all' ? this.jobStatusFilter : undefined,
+      reportedOnly: this.jobReportedOnly,
+      search: this.jobSearch.trim() || undefined,
+    }).subscribe({
+      next: (res) => {
+        this.jobs = res.data || [];
+        this.isLoadingJobs = false;
+      },
+      error: () => {
+        this.isLoadingJobs = false;
+      }
+    });
+  }
+
+  fetchCompanies() {
+    this.isLoadingCompanies = true;
+    this.adminService.getAdminCompanies({
+      isVerified: this.companyVerificationFilter !== 'all' ? this.companyVerificationFilter : undefined,
+      search: this.companySearch.trim() || undefined,
+    }).subscribe({
+      next: (res) => {
+        this.companies = res.data || [];
+        this.isLoadingCompanies = false;
+      },
+      error: () => {
+        // Fallback to basic company service if needed
+        this.companyService.getCompanies().subscribe({
+          next: (fallbackRes) => {
+            this.companies = fallbackRes.data || [];
+            this.isLoadingCompanies = false;
+          },
+          error: () => {
+            this.isLoadingCompanies = false;
+          }
+        });
+      }
+    });
+  }
+
+  fetchReports() {
+    this.isLoadingReports = true;
+    this.adminService.getReports(this.reportStatusFilter, this.reportTargetFilter).subscribe({
+      next: (res) => {
+        this.reports = res.data || [];
+        this.isLoadingReports = false;
+      },
+      error: () => {
+        this.isLoadingReports = false;
+      }
+    });
+  }
+
+  fetchApplications() {
+    this.isLoadingApplications = true;
+    this.adminService.getApplications({
+      status: this.appStatusFilter !== 'all' ? this.appStatusFilter : undefined,
+      search: this.appSearch.trim() || undefined,
+    }).subscribe({
+      next: (res) => {
+        this.applications = res.data || [];
+        this.isLoadingApplications = false;
+      },
+      error: () => {
+        this.isLoadingApplications = false;
+      }
+    });
+  }
+
+  fetchAuditLogs() {
+    this.isLoadingAudit = true;
+    this.adminService.getAuditLogs({
+      action: this.auditActionFilter !== 'all' ? this.auditActionFilter : undefined,
+      targetType: this.auditTargetFilter !== 'all' ? this.auditTargetFilter : undefined,
+      search: this.auditSearch.trim() || undefined,
+    }).subscribe({
+      next: (res) => {
+        this.auditLogs = res.data || [];
+        this.isLoadingAudit = false;
+      },
+      error: () => {
+        this.isLoadingAudit = false;
+      }
+    });
+  }
+
+  loadMLMonitoring() {
+    this.adminService.getMLMonitoring().subscribe({
+      next: (res) => {
+        this.mlMonitoringData = res.data;
+      },
+      error: () => {
+        this.toast.error('Failed to load ML monitoring telemetry.');
+      }
+    });
+  }
+
+  // User Actions
+  toggleUserStatus(user: User) {
+    const nextStatus = user.status === 'active' ? 'suspended' : 'active';
+    this.adminService.updateUserStatus(user._id, nextStatus).subscribe({
+      next: () => {
+        this.toast.success(`User ${user.name} is now ${nextStatus}!`);
+        user.status = nextStatus;
+        if (this.selectedUserForDetails && this.selectedUserForDetails._id === user._id) {
+          this.selectedUserForDetails.status = nextStatus;
+        }
+        this.fetchAuditLogs();
+      },
+      error: (err) => this.toast.error(err.error?.message || 'Failed to update user status.')
+    });
+  }
+
+  confirmDeleteUser(user: User) {
+    this.deleteType = 'user';
+    this.itemToDelete = {
+      id: user._id,
+      name: user.name,
+      extra: `${user.email} (${user.role})`
+    };
+    this.showDeleteModal = true;
+  }
+
+  // Job Actions
+  toggleJobFeatured(job: any) {
+    const nextFeatured = !job.isFeatured;
+    this.adminService.updateJobStatus(job._id, { isFeatured: nextFeatured }).subscribe({
+      next: () => {
+        job.isFeatured = nextFeatured;
+        this.toast.success(`Job "${job.title}" ${nextFeatured ? 'is now Featured' : 'unfeatured'}.`);
+        this.fetchAuditLogs();
+      },
+      error: (err) => this.toast.error(err.error?.message || 'Failed to update job.')
+    });
+  }
+
+  toggleJobStatus(job: any) {
+    const nextStatus = job.status === 'active' ? 'closed' : 'active';
+    this.adminService.updateJobStatus(job._id, { status: nextStatus }).subscribe({
+      next: () => {
+        job.status = nextStatus;
+        this.toast.success(`Job marked as ${nextStatus}.`);
+        this.fetchStats();
+        this.fetchAuditLogs();
+      },
+      error: (err) => this.toast.error(err.error?.message || 'Failed to toggle job status.')
+    });
+  }
+
+  confirmDeleteJob(job: any) {
+    this.deleteType = 'job';
+    this.itemToDelete = {
+      id: job._id,
+      name: job.title,
+      extra: `Posting by ${job.companyName || 'Enterprise'}`
+    };
+    this.showDeleteModal = true;
+  }
+
+  // Unified Deletion Execution
+  executeDelete() {
+    if (!this.itemToDelete) return;
+    this.isDeleting = true;
+
+    if (this.deleteType === 'user') {
+      this.adminService.deleteUser(this.itemToDelete.id).subscribe({
+        next: () => {
+          this.isDeleting = false;
+          this.showDeleteModal = false;
+          this.toast.success('User account removed permanently.');
+          this.fetchUsers();
+          this.fetchStats();
+          this.fetchAuditLogs();
+        },
+        error: (err) => {
+          this.isDeleting = false;
+          this.toast.error(err.error?.message || 'Failed to delete user.');
+        }
+      });
+    } else if (this.deleteType === 'job') {
+      this.adminService.deleteJob(this.itemToDelete.id).subscribe({
+        next: () => {
+          this.isDeleting = false;
+          this.showDeleteModal = false;
+          this.toast.success('Job listing deleted permanently.');
+          this.fetchJobs();
+          this.fetchStats();
+          this.fetchAuditLogs();
+        },
+        error: (err) => {
+          this.isDeleting = false;
+          this.toast.error(err.error?.message || 'Failed to remove job posting.');
+        }
+      });
+    }
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+    this.itemToDelete = null;
+    this.isDeleting = false;
+  }
+
+  // Company Verification Actions
+  toggleCompanyVerification(company: any) {
+    this.adminService.toggleCompanyVerification(company._id).subscribe({
+      next: () => {
+        company.isVerified = !company.isVerified;
+        this.toast.success(`Company ${company.name} ${company.isVerified ? 'verified' : 'unverified'}!`);
+        this.fetchStats();
+        this.fetchAuditLogs();
+      },
+      error: (err) => this.toast.error(err.error?.message || 'Could not update company verification.')
+    });
+  }
+
+  openCompanyDetails(company: any) {
+    this.selectedCompanyForDetails = company;
+    this.showCompanyDetailsModal = true;
+  }
+
+  closeCompanyDetails() {
+    this.selectedCompanyForDetails = null;
+    this.showCompanyDetailsModal = false;
+  }
+
+  // User Dossier Modal
+  openUserDetails(user: any) {
+    this.selectedUserForDetails = user;
+    this.showUserDetailsModal = true;
+  }
+
+  closeUserDetails() {
+    this.selectedUserForDetails = null;
+    this.showUserDetailsModal = false;
+  }
+
+  // Scam Report Resolution Workflow
+  openReportModal(report: ReportItem) {
+    this.selectedReport = report;
+    this.reportActionChoice = 'resolve';
+    this.reportActionNotes = report.adminNotes || '';
+    this.showReportModal = true;
+  }
+
+  closeReportModal() {
+    this.selectedReport = null;
+    this.showReportModal = false;
+  }
+
+  submitReportAction() {
+    if (!this.selectedReport) return;
+
+    this.adminService.actionReport(this.selectedReport._id, {
+      action: this.reportActionChoice,
+      adminNotes: this.reportActionNotes.trim(),
+    }).subscribe({
+      next: (res) => {
+        this.toast.success(res.message || 'Report action completed successfully.');
+        this.showReportModal = false;
+        this.fetchReports();
+        this.fetchStats();
+        this.fetchAuditLogs();
+        if (this.reportActionChoice === 'delete_job') this.fetchJobs();
+        if (this.reportActionChoice === 'suspend_user') this.fetchUsers();
+      },
+      error: (err) => this.toast.error(err.error?.message || 'Failed to process report action.')
+    });
+  }
+
+  // Admin Profile & Password Updates
   saveAdminName() {
     if (!this.adminName.trim()) {
       this.toast.warning('Please enter a valid administrator name.');
@@ -143,14 +565,10 @@ export class AdminDashboardComponent implements OnInit {
         this.isUpdatingAdminName = false;
         if (res.data) {
           const current = this.authService.currentUser();
-          if (current) {
-            this.authService.setCurrentUser({
-              ...current,
-              name: res.data.name,
-            });
-          }
+          if (current) this.authService.setCurrentUser({ ...current, name: res.data.name });
         }
         this.toast.success('Admin name updated successfully!');
+        this.fetchAuditLogs();
       },
       error: (err) => {
         this.isUpdatingAdminName = false;
@@ -170,14 +588,10 @@ export class AdminDashboardComponent implements OnInit {
         this.isUpdatingAdminEmail = false;
         if (res.data) {
           const current = this.authService.currentUser();
-          if (current) {
-            this.authService.setCurrentUser({
-              ...current,
-              email: res.data.email,
-            });
-          }
+          if (current) this.authService.setCurrentUser({ ...current, email: res.data.email });
         }
-        this.toast.success('Admin Gmail/Email address updated successfully! You can use this to login.');
+        this.toast.success('Admin email updated successfully!');
+        this.fetchAuditLogs();
       },
       error: (err) => {
         this.isUpdatingAdminEmail = false;
@@ -193,14 +607,10 @@ export class AdminDashboardComponent implements OnInit {
         this.isUpdatingAdminPhone = false;
         if (res.data) {
           const current = this.authService.currentUser();
-          if (current) {
-            this.authService.setCurrentUser({
-              ...current,
-              phone: res.data.phone,
-            });
-          }
+          if (current) this.authService.setCurrentUser({ ...current, phone: res.data.phone });
         }
-        this.toast.success('Admin mobile phone number updated successfully!');
+        this.toast.success('Admin mobile phone updated successfully!');
+        this.fetchAuditLogs();
       },
       error: (err) => {
         this.isUpdatingAdminPhone = false;
@@ -210,12 +620,8 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   saveFullAdminProfile() {
-    if (!this.adminName.trim()) {
-      this.toast.warning('Please enter a valid administrator name.');
-      return;
-    }
-    if (!this.adminEmail.trim()) {
-      this.toast.warning('Please enter a valid email address.');
+    if (!this.adminName.trim() || !this.adminEmail.trim()) {
+      this.toast.warning('Please enter valid administrator name and email.');
       return;
     }
     this.isUpdatingAdminName = true;
@@ -237,7 +643,8 @@ export class AdminDashboardComponent implements OnInit {
             });
           }
         }
-        this.toast.success('Admin Profile (Name, Gmail ID, Phone Number) updated successfully!');
+        this.toast.success('Admin profile saved successfully!');
+        this.fetchAuditLogs();
       },
       error: (err) => {
         this.isUpdatingAdminName = false;
@@ -269,7 +676,8 @@ export class AdminDashboardComponent implements OnInit {
         this.adminCurrentPassword = '';
         this.adminNewPassword = '';
         this.adminConfirmPassword = '';
-        this.toast.success('Admin password updated successfully! Please keep it secure.');
+        this.toast.success('Admin password rotated successfully! Keep it secure.');
+        this.fetchAuditLogs();
       },
       error: (err) => {
         this.isUpdatingAdminPassword = false;
@@ -278,22 +686,12 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  openUserDetails(user: any) {
-    this.selectedUserForDetails = user;
-    this.showUserDetailsModal = true;
-  }
-
-  closeUserDetails() {
-    this.selectedUserForDetails = null;
-    this.showUserDetailsModal = false;
-  }
-
   onAdminAvatarSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      this.toast.warning('Please select a valid image file (PNG, JPG, WEBP).');
+      this.toast.warning('Please select an image file (PNG, JPG, WEBP).');
       return;
     }
 
@@ -312,7 +710,7 @@ export class AdminDashboardComponent implements OnInit {
         if (res.data?.avatar) {
           this.authService.setAvatar(res.data.avatar);
         }
-        this.toast.success('Admin profile picture updated!');
+        this.toast.success('Admin avatar updated!');
       },
       error: () => {
         this.isUploadingAdminAvatar = false;
@@ -321,144 +719,50 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  loadAll() {
-    this.isLoading = true;
-    this.fetchStats();
-    this.fetchUsers();
-    this.fetchJobs();
-    this.fetchCompanies();
-    this.fetchReports();
+  // Analytics Helpers for Charts
+  get userTrendMax(): number {
+    if (!this.stats.userTrend || this.stats.userTrend.length === 0) return 5;
+    const max = Math.max(...this.stats.userTrend.map((t: any) => t.count));
+    return max > 0 ? max : 5;
   }
 
-  fetchStats() {
-    this.adminService.getStats().subscribe({
-      next: (res) => {
-        if (res.data) {
-          this.stats = res.data;
-        }
-      }
-    });
+  getUserTrendHeight(count: number): number {
+    const max = this.userTrendMax;
+    return Math.max(8, Math.round((count / max) * 100));
   }
 
-  fetchUsers() {
-    this.adminService.getUsers({
-      role: this.userRoleFilter !== 'all' ? this.userRoleFilter : undefined,
-      search: this.userSearch || undefined
-    }).subscribe({
-      next: (res) => {
-        this.users = res.data || [];
-        this.isLoading = false;
-      },
-      error: () => this.isLoading = false
-    });
+  get funnelTotal(): number {
+    const f = this.stats.funnelStages || {};
+    return (
+      (f.Applied || 0) +
+      (f['Under Review'] || 0) +
+      (f.Shortlisted || 0) +
+      (f.Interview || 0) +
+      (f.Selected || 0) +
+      (f.Rejected || 0)
+    ) || 1;
   }
 
-  fetchJobs() {
-    this.adminService.getAllJobs({
-      status: this.jobFilter !== 'all' ? this.jobFilter : undefined
-    }).subscribe({
-      next: (res) => {
-        this.jobs = res.data || [];
-      }
-    });
+  getFunnelPercent(stage: string): number {
+    const f = this.stats.funnelStages || {};
+    const val = f[stage] || 0;
+    return Math.round((val / this.funnelTotal) * 100);
   }
 
-  fetchCompanies() {
-    this.companyService.getCompanies().subscribe({
-      next: (res) => {
-        this.companies = res.data || [];
-      }
-    });
+  getRolePercent(count: number): number {
+    const total = this.stats.totalUsers || 1;
+    return Math.round((count / total) * 100);
   }
 
-  fetchReports() {
-    this.adminService.getReports(this.reportStatusFilter !== 'all' ? this.reportStatusFilter : undefined).subscribe({
-      next: (res) => {
-        this.reports = res.data || [];
-      }
-    });
+  get unverifiedCompaniesCount(): number {
+    return this.companies.filter((c) => !c.isVerified).length;
   }
 
-  loadMLMonitoring() {
-    this.adminService.getMLMonitoring().subscribe({
-      next: (res) => {
-        this.mlMonitoringData = res.data;
-      },
-      error: () => {
-        this.toast.error('Failed to load ML monitoring telemetry.');
-      }
-    });
+  get pendingReportsCount(): number {
+    return this.reports.filter((r) => r.status === 'Pending').length;
   }
 
-  // User Actions
-  toggleUserStatus(user: User) {
-    const nextStatus = user.status === 'active' ? 'suspended' : 'active';
-    this.adminService.updateUserStatus(user._id, nextStatus).subscribe({
-      next: () => {
-        this.toast.success(`User marked as ${nextStatus}!`);
-        user.status = nextStatus;
-      },
-      error: () => this.toast.error('Failed to update user status.')
-    });
-  }
-
-  deleteUser(userId: string) {
-    if (confirm('Permanently delete this user and associated profile? This action is irreversible.')) {
-      this.adminService.deleteUser(userId).subscribe({
-        next: () => {
-          this.toast.success('User account removed.');
-          this.fetchUsers();
-          this.fetchStats();
-        },
-        error: () => this.toast.error('Failed to delete user.')
-      });
-    }
-  }
-
-  // Job Actions
-  deleteJob(jobId: string) {
-    if (confirm('Delete this job posting immediately for moderation reasons?')) {
-      this.jobService.deleteJob(jobId).subscribe({
-        next: () => {
-          this.toast.success('Job listing removed.');
-          this.fetchJobs();
-          this.fetchStats();
-        },
-        error: () => this.toast.error('Failed to remove job.')
-      });
-    }
-  }
-
-  // Company Actions
-  toggleCompanyVerification(company: Company) {
-    this.adminService.toggleCompanyVerification(company._id).subscribe({
-      next: (res) => {
-        company.isVerified = !company.isVerified;
-        this.toast.success(`Company ${company.isVerified ? 'verified' : 'unverified'}!`);
-      },
-      error: () => this.toast.error('Could not update company verification.')
-    });
-  }
-
-  // Report Actions
-  openReportModal(report: ReportItem) {
-    this.selectedReport = report;
-    this.reportActionStatus = 'Resolved';
-    this.reportActionNotes = '';
-    this.showReportModal = true;
-  }
-
-  submitReportAction() {
-    if (!this.selectedReport) return;
-
-    this.adminService.updateReportStatus(this.selectedReport._id, this.reportActionStatus, this.reportActionNotes).subscribe({
-      next: () => {
-        this.toast.success(`Report resolved with status: ${this.reportActionStatus}!`);
-        this.showReportModal = false;
-        this.fetchReports();
-        this.fetchStats();
-      },
-      error: () => this.toast.error('Failed to update report.')
-    });
+  get reportCategoryKeys(): string[] {
+    return Object.keys(this.stats.reportsByCategory || {});
   }
 }

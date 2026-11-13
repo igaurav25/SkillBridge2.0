@@ -36,26 +36,67 @@ export class AdminService {
     return this.http.delete<ApiResponse>(`${this.API_URL}/users/${id}`);
   }
 
-  getAllJobs(paramsObj: { status?: string; reportedOnly?: boolean; page?: number } = {}): Observable<ApiResponse<any[]>> {
+  getAllJobs(paramsObj: { status?: string; reportedOnly?: boolean; search?: string; page?: number } = {}): Observable<ApiResponse<any[]>> {
     let params = new HttpParams();
     if (paramsObj.status) params = params.set('status', paramsObj.status);
     if (paramsObj.reportedOnly) params = params.set('reportedOnly', 'true');
+    if (paramsObj.search) params = params.set('search', paramsObj.search);
     if (paramsObj.page) params = params.set('page', paramsObj.page.toString());
     return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/jobs`, { params });
+  }
+
+  updateJobStatus(id: string, data: { status?: string; isFeatured?: boolean; isReported?: boolean }): Observable<ApiResponse<any>> {
+    return this.http.put<ApiResponse<any>>(`${this.API_URL}/jobs/${id}/status`, data);
+  }
+
+  deleteJob(id: string): Observable<ApiResponse<any>> {
+    return this.http.delete<ApiResponse<any>>(`${this.API_URL}/jobs/${id}`);
+  }
+
+  getAdminCompanies(paramsObj: { search?: string; isVerified?: string; page?: number } = {}): Observable<ApiResponse<any[]>> {
+    let params = new HttpParams();
+    if (paramsObj.search) params = params.set('search', paramsObj.search);
+    if (paramsObj.isVerified !== undefined && paramsObj.isVerified !== 'all') {
+      params = params.set('isVerified', paramsObj.isVerified);
+    }
+    if (paramsObj.page) params = params.set('page', paramsObj.page.toString());
+    return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/companies`, { params });
   }
 
   toggleCompanyVerification(companyId: string): Observable<ApiResponse> {
     return this.http.put<ApiResponse>(`${this.API_URL}/companies/${companyId}/verify`, {});
   }
 
-  getReports(status?: string): Observable<ApiResponse<ReportItem[]>> {
+  getReports(status?: string, targetType?: string): Observable<ApiResponse<ReportItem[]>> {
     let params = new HttpParams();
-    if (status) params = params.set('status', status);
+    if (status && status !== 'all') params = params.set('status', status);
+    if (targetType && targetType !== 'all') params = params.set('targetType', targetType);
     return this.http.get<ApiResponse<ReportItem[]>>(`${this.API_URL}/reports`, { params });
   }
 
   updateReportStatus(id: string, status: string, adminNotes?: string): Observable<ApiResponse> {
     return this.http.put<ApiResponse>(`${this.API_URL}/reports/${id}/status`, { status, adminNotes });
+  }
+
+  actionReport(id: string, data: { action: string; adminNotes?: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/reports/${id}/action`, data);
+  }
+
+  getApplications(paramsObj: { status?: string; search?: string; page?: number } = {}): Observable<ApiResponse<any[]>> {
+    let params = new HttpParams();
+    if (paramsObj.status && paramsObj.status !== 'all') params = params.set('status', paramsObj.status);
+    if (paramsObj.search) params = params.set('search', paramsObj.search);
+    if (paramsObj.page) params = params.set('page', paramsObj.page.toString());
+    return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/applications`, { params });
+  }
+
+  getAuditLogs(paramsObj: { action?: string; targetType?: string; search?: string; page?: number } = {}): Observable<ApiResponse<any[]>> {
+    let params = new HttpParams();
+    if (paramsObj.action && paramsObj.action !== 'all') params = params.set('action', paramsObj.action);
+    if (paramsObj.targetType && paramsObj.targetType !== 'all') params = params.set('targetType', paramsObj.targetType);
+    if (paramsObj.search) params = params.set('search', paramsObj.search);
+    if (paramsObj.page) params = params.set('page', paramsObj.page.toString());
+    return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/audit-logs`, { params });
   }
 
   getProfile(): Observable<ApiResponse<any>> {

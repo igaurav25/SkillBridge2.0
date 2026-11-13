@@ -78,7 +78,10 @@ const ROLE_ROUTES = {
     '/admin/dashboard',
     '/admin/users',
     '/admin/jobs',
+    '/admin/companies',
     '/admin/reports',
+    '/admin/applications',
+    '/admin/audit',
   ],
 };
 

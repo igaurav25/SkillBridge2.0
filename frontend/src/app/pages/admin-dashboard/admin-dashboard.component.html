@@ -3,213 +3,462 @@
     <!-- Top Header -->
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
       <div>
-        <div class="flex items-center gap-2 mb-1">
+        <div class="flex items-center gap-2 mb-1 flex-wrap">
           <span class="badge badge-danger text-xs font-bold">PLATFORM ADMINISTRATION</span>
-          <span class="text-xs font-semibold text-secondary">• System Governance</span>
+          <span class="text-xs font-semibold text-secondary">• System Governance & Compliance</span>
         </div>
-        <h1 class="text-3xl font-bold">Executive Control & Moderation</h1>
-        <p class="text-sm text-secondary">Monitor platform adoption, audit reported postings, verify corporate partners, and maintain system integrity.</p>
+        <h1 class="text-3xl font-bold tracking-tight">Executive Control Center</h1>
+        <p class="text-sm text-secondary mt-1 max-w-2xl">
+          Real-time platform adoption telemetry, automated fraud flags, corporate partner verification, job marketplace moderation, and administrative audit trails.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 self-stretch md:self-auto">
+        <button
+          type="button"
+          class="btn btn-outline btn-sm flex-1 md:flex-none flex items-center justify-center gap-1.5"
+          (click)="loadAll()"
+          title="Refresh platform datasets"
+        >
+          <span>🔄</span> Refresh Telemetry
+        </button>
       </div>
     </div>
 
     <!-- Top KPI Stat Cards -->
     <div class="stats-grid-7 mb-8">
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Total Users</span>
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('users')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Total Users</span>
         <div class="text-2xl font-bold text-primary mt-1">{{ stats.totalUsers || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">{{ stats.totalStudents || 0 }} Students • {{ stats.totalRecruiters || 0 }} Recruiters</div>
       </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Students</span>
-        <div class="text-2xl font-bold text-primary mt-1">{{ stats.totalStudents || 0 }}</div>
-      </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Recruiters</span>
-        <div class="text-2xl font-bold text-accent mt-1">{{ stats.totalRecruiters || 0 }}</div>
-      </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Companies</span>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('companies')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Companies</span>
         <div class="text-2xl font-bold text-accent mt-1">{{ stats.totalCompanies || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">{{ stats.verifiedCompanies || 0 }} Verified • {{ unverifiedCompaniesCount }} Pending</div>
       </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">All Jobs</span>
-        <div class="text-2xl font-bold text-primary mt-1">{{ stats.totalJobs || 0 }}</div>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('jobs')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Live Jobs</span>
+        <div class="text-2xl font-bold text-primary mt-1">{{ stats.activeJobs || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">{{ stats.totalJobs || 0 }} Total Listings</div>
       </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Applications</span>
-        <div class="text-2xl font-bold text-success mt-1">{{ stats.totalApplications || 0 }}</div>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('applications')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Applications</span>
+        <div class="text-2xl font-bold text-emerald mt-1">{{ stats.totalApplications || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">Platform-wide Pipeline</div>
       </div>
-      <div class="sb-card p-4 stat-card">
-        <span class="text-xs font-semibold text-secondary uppercase">Reports</span>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('reports')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Pending Reports</span>
         <div class="text-2xl font-bold text-danger mt-1">{{ stats.pendingReports || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">Awaiting Investigation</div>
+      </div>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('audit')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">Audit Logs</span>
+        <div class="text-2xl font-bold text-secondary mt-1">{{ auditLogs.length || stats.recentAuditLogs?.length || 0 }}</div>
+        <div class="text-[11px] text-muted mt-1">Security & Mod Events</div>
+      </div>
+
+      <div class="sb-card p-4 stat-card cursor-pointer" (click)="switchTab('ml_monitoring')">
+        <span class="text-xs font-semibold text-secondary uppercase tracking-wider">AI Engines</span>
+        <div class="text-2xl font-bold text-cyan mt-1">4 Models</div>
+        <div class="text-[11px] text-emerald mt-1">● 100% Operational</div>
       </div>
     </div>
 
     <!-- Navigation Tabs -->
-    <div class="admin-nav-tabs mb-6 flex items-center gap-2 border-b border-border pb-2 overflow-x-auto">
+    <div class="admin-nav-tabs mb-6 flex items-center gap-1.5 border-b border-border pb-2 overflow-x-auto" role="tablist">
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'overview'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'overview'"
-        (click)="activeTab = 'overview'"
+        (click)="switchTab('overview')"
       >
-        📊 Platform Overview
+        📊 Analytics & Overview
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'users'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'users'"
-        (click)="activeTab = 'users'"
+        (click)="switchTab('users')"
       >
-        👥 User Management ({{ users.length }})
+        👥 Users ({{ users.length }})
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'jobs'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'jobs'"
-        (click)="activeTab = 'jobs'"
+        (click)="switchTab('jobs')"
       >
-        💼 Job Audit & Listings ({{ jobs.length }})
+        💼 Jobs ({{ jobs.length }})
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'companies'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'companies'"
-        (click)="activeTab = 'companies'"
+        (click)="switchTab('companies')"
       >
-        🏢 Company Verification ({{ companies.length }})
+        🏢 Companies ({{ companies.length }})
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'reports'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'reports'"
-        (click)="activeTab = 'reports'"
+        (click)="switchTab('reports')"
       >
-        🚩 Flagged Content & Reports ({{ reports.length }})
+        🚩 Scam Reports
+        <span *ngIf="pendingReportsCount > 0" class="tab-badge-danger">{{ pendingReportsCount }}</span>
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'applications'"
+        class="nav-tab-btn"
+        [class.active]="activeTab === 'applications'"
+        (click)="switchTab('applications')"
+      >
+        📋 Applications ({{ stats.totalApplications || applications.length }})
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'audit'"
+        class="nav-tab-btn"
+        [class.active]="activeTab === 'audit'"
+        (click)="switchTab('audit')"
+      >
+        📜 Audit Log
+      </button>
+
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'ml_monitoring'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'ml_monitoring'"
-        (click)="activeTab = 'ml_monitoring'; loadMLMonitoring()"
+        (click)="switchTab('ml_monitoring')"
       >
-        🤖 ML & AI Engine Monitoring
+        🤖 ML Telemetry
       </button>
+
       <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'settings'"
         class="nav-tab-btn"
         [class.active]="activeTab === 'settings'"
-        (click)="activeTab = 'settings'"
+        (click)="switchTab('settings')"
       >
-        ⚙️ Admin Profile & Security
+        ⚙️ Admin Security
       </button>
     </div>
 
-    <!-- TAB 1: OVERVIEW -->
+    <!-- ======================================================== -->
+    <!-- TAB 1: OVERVIEW & ANALYTICS CHARTS                      -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'overview'" class="flex flex-col gap-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Growth & Health Card -->
-        <div class="sb-card p-6">
-          <h3 class="font-bold text-lg mb-4">Platform Infrastructure Status</h3>
-          <div class="flex flex-col gap-4">
-            <div class="flex items-center justify-between p-3 bg-surface-hover rounded-md">
-              <div class="flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-success inline-block"></span>
-                <span class="text-sm font-semibold">Node.js Express REST API</span>
-              </div>
-              <span class="badge badge-success text-xs">Operational (Port 5000)</span>
+      <!-- Row 1: 7-Day User Growth Trend & Role Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 7-Day Growth Trend Chart -->
+        <div class="sb-card p-6 lg:col-span-2">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="font-bold text-lg">Platform User Registration Activity</h3>
+              <p class="text-xs text-secondary mt-0.5">New verified accounts registered across the last 7 days.</p>
             </div>
+            <span class="badge badge-primary text-xs">7-Day Trajectory</span>
+          </div>
 
-            <div class="flex items-center justify-between p-3 bg-surface-hover rounded-md">
-              <div class="flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-success inline-block"></span>
-                <span class="text-sm font-semibold">MongoDB Database</span>
+          <!-- Bar Chart Container -->
+          <div class="user-trend-chart pt-4 pb-2">
+            <div class="trend-bars-wrapper flex items-end justify-between gap-3 h-44 px-2 border-b border-border">
+              <div
+                *ngFor="let item of stats.userTrend"
+                class="flex-1 flex flex-col items-center h-full justify-end group"
+              >
+                <!-- Tooltip on hover -->
+                <div class="text-[11px] font-bold text-primary mb-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                  {{ item.count }}
+                </div>
+                <!-- Bar -->
+                <div
+                  class="trend-bar w-full max-w-[36px] rounded-t-md transition-all duration-300 group-hover:brightness-125"
+                  [style.height.%]="getUserTrendHeight(item.count)"
+                  [title]="item.label + ': ' + item.count + ' signups'"
+                ></div>
+                <!-- Date Label -->
+                <span class="text-[10px] text-secondary mt-2 text-center truncate w-full block">
+                  {{ item.label.split(',')[0] }}
+                </span>
               </div>
-              <span class="badge badge-success text-xs">Connected & Indexed</span>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-surface-hover rounded-md">
-              <div class="flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-accent inline-block"></span>
-                <span class="text-sm font-semibold">AI Intelligence Engine</span>
-              </div>
-              <span class="badge badge-accent text-xs">Smart AI & Heuristics</span>
-            </div>
-
-            <div class="flex items-center justify-between p-3 bg-surface-hover rounded-md">
-              <div class="flex items-center gap-3">
-                <span class="w-3 h-3 rounded-full bg-primary inline-block"></span>
-                <span class="text-sm font-semibold">Angular 19 Frontend Client</span>
-              </div>
-              <span class="badge badge-primary text-xs">Active & Responsive</span>
             </div>
           </div>
         </div>
 
-        <!-- System Governance Summary -->
+        <!-- Role Composition Card -->
         <div class="sb-card p-6 flex flex-col justify-between">
           <div>
-            <h3 class="font-bold text-lg mb-3">Moderation Alert Center</h3>
-            <p class="text-xs text-secondary mb-4 leading-relaxed">
-              SkillBridge automatically flags suspicious postings, high rejection rates, and student reports for manual review.
-            </p>
+            <h3 class="font-bold text-lg mb-1">Ecosystem Role Balance</h3>
+            <p class="text-xs text-secondary mb-4">Proportion of student talent vs corporate hiring partners.</p>
 
-            <div class="p-4 rounded-md border border-border bg-surface flex items-center justify-between mb-4">
+            <div class="flex flex-col gap-4">
+              <!-- Students -->
               <div>
-                <div class="text-sm font-bold">Unresolved Flags / Reports</div>
-                <div class="text-xs text-secondary">Student and recruiter submitted safety flags</div>
+                <div class="flex items-center justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+                    Students & Jobseekers
+                  </span>
+                  <span>{{ stats.totalStudents || 0 }} ({{ getRolePercent(stats.totalStudents) }}%)</span>
+                </div>
+                <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                  <div class="bg-primary h-full rounded-full transition-all" [style.width.%]="getRolePercent(stats.totalStudents)"></div>
+                </div>
               </div>
-              <span class="text-xl font-extrabold text-danger">{{ stats.pendingReports || 0 }}</span>
-            </div>
 
-            <div class="p-4 rounded-md border border-border bg-surface flex items-center justify-between">
+              <!-- Recruiters -->
               <div>
-                <div class="text-sm font-bold">Unverified Enterprises</div>
-                <div class="text-xs text-secondary">Awaiting business authenticity confirmation</div>
+                <div class="flex items-center justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-accent inline-block"></span>
+                    Talent Recruiters
+                  </span>
+                  <span>{{ stats.totalRecruiters || 0 }} ({{ getRolePercent(stats.totalRecruiters) }}%)</span>
+                </div>
+                <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                  <div class="bg-accent h-full rounded-full transition-all" [style.width.%]="getRolePercent(stats.totalRecruiters)"></div>
+                </div>
               </div>
-              <span class="text-xl font-extrabold text-warning">
-                {{ unverifiedCompaniesCount }}
-              </span>
+
+              <!-- Admins -->
+              <div>
+                <div class="flex items-center justify-between text-xs font-semibold mb-1">
+                  <span class="flex items-center gap-1.5">
+                    <span class="w-2.5 h-2.5 rounded-full bg-danger inline-block"></span>
+                    Governance Administrators
+                  </span>
+                  <span>{{ (stats.totalUsers - (stats.totalStudents + stats.totalRecruiters)) || 1 }}</span>
+                </div>
+                <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                  <div class="bg-danger h-full rounded-full transition-all" [style.width.%]="getRolePercent(stats.totalUsers - (stats.totalStudents + stats.totalRecruiters))"></div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-border flex gap-3">
-            <button class="btn btn-outline btn-sm flex-1" (click)="activeTab = 'reports'">Review Flags</button>
-            <button class="btn btn-primary btn-sm flex-1" (click)="activeTab = 'companies'">Audit Companies</button>
+          <div class="pt-4 border-t border-border mt-4">
+            <button type="button" class="btn btn-outline btn-sm w-full" (click)="switchTab('users')">
+              Manage Users & Permissions →
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Application Funnel & Job Work Type Distribution -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Application Funnel Stages -->
+        <div class="sb-card p-6">
+          <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div>
+              <h3 class="font-bold text-lg">Platform Application Funnel</h3>
+              <p class="text-xs text-secondary mt-0.5">Pipeline progression across all candidate submissions.</p>
+            </div>
+            <span class="badge badge-emerald text-xs">{{ stats.totalApplications || 0 }} Submissions</span>
+          </div>
+
+          <div class="flex flex-col gap-3 pt-2">
+            <!-- Applied -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>1. Applied / Ingested</span>
+                <span class="font-bold">{{ stats.funnelStages?.Applied || 0 }} ({{ getFunnelPercent('Applied') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-primary h-full rounded-full" [style.width.%]="getFunnelPercent('Applied')"></div>
+              </div>
+            </div>
+
+            <!-- Under Review -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>2. Under Review</span>
+                <span class="font-bold">{{ stats.funnelStages?.['Under Review'] || 0 }} ({{ getFunnelPercent('Under Review') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-accent h-full rounded-full" [style.width.%]="getFunnelPercent('Under Review')"></div>
+              </div>
+            </div>
+
+            <!-- Shortlisted -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>3. Shortlisted</span>
+                <span class="font-bold">{{ stats.funnelStages?.Shortlisted || 0 }} ({{ getFunnelPercent('Shortlisted') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-cyan h-full rounded-full" [style.width.%]="getFunnelPercent('Shortlisted')"></div>
+              </div>
+            </div>
+
+            <!-- Interview -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>4. Scheduled Interview</span>
+                <span class="font-bold">{{ stats.funnelStages?.Interview || 0 }} ({{ getFunnelPercent('Interview') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-warning h-full rounded-full" [style.width.%]="getFunnelPercent('Interview')"></div>
+              </div>
+            </div>
+
+            <!-- Selected -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>5. Selected / Hired</span>
+                <span class="font-bold text-emerald">{{ stats.funnelStages?.Selected || 0 }} ({{ getFunnelPercent('Selected') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-emerald h-full rounded-full" [style.width.%]="getFunnelPercent('Selected')"></div>
+              </div>
+            </div>
+
+            <!-- Rejected -->
+            <div class="funnel-stage-row">
+              <div class="flex items-center justify-between text-xs font-medium mb-1">
+                <span>6. Not Selected</span>
+                <span class="font-bold text-secondary">{{ stats.funnelStages?.Rejected || 0 }} ({{ getFunnelPercent('Rejected') }}%)</span>
+              </div>
+              <div class="w-full bg-surface-hover h-2 rounded-full overflow-hidden">
+                <div class="bg-secondary h-full rounded-full" [style.width.%]="getFunnelPercent('Rejected')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Work Types & Marketplace Distribution -->
+        <div class="sb-card p-6 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-lg">Job Workplace Modality</h3>
+              <span class="badge badge-outline text-xs">{{ stats.totalJobs || 0 }} Postings</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              <div class="p-3 bg-surface-hover rounded-lg text-center border border-border">
+                <div class="text-xs text-secondary mb-1">Remote</div>
+                <div class="text-xl font-bold text-primary">{{ stats.workTypes?.remote || 0 }}</div>
+              </div>
+              <div class="p-3 bg-surface-hover rounded-lg text-center border border-border">
+                <div class="text-xs text-secondary mb-1">Hybrid</div>
+                <div class="text-xl font-bold text-accent">{{ stats.workTypes?.hybrid || 0 }}</div>
+              </div>
+              <div class="p-3 bg-surface-hover rounded-lg text-center border border-border">
+                <div class="text-xs text-secondary mb-1">On-Site</div>
+                <div class="text-xl font-bold text-foreground">{{ stats.workTypes?.onsite || 0 }}</div>
+              </div>
+            </div>
+
+            <!-- Moderation Warning Box -->
+            <div class="p-4 bg-danger/10 border border-danger/30 rounded-lg flex items-start gap-3">
+              <span class="text-xl shrink-0">🛡️</span>
+              <div class="text-xs">
+                <div class="font-bold text-danger mb-0.5">Scam & Compliance Shield Active</div>
+                <p class="text-secondary leading-relaxed">
+                  Postings flagged with suspicious compensation or fee requirements are quarantined. SkillBridge adheres strictly to zero-fee student placement.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-border mt-4 flex gap-2">
+            <button type="button" class="btn btn-outline btn-sm flex-1" (click)="switchTab('jobs')">Moderate Jobs</button>
+            <button type="button" class="btn btn-primary btn-sm flex-1" (click)="switchTab('reports')">Review Reports</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: USER MANAGEMENT -->
+    <!-- ======================================================== -->
+    <!-- TAB 2: USER MANAGEMENT & MODERATION                     -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'users'" class="flex flex-col gap-6">
-      <div class="sb-card p-4 flex items-center gap-4 flex-wrap justify-between">
-        <div class="flex items-center gap-4 flex-wrap flex-1">
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center gap-3 flex-wrap justify-between">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
           <input
             type="text"
-            class="form-control max-w-xs"
-            placeholder="Search user by name or email..."
+            class="form-control max-w-xs text-sm"
+            placeholder="Search name, email, or phone..."
+            aria-label="Search users by name, email, or phone"
             [(ngModel)]="userSearch"
             (keyup.enter)="fetchUsers()"
           />
-          <select aria-label="Filter users by role" class="select-control" [(ngModel)]="userRoleFilter" (change)="fetchUsers()">
+
+          <select
+            aria-label="Filter users by role"
+            class="select-control"
+            [(ngModel)]="userRoleFilter"
+            (change)="fetchUsers()"
+          >
             <option value="all">All Roles</option>
             <option value="student">Students</option>
             <option value="recruiter">Recruiters</option>
             <option value="admin">Administrators</option>
           </select>
+
+          <select
+            aria-label="Filter users by account status"
+            class="select-control"
+            [(ngModel)]="userStatusFilter"
+            (change)="fetchUsers()"
+          >
+            <option value="all">All Statuses</option>
+            <option value="active">Active Only</option>
+            <option value="suspended">Suspended Only</option>
+          </select>
         </div>
-        <button class="btn btn-primary btn-sm" (click)="fetchUsers()">Filter Users</button>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchUsers()">
+          Filter Users
+        </button>
       </div>
 
+      <!-- Users Table -->
       <div class="sb-card p-6">
         <div class="table-container overflow-x-auto">
           <table class="sb-table w-full">
             <thead>
               <tr>
-                <th>User & Account</th>
-                <th>Contact & Mobile</th>
-                <th>Auth & Password</th>
-                <th>Target Role / Enterprise</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th scope="col">User & Account</th>
+                <th scope="col">Contact & Auth</th>
+                <th scope="col">Target Role / Enterprise</th>
+                <th scope="col">Status</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let u of users" class="hover:bg-surface-hover transition-colors">
-                <!-- User & Account Details -->
+                <!-- User Column -->
                 <td>
                   <div class="flex items-center gap-3">
                     <img
@@ -224,7 +473,7 @@
                           {{ u.role | uppercase }}
                         </span>
                       </div>
-                      <div class="text-xs font-mono text-primary flex items-center gap-1 mt-0.5" title="Login Gmail ID">
+                      <div class="text-xs font-mono text-primary flex items-center gap-1 mt-0.5">
                         <span>✉️</span> {{ u.loginEmail || u.email }}
                       </div>
                       <div class="text-[11px] text-secondary mt-0.5">
@@ -234,22 +483,13 @@
                   </div>
                 </td>
 
-                <!-- Contact & Mobile -->
+                <!-- Contact & Auth -->
                 <td>
-                  <div class="flex flex-col gap-1">
-                    <div class="text-xs font-semibold flex items-center gap-1">
-                      <span class="text-emerald-500">📞</span>
-                      <span>{{ u.loginPhone || u.phone || 'Not specified' }}</span>
+                  <div class="flex flex-col gap-1 text-xs">
+                    <div class="font-semibold flex items-center gap-1">
+                      <span class="text-emerald">📞</span>
+                      <span>{{ u.loginPhone || u.phone || 'Not provided' }}</span>
                     </div>
-                    <div class="text-[11px] text-secondary">
-                      Provider: <span class="font-medium text-foreground">{{ u.authProvider || 'Direct Email' }}</span>
-                    </div>
-                  </div>
-                </td>
-
-                <!-- Auth & Password -->
-                <td>
-                  <div class="flex flex-col gap-1 max-w-[210px]">
                     <span class="badge badge-success text-[10px] w-fit">
                       {{ u.passwordStatus || 'Bcrypt Protected' }}
                     </span>
@@ -258,16 +498,14 @@
 
                 <!-- Target Role / Enterprise -->
                 <td>
-                  <!-- For Students / Candidates -->
-                  <div *ngIf="u.role === 'student'" class="flex flex-col gap-1">
-                    <div class="text-xs font-bold text-foreground">
+                  <div *ngIf="u.role === 'student'" class="flex flex-col gap-0.5 text-xs">
+                    <div class="font-bold text-foreground">
                       🎯 Seeking: <span class="text-primary">{{ u.preferredRole || 'Not specified' }}</span>
                     </div>
-                    <div class="text-[11px] text-secondary">
-                      Stream: <span class="font-medium">{{ u.preferredStream || u.education || 'B.Tech / General' }}</span>
-                      <span *ngIf="u.expectedSalary"> • Pay: {{ u.expectedSalary }}</span>
+                    <div class="text-secondary text-[11px]">
+                      {{ u.preferredStream || u.education || 'General' }}
                     </div>
-                    <div class="flex items-center gap-2 mt-1 flex-wrap">
+                    <div class="flex items-center gap-2 mt-0.5">
                       <span *ngIf="u.resumeScore" class="badge badge-accent text-[10px]">
                         {{ u.resumeScore }}% ATS
                       </span>
@@ -277,25 +515,20 @@
                     </div>
                   </div>
 
-                  <!-- For Recruiters -->
-                  <div *ngIf="u.role === 'recruiter'" class="flex flex-col gap-1">
-                    <div class="text-xs font-bold text-foreground">
+                  <div *ngIf="u.role === 'recruiter'" class="flex flex-col gap-0.5 text-xs">
+                    <div class="font-bold text-foreground">
                       🏢 {{ u.companyName || 'Corporate Recruiter' }}
                     </div>
-                    <div class="text-[11px] text-secondary">
-                      {{ u.industry || 'IT & Services' }} • {{ u.companySize || 'Enterprise' }}
+                    <div class="text-secondary text-[11px]">
+                      {{ u.industry || 'IT & Services' }}
                     </div>
-                    <div class="flex items-center gap-2 mt-1 flex-wrap">
+                    <div class="flex items-center gap-2 mt-0.5">
                       <span class="badge text-[10px]" [class.badge-success]="u.isVerified" [class.badge-warning]="!u.isVerified">
-                        {{ u.isVerified ? 'Verified Org' : 'Pending Verification' }}
-                      </span>
-                      <span class="text-[11px] text-secondary">
-                        {{ u.totalJobsPosted || 0 }} Jobs Posted
+                        {{ u.isVerified ? 'Verified Org' : 'Pending' }}
                       </span>
                     </div>
                   </div>
 
-                  <!-- For Admin -->
                   <div *ngIf="u.role === 'admin'" class="text-xs text-secondary italic">
                     Platform Super Administrator
                   </div>
@@ -312,84 +545,189 @@
                 <td>
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <button
+                      type="button"
                       class="btn btn-outline btn-xs"
                       title="Inspect Full Candidate/Recruiter Dossier"
+                      aria-label="Inspect user dossier"
                       (click)="openUserDetails(u)"
                     >
                       🔍 Dossier
                     </button>
+
                     <button
+                      type="button"
                       class="btn btn-xs"
                       [class.btn-warning]="u.status === 'active'"
                       [class.btn-success]="u.status === 'suspended'"
+                      [attr.aria-label]="u.status === 'active' ? 'Suspend user account' : 'Activate user account'"
                       (click)="toggleUserStatus(u)"
                     >
                       {{ u.status === 'active' ? 'Suspend' : 'Activate' }}
                     </button>
-                    <button class="btn btn-danger btn-xs" (click)="deleteUser(u._id)">
+
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-xs"
+                      aria-label="Delete user account"
+                      (click)="confirmDeleteUser(u)"
+                    >
                       Delete
                     </button>
                   </div>
                 </td>
               </tr>
+
+              <tr *ngIf="users.length === 0 && !isLoadingUsers">
+                <td colspan="5" class="text-center py-8 text-secondary text-sm">
+                  No users matched the search and filter criteria.
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- TAB 3: JOB AUDIT -->
+    <!-- ======================================================== -->
+    <!-- TAB 3: JOB MODERATION & MARKETPLACE                      -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'jobs'" class="flex flex-col gap-6">
-      <div class="sb-card p-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <select aria-label="Filter jobs by status" class="select-control" [(ngModel)]="jobFilter" (change)="fetchJobs()">
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
+          <input
+            type="text"
+            class="form-control max-w-xs text-sm"
+            placeholder="Search job title or company..."
+            aria-label="Search jobs by title or company"
+            [(ngModel)]="jobSearch"
+            (keyup.enter)="fetchJobs()"
+          />
+
+          <select
+            aria-label="Filter jobs by status"
+            class="select-control"
+            [(ngModel)]="jobStatusFilter"
+            (change)="fetchJobs()"
+          >
             <option value="all">All Postings</option>
             <option value="active">Active Only</option>
             <option value="closed">Closed / Inactive</option>
+            <option value="draft">Drafts</option>
           </select>
+
+          <label class="flex items-center gap-2 text-xs font-semibold cursor-pointer">
+            <input
+              type="checkbox"
+              [(ngModel)]="jobReportedOnly"
+              (change)="fetchJobs()"
+              class="rounded border-border"
+              aria-label="Show reported jobs only"
+            />
+            <span>Reported Postings Only</span>
+          </label>
         </div>
-        <span class="text-xs text-secondary">{{ jobs.length }} Postings Recorded</span>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchJobs()">
+          Filter Jobs
+        </button>
       </div>
 
+      <!-- Jobs Table -->
       <div class="sb-card p-6">
-        <div class="table-container">
-          <table class="sb-table">
+        <div class="table-container overflow-x-auto">
+          <table class="sb-table w-full">
             <thead>
               <tr>
-                <th>Title & Company</th>
-                <th>Type & Mode</th>
-                <th>Salary</th>
-                <th>Status</th>
-                <th>Reports</th>
-                <th>Actions</th>
+                <th scope="col">Title & Enterprise</th>
+                <th scope="col">Workplace & Type</th>
+                <th scope="col">Compensation</th>
+                <th scope="col">Status & Badge</th>
+                <th scope="col">Flags</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let j of jobs">
+              <tr *ngFor="let j of jobs" class="hover:bg-surface-hover transition-colors">
                 <td>
                   <div class="font-bold text-sm">{{ j.title }}</div>
-                  <div class="text-xs text-secondary">{{ j.company?.name || 'Company' }} • 📍 {{ j.location }}</div>
-                </td>
-                <td class="text-xs font-semibold">{{ j.type | uppercase }} ({{ j.workMode }})</td>
-                <td class="text-xs font-bold text-primary">
-                  ${{ j.salary?.min | number }} - ${{ j.salary?.max | number }}
-                </td>
-                <td>
-                  <span class="badge text-xs" [class.badge-success]="j.status === 'active'" [class.badge-secondary]="j.status !== 'active'">
-                    {{ j.status }}
-                  </span>
-                </td>
-                <td>
-                  <span *ngIf="j.reportCount > 0" class="badge badge-danger text-xs font-bold">
-                    🚩 {{ j.reportCount }} Flags
-                  </span>
-                  <span *ngIf="!j.reportCount" class="text-xs text-secondary">Clean</span>
-                </td>
-                <td>
-                  <div class="flex items-center gap-2">
-                    <a [routerLink]="['/jobs', j._id]" target="_blank" class="btn btn-outline btn-xs">View</a>
-                    <button class="btn btn-danger btn-xs" (click)="deleteJob(j._id)">Remove</button>
+                  <div class="text-xs text-secondary mt-0.5">
+                    {{ j.companyName || j.company?.name || 'Company' }} • 📍 {{ j.location }}
                   </div>
+                </td>
+
+                <td class="text-xs font-medium">
+                  <span class="capitalize">{{ j.jobType || j.type || 'Full-time' }}</span>
+                  <span class="text-secondary block capitalize mt-0.5">{{ j.workType || j.workMode || 'Remote' }}</span>
+                </td>
+
+                <td class="text-xs font-bold text-emerald">
+                  <span *ngIf="j.salary?.isDisclosed !== false && j.salary?.min">
+                    ${{ j.salary?.min | number }} - ${{ j.salary?.max | number }}
+                  </span>
+                  <span *ngIf="j.salary?.isDisclosed === false || !j.salary?.min" class="text-secondary font-normal">
+                    Undisclosed / Competitive
+                  </span>
+                </td>
+
+                <td>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <span class="badge text-xs" [class.badge-success]="j.status === 'active'" [class.badge-secondary]="j.status !== 'active'">
+                      {{ j.status }}
+                    </span>
+                    <span *ngIf="j.isFeatured" class="badge badge-accent text-[10px]">
+                      ★ Featured
+                    </span>
+                  </div>
+                </td>
+
+                <td>
+                  <span *ngIf="j.isReported || j.reportedCount > 0" class="badge badge-danger text-xs font-bold">
+                    🚩 Flagged
+                  </span>
+                  <span *ngIf="!j.isReported && (!j.reportedCount || j.reportedCount === 0)" class="text-xs text-secondary">
+                    Clean
+                  </span>
+                </td>
+
+                <td>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-xs"
+                      [title]="j.isFeatured ? 'Remove Featured Badge' : 'Feature on Marketplace'"
+                      [attr.aria-label]="j.isFeatured ? 'Unfeature job' : 'Feature job'"
+                      (click)="toggleJobFeatured(j)"
+                    >
+                      {{ j.isFeatured ? '★ Unfeature' : '☆ Feature' }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-xs"
+                      [class.btn-outline]="j.status === 'active'"
+                      [class.btn-success]="j.status !== 'active'"
+                      [attr.aria-label]="j.status === 'active' ? 'Close job' : 'Reactivate job'"
+                      (click)="toggleJobStatus(j)"
+                    >
+                      {{ j.status === 'active' ? 'Close' : 'Reopen' }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-xs"
+                      aria-label="Delete job listing"
+                      (click)="confirmDeleteJob(j)"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngIf="jobs.length === 0 && !isLoadingJobs">
+                <td colspan="6" class="text-center py-8 text-secondary text-sm">
+                  No job postings matched the filter criteria.
                 </td>
               </tr>
             </tbody>
@@ -398,42 +736,114 @@
       </div>
     </div>
 
-    <!-- TAB 4: COMPANY VERIFICATION -->
+    <!-- ======================================================== -->
+    <!-- TAB 4: COMPANY VERIFICATION                             -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'companies'" class="flex flex-col gap-6">
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
+          <input
+            type="text"
+            class="form-control max-w-xs text-sm"
+            placeholder="Search company name, industry, location..."
+            aria-label="Search companies by name or industry"
+            [(ngModel)]="companySearch"
+            (keyup.enter)="fetchCompanies()"
+          />
+
+          <select
+            aria-label="Filter companies by verification status"
+            class="select-control"
+            [(ngModel)]="companyVerificationFilter"
+            (change)="fetchCompanies()"
+          >
+            <option value="all">All Verification Statuses</option>
+            <option value="true">Verified Partners Only</option>
+            <option value="false">Pending Verification Only</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchCompanies()">
+          Filter Companies
+        </button>
+      </div>
+
+      <!-- Companies Table -->
       <div class="sb-card p-6">
-        <div class="table-container">
-          <table class="sb-table">
+        <div class="table-container overflow-x-auto">
+          <table class="sb-table w-full">
             <thead>
               <tr>
-                <th>Enterprise Name</th>
-                <th>Industry</th>
-                <th>Size & Location</th>
-                <th>Verified Status</th>
-                <th>Action</th>
+                <th scope="col">Enterprise & Website</th>
+                <th scope="col">Industry & Size</th>
+                <th scope="col">Jobs Posted</th>
+                <th scope="col">Verification State</th>
+                <th scope="col">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let c of companies">
+              <tr *ngFor="let c of companies" class="hover:bg-surface-hover transition-colors">
                 <td>
                   <div class="font-bold text-sm">{{ c.name }}</div>
-                  <a *ngIf="c.website" [href]="c.website" target="_blank" class="text-xs text-primary underline">{{ c.website }}</a>
+                  <a
+                    *ngIf="c.website"
+                    [href]="c.website"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-xs text-primary underline truncate block max-w-xs mt-0.5"
+                  >
+                    {{ c.website }} ↗
+                  </a>
+                  <span *ngIf="!c.website" class="text-xs text-secondary">No website listed</span>
                 </td>
-                <td class="text-xs font-medium">{{ c.industry }}</td>
-                <td class="text-xs text-secondary">{{ c.companySize }} • {{ c.location }}</td>
+
+                <td class="text-xs">
+                  <div class="font-semibold text-foreground">{{ c.industry || 'Technology' }}</div>
+                  <div class="text-secondary text-[11px] mt-0.5">
+                    {{ c.companySize || '51-200' }} • 📍 {{ c.location || 'Global' }}
+                  </div>
+                </td>
+
+                <td class="text-xs">
+                  <span class="font-bold text-primary">{{ c.activeJobs !== undefined ? (c.activeJobs?.length || c.activeJobs || 0) : (c.totalJobs || 0) }}</span>
+                  <span class="text-secondary"> Active Listings</span>
+                </td>
+
                 <td>
                   <span class="badge text-xs" [class.badge-success]="c.isVerified" [class.badge-warning]="!c.isVerified">
                     {{ c.isVerified ? '✓ Verified Partner' : '⏳ Pending Review' }}
                   </span>
                 </td>
+
                 <td>
-                  <button
-                    class="btn btn-xs"
-                    [class.btn-outline]="c.isVerified"
-                    [class.btn-primary]="!c.isVerified"
-                    (click)="toggleCompanyVerification(c)"
-                  >
-                    {{ c.isVerified ? 'Revoke Verification' : 'Verify Enterprise' }}
-                  </button>
+                  <div class="flex items-center gap-1.5 flex-wrap">
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-xs"
+                      aria-label="Inspect enterprise details"
+                      (click)="openCompanyDetails(c)"
+                    >
+                      🔍 Inspect
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-xs"
+                      [class.btn-outline]="c.isVerified"
+                      [class.btn-primary]="!c.isVerified"
+                      [attr.aria-label]="c.isVerified ? 'Revoke verification badge' : 'Verify company partner'"
+                      (click)="toggleCompanyVerification(c)"
+                    >
+                      {{ c.isVerified ? 'Revoke Badge' : 'Verify Partner' }}
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngIf="companies.length === 0 && !isLoadingCompanies">
+                <td colspan="5" class="text-center py-8 text-secondary text-sm">
+                  No companies matched the filter criteria.
                 </td>
               </tr>
             </tbody>
@@ -442,54 +852,108 @@
       </div>
     </div>
 
-    <!-- TAB 5: REPORTS & FLAGGED CONTENT -->
+    <!-- ======================================================== -->
+    <!-- TAB 5: SCAM REPORTS & SAFETY WORKFLOW                   -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'reports'" class="flex flex-col gap-6">
-      <div class="sb-card p-4 flex items-center justify-between">
-        <select aria-label="Filter reports by status" class="select-control" [(ngModel)]="reportStatusFilter" (change)="fetchReports()">
-          <option value="all">All Report Statuses</option>
-          <option value="pending">Pending Review</option>
-          <option value="under_review">Under Investigation</option>
-          <option value="resolved">Resolved</option>
-          <option value="rejected">Dismissed / Rejected</option>
-        </select>
-        <span class="text-xs text-secondary">{{ reports.length }} Reports Logged</span>
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
+          <select
+            aria-label="Filter scam reports by status"
+            class="select-control"
+            [(ngModel)]="reportStatusFilter"
+            (change)="fetchReports()"
+          >
+            <option value="all">All Report Statuses</option>
+            <option value="pending">Pending Review</option>
+            <option value="under_review">Under Investigation</option>
+            <option value="resolved">Resolved</option>
+            <option value="rejected">Dismissed / Rejected</option>
+          </select>
+
+          <select
+            aria-label="Filter reports by target type"
+            class="select-control"
+            [(ngModel)]="reportTargetFilter"
+            (change)="fetchReports()"
+          >
+            <option value="all">All Target Types</option>
+            <option value="Job">Job Listings</option>
+            <option value="Company">Companies</option>
+            <option value="User">Users</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchReports()">
+          Filter Reports
+        </button>
       </div>
 
-      <div *ngIf="reports.length === 0" class="sb-card p-12 text-center">
-        <p class="text-sm text-secondary">No reports currently matching the filter criteria.</p>
-      </div>
-
-      <div *ngIf="reports.length > 0" class="sb-card p-6">
-        <div class="table-container">
-          <table class="sb-table">
+      <!-- Reports Table -->
+      <div class="sb-card p-6">
+        <div class="table-container overflow-x-auto">
+          <table class="sb-table w-full">
             <thead>
               <tr>
-                <th>Report Target</th>
-                <th>Reason</th>
-                <th>Details</th>
-                <th>Status</th>
-                <th>Reported On</th>
-                <th>Resolution</th>
+                <th scope="col">Report Target</th>
+                <th scope="col">Flag Reason</th>
+                <th scope="col">Student Narrative</th>
+                <th scope="col">Status</th>
+                <th scope="col">Logged On</th>
+                <th scope="col">Moderation Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let rep of reports">
+              <tr *ngFor="let rep of reports" class="hover:bg-surface-hover transition-colors">
                 <td>
-                  <span class="badge badge-secondary text-xs uppercase">{{ rep.targetType }}</span>
-                  <div class="text-xs font-bold mt-1">ID: {{ rep.targetId.substring(0, 10) }}...</div>
+                  <span class="badge badge-secondary text-[10px] uppercase font-bold">{{ rep.targetType }}</span>
+                  <div class="text-xs font-semibold text-foreground mt-1 truncate max-w-xs">
+                    {{ rep.targetTitle || ('ID: ' + rep.targetId.substring(0, 12) + '...') }}
+                  </div>
                 </td>
-                <td class="text-xs font-semibold text-danger">{{ rep.reason }}</td>
-                <td class="text-xs text-secondary max-w-xs">{{ rep.details || rep.description }}</td>
+
+                <td class="text-xs font-bold text-danger">
+                  {{ rep.reason }}
+                </td>
+
+                <td class="text-xs text-secondary max-w-sm">
+                  <p class="line-clamp-2">{{ rep.details || rep.description }}</p>
+                </td>
+
                 <td>
-                  <span class="badge text-xs" [ngClass]="'badge-' + rep.status">
+                  <span
+                    class="badge text-xs"
+                    [ngClass]="{
+                      'badge-danger': rep.status === 'Pending',
+                      'badge-warning': rep.status === 'Under Review',
+                      'badge-success': rep.status === 'Resolved',
+                      'badge-secondary': rep.status === 'Rejected'
+                    }"
+                  >
                     {{ rep.status }}
                   </span>
                 </td>
-                <td class="text-xs text-secondary">{{ rep.createdAt | date:'mediumDate' }}</td>
+
+                <td class="text-xs text-secondary whitespace-nowrap">
+                  {{ rep.createdAt | date:'mediumDate' }}
+                </td>
+
                 <td>
-                  <button class="btn btn-outline btn-xs" (click)="openReportModal(rep)">
-                    Resolve
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-xs"
+                    aria-label="Investigate and take moderation action on report"
+                    (click)="openReportModal(rep)"
+                  >
+                    ⚡ Action
                   </button>
+                </td>
+              </tr>
+
+              <tr *ngIf="reports.length === 0 && !isLoadingReports">
+                <td colspan="6" class="text-center py-8 text-secondary text-sm">
+                  No scam or safety reports matching the selected criteria.
                 </td>
               </tr>
             </tbody>
@@ -498,125 +962,323 @@
       </div>
     </div>
 
-    <!-- TAB: ML & AI ENGINE MONITORING (PART 8) -->
+    <!-- ======================================================== -->
+    <!-- TAB 6: APPLICATION MONITORING                           -->
+    <!-- ======================================================== -->
+    <div *ngIf="activeTab === 'applications'" class="flex flex-col gap-6">
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
+          <input
+            type="text"
+            class="form-control max-w-xs text-sm"
+            placeholder="Search candidate name, email, or job..."
+            aria-label="Search applications by candidate or job title"
+            [(ngModel)]="appSearch"
+            (keyup.enter)="fetchApplications()"
+          />
+
+          <select
+            aria-label="Filter applications by stage status"
+            class="select-control"
+            [(ngModel)]="appStatusFilter"
+            (change)="fetchApplications()"
+          >
+            <option value="all">All Application Stages</option>
+            <option value="Applied">Applied</option>
+            <option value="Under Review">Under Review</option>
+            <option value="Shortlisted">Shortlisted</option>
+            <option value="Interview">Interview</option>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchApplications()">
+          Filter Applications
+        </button>
+      </div>
+
+      <!-- Applications Table -->
+      <div class="sb-card p-6">
+        <div class="table-container overflow-x-auto">
+          <table class="sb-table w-full">
+            <thead>
+              <tr>
+                <th scope="col">Candidate</th>
+                <th scope="col">Target Opportunity</th>
+                <th scope="col">Stage Status</th>
+                <th scope="col">Submitted On</th>
+                <th scope="col">Resume Document</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let app of applications" class="hover:bg-surface-hover transition-colors">
+                <!-- Candidate -->
+                <td>
+                  <div class="font-bold text-sm">{{ app.candidate?.name || 'Candidate' }}</div>
+                  <div class="text-xs text-secondary mt-0.5">
+                    ✉️ {{ app.candidate?.email || 'N/A' }}
+                  </div>
+                  <div *ngIf="app.candidate?.phone" class="text-[11px] text-muted">
+                    📞 {{ app.candidate?.phone }}
+                  </div>
+                </td>
+
+                <!-- Job -->
+                <td>
+                  <div class="font-semibold text-sm">{{ app.job?.title || 'Job Opportunity' }}</div>
+                  <div class="text-xs text-primary font-medium mt-0.5">
+                    🏢 {{ app.job?.companyName || 'Enterprise' }}
+                  </div>
+                  <div class="text-[11px] text-secondary">
+                    📍 {{ app.job?.location || 'Remote' }}
+                  </div>
+                </td>
+
+                <!-- Status -->
+                <td>
+                  <span
+                    class="badge text-xs"
+                    [ngClass]="{
+                      'badge-primary': app.status === 'Applied',
+                      'badge-accent': app.status === 'Under Review',
+                      'badge-cyan': app.status === 'Shortlisted',
+                      'badge-warning': app.status === 'Interview',
+                      'badge-emerald': app.status === 'Selected',
+                      'badge-secondary': app.status === 'Rejected'
+                    }"
+                  >
+                    {{ app.status }}
+                  </span>
+                </td>
+
+                <!-- Date -->
+                <td class="text-xs text-secondary whitespace-nowrap">
+                  {{ app.createdAt | date:'mediumDate' }}
+                </td>
+
+                <!-- Resume -->
+                <td>
+                  <a
+                    *ngIf="app.resumeUrl"
+                    [href]="app.resumeUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-outline btn-xs inline-flex items-center gap-1"
+                    aria-label="View candidate resume file"
+                  >
+                    <span>📄</span> View Resume ↗
+                  </a>
+                  <span *ngIf="!app.resumeUrl" class="text-xs text-secondary italic">
+                    Not attached
+                  </span>
+                </td>
+              </tr>
+
+              <tr *ngIf="applications.length === 0 && !isLoadingApplications">
+                <td colspan="5" class="text-center py-8 text-secondary text-sm">
+                  No candidate applications matched the filter criteria.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 7: ADMINISTRATIVE AUDIT LOG                         -->
+    <!-- ======================================================== -->
+    <div *ngIf="activeTab === 'audit'" class="flex flex-col gap-6">
+      <!-- Filter Bar -->
+      <div class="sb-card p-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="flex items-center gap-3 flex-wrap flex-1">
+          <input
+            type="text"
+            class="form-control max-w-xs text-sm"
+            placeholder="Search action, admin, or target..."
+            aria-label="Search audit logs"
+            [(ngModel)]="auditSearch"
+            (keyup.enter)="fetchAuditLogs()"
+          />
+
+          <select
+            aria-label="Filter audit logs by action"
+            class="select-control"
+            [(ngModel)]="auditActionFilter"
+            (change)="fetchAuditLogs()"
+          >
+            <option value="all">All Moderation Actions</option>
+            <option value="USER_STATUS_CHANGE">User Status Changes</option>
+            <option value="USER_DELETED">User Deletions</option>
+            <option value="COMPANY_VERIFIED">Company Verified</option>
+            <option value="COMPANY_UNVERIFIED">Company Unverified</option>
+            <option value="JOB_STATUS_CHANGE">Job Status Changes</option>
+            <option value="JOB_FEATURED">Job Featured</option>
+            <option value="JOB_DELETED">Job Deletions</option>
+            <option value="REPORT_RESOLVED">Reports Resolved</option>
+            <option value="REPORT_DISMISSED">Reports Dismissed</option>
+          </select>
+
+          <select
+            aria-label="Filter audit logs by target type"
+            class="select-control"
+            [(ngModel)]="auditTargetFilter"
+            (change)="fetchAuditLogs()"
+          >
+            <option value="all">All Target Entities</option>
+            <option value="User">User</option>
+            <option value="Company">Company</option>
+            <option value="Job">Job</option>
+            <option value="Report">Report</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm" (click)="fetchAuditLogs()">
+          Filter Logs
+        </button>
+      </div>
+
+      <!-- Audit Logs Timeline Table -->
+      <div class="sb-card p-6">
+        <div class="table-container overflow-x-auto">
+          <table class="sb-table w-full">
+            <thead>
+              <tr>
+                <th scope="col">Timestamp</th>
+                <th scope="col">Administrator</th>
+                <th scope="col">Action Type</th>
+                <th scope="col">Target Entity</th>
+                <th scope="col">Operational Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let log of auditLogs" class="hover:bg-surface-hover transition-colors">
+                <td class="text-xs font-mono text-secondary whitespace-nowrap">
+                  {{ log.createdAt | date:'medium' }}
+                </td>
+
+                <td class="text-xs">
+                  <div class="font-bold text-foreground">{{ log.adminName }}</div>
+                  <div class="text-[11px] text-secondary font-mono">{{ log.adminEmail }}</div>
+                </td>
+
+                <td>
+                  <span
+                    class="badge text-[10px] font-mono py-0.5 px-2"
+                    [ngClass]="{
+                      'badge-danger': log.action.includes('DELETED') || log.action.includes('UNVERIFIED'),
+                      'badge-success': log.action.includes('VERIFIED') || log.action.includes('RESOLVED'),
+                      'badge-accent': log.action.includes('STATUS') || log.action.includes('FEATURED'),
+                      'badge-primary': log.action.includes('PROFILE') || log.action.includes('PASSWORD')
+                    }"
+                  >
+                    {{ log.action }}
+                  </span>
+                </td>
+
+                <td class="text-xs font-semibold">
+                  <span class="badge badge-secondary text-[10px] mr-1">{{ log.targetType }}</span>
+                  <span class="text-foreground">{{ log.targetName || log.targetId }}</span>
+                </td>
+
+                <td class="text-xs text-secondary max-w-md">
+                  <p class="leading-relaxed">{{ log.details }}</p>
+                </td>
+              </tr>
+
+              <tr *ngIf="auditLogs.length === 0 && !isLoadingAudit">
+                <td colspan="5" class="text-center py-8 text-secondary text-sm">
+                  No administrative actions logged under the selected criteria.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- TAB 8: ML & AI ENGINE TELEMETRY                         -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'ml_monitoring'" class="flex flex-col gap-6">
-      <!-- Top Telemetry Cards -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="sb-card p-4">
           <span class="text-xs font-semibold text-secondary uppercase">ML Microservice</span>
-          <div class="text-2xl font-bold text-emerald mt-1">
+          <div class="text-xl font-bold text-emerald mt-1">
             {{ mlMonitoringData?.mlStatus?.status === 'online' ? '● Online (FastAPI)' : '⚡ Active (Gateway)' }}
           </div>
           <span class="text-xs text-muted">Version {{ mlMonitoringData?.mlStatus?.version || '2.0.0' }}</span>
         </div>
+
         <div class="sb-card p-4">
-          <span class="text-xs font-semibold text-secondary uppercase">Total ML Predictions</span>
-          <div class="text-2xl font-bold text-primary mt-1">{{ mlMonitoringData?.telemetry?.totalPredictions || 0 }}</div>
-          <span class="text-xs text-muted">Career inferences served</span>
+          <span class="text-xs font-semibold text-secondary uppercase">Career Predictions</span>
+          <div class="text-xl font-bold text-primary mt-1">{{ mlMonitoringData?.telemetry?.totalPredictions || 0 }}</div>
+          <span class="text-xs text-muted">Inferences Served</span>
         </div>
+
         <div class="sb-card p-4">
           <span class="text-xs font-semibold text-secondary uppercase">Assessments Evaluated</span>
-          <div class="text-2xl font-bold text-accent mt-1">{{ mlMonitoringData?.telemetry?.totalAttempts || 0 }}</div>
-          <span class="text-xs text-muted">Across {{ mlMonitoringData?.telemetry?.totalAssessments || 7 }} domains</span>
+          <div class="text-xl font-bold text-accent mt-1">{{ mlMonitoringData?.telemetry?.totalAttempts || 0 }}</div>
+          <span class="text-xs text-muted">Across {{ mlMonitoringData?.telemetry?.totalAssessments || 7 }} Domains</span>
         </div>
+
         <div class="sb-card p-4">
-          <span class="text-xs font-semibold text-secondary uppercase">Node Heap Memory</span>
-          <div class="text-2xl font-bold text-secondary mt-1">{{ mlMonitoringData?.telemetry?.nodeMemoryUsageMB || 64 }} MB</div>
+          <span class="text-xs font-semibold text-secondary uppercase">Memory & Uptime</span>
+          <div class="text-xl font-bold text-secondary mt-1">{{ mlMonitoringData?.telemetry?.nodeMemoryUsageMB || 64 }} MB</div>
           <span class="text-xs text-muted">Uptime: {{ mlMonitoringData?.telemetry?.systemUptimeSeconds || 120 }}s</span>
         </div>
       </div>
 
-      <!-- Models Registry & Evaluation Metrics -->
+      <!-- Models Registry -->
       <div class="sb-card p-6">
-        <h3 class="text-lg font-bold mb-4">Model Registry & Training Performance Benchmarks</h3>
+        <h3 class="text-lg font-bold mb-4">Production Model Registry Benchmarks</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Model 1 -->
-          <div class="p-4 bg-secondary rounded-lg border border-subtle">
+          <div class="p-4 bg-surface-hover rounded-lg border border-border">
             <div class="flex items-center justify-between mb-2">
-              <h4 class="font-bold text-base text-primary">1. Career Recommendation Model</h4>
-              <span class="badge badge-emerald text-xs">Production Ready</span>
+              <h4 class="font-bold text-sm text-primary">1. Career Recommendation Engine</h4>
+              <span class="badge badge-emerald text-xs">Production</span>
             </div>
-            <p class="text-xs text-secondary mb-2">Algorithm: Random Forest Classifier (120 Trees, max_depth=16)</p>
-            <div class="text-xs text-muted">
-              Accuracy: <strong>100.0%</strong> • F1-Score: <strong>1.000</strong> • Precision: <strong>1.000</strong>
-            </div>
-            <div class="text-xs text-secondary mt-2">
-              Multi-class categorization across 11 target roles with skill multi-hot feature engineering.
-            </div>
+            <p class="text-xs text-secondary mb-1">Random Forest Classifier (120 Trees, max_depth=16)</p>
+            <div class="text-xs text-muted">Accuracy: 100.0% • F1-Score: 1.000 • Multi-class</div>
           </div>
 
-          <!-- Model 2 -->
-          <div class="p-4 bg-secondary rounded-lg border border-subtle">
+          <div class="p-4 bg-surface-hover rounded-lg border border-border">
             <div class="flex items-center justify-between mb-2">
-              <h4 class="font-bold text-base text-primary">2. Career Readiness Predictor</h4>
+              <h4 class="font-bold text-sm text-primary">2. Career Readiness Predictor</h4>
               <span class="badge badge-emerald text-xs">Calibrated</span>
             </div>
-            <p class="text-xs text-secondary mb-2">Algorithm: Random Forest Regressor (100 Estimators)</p>
-            <div class="text-xs text-muted">
-              MAE: <strong>5.31%</strong> • RMSE: <strong>6.52%</strong>
-            </div>
-            <div class="text-xs text-secondary mt-2">
-              Continuous 0-100% readiness estimation fusing projects, resume ATS, and assessments.
-            </div>
+            <p class="text-xs text-secondary mb-1">Random Forest Regressor (100 Estimators)</p>
+            <div class="text-xs text-muted">MAE: 5.31% • RMSE: 6.52% • Continuous 0-100%</div>
           </div>
 
-          <!-- Model 3 -->
-          <div class="p-4 bg-secondary rounded-lg border border-subtle">
+          <div class="p-4 bg-surface-hover rounded-lg border border-border">
             <div class="flex items-center justify-between mb-2">
-              <h4 class="font-bold text-base text-primary">3. Student Skill Clustering</h4>
+              <h4 class="font-bold text-sm text-primary">3. Student Skill Clustering</h4>
               <span class="badge badge-cyan text-xs">Unsupervised</span>
             </div>
-            <p class="text-xs text-secondary mb-2">Algorithm: K-Means Clustering (k=5 Archetypes)</p>
-            <div class="text-xs text-muted">
-              Archetypes: Beginner, Frontend, Backend, Data-Oriented, Full-Stack
-            </div>
-            <div class="text-xs text-secondary mt-2">
-              Clusters students into dynamic cohorts without permanent labeling.
-            </div>
+            <p class="text-xs text-secondary mb-1">K-Means Clustering (k=5 Archetypes)</p>
+            <div class="text-xs text-muted">Archetypes: Frontend, Backend, Data, Full-Stack, Beginner</div>
           </div>
 
-          <!-- Model 4 -->
-          <div class="p-4 bg-secondary rounded-lg border border-subtle">
+          <div class="p-4 bg-surface-hover rounded-lg border border-border">
             <div class="flex items-center justify-between mb-2">
-              <h4 class="font-bold text-base text-primary">4. Intelligent Job Recommender</h4>
-              <span class="badge badge-accent text-xs">Semantic Match</span>
+              <h4 class="font-bold text-sm text-primary">4. Intelligent Job Recommender</h4>
+              <span class="badge badge-accent text-xs">Semantic</span>
             </div>
-            <p class="text-xs text-secondary mb-2">Algorithm: TF-IDF Vectorizer + NearestNeighbors (Cosine Metric)</p>
-            <div class="text-xs text-muted">
-              Index: <strong>132 reference jobs</strong> • Sub-linear nearest neighbor query
-            </div>
-            <div class="text-xs text-secondary mt-2">
-              Matches candidate skills against internships and fresher vacancies.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Live Predictions Audit Stream -->
-      <div class="sb-card p-6">
-        <h3 class="text-lg font-bold mb-4">Recent ML Career Inferences Audit Stream</h3>
-        <div *ngIf="!mlMonitoringData?.recentPredictions?.length" class="text-xs text-secondary p-4 bg-secondary rounded text-center">
-          Predictions will stream here as students request ML career explorations.
-        </div>
-        <div *ngIf="mlMonitoringData?.recentPredictions?.length" class="flex flex-col gap-3">
-          <div *ngFor="let pred of mlMonitoringData.recentPredictions" class="p-3 bg-secondary rounded-lg flex items-center justify-between text-xs">
-            <div>
-              <span class="font-bold text-primary">{{ pred.user?.name || 'Candidate' }} ({{ pred.user?.email || 'N/A' }})</span>
-              <div class="text-muted mt-0.5">Predicted: <strong>{{ pred.predictedRole }}</strong> ({{ pred.suitabilityScore }}% match)</div>
-            </div>
-            <div class="text-right">
-              <span class="badge badge-primary text-xs">{{ pred.modelVersion }}</span>
-              <span class="text-muted block text-xs mt-1">{{ pred.createdAt | date:'shortTime' }}</span>
-            </div>
+            <p class="text-xs text-secondary mb-1">TF-IDF Vectorizer + NearestNeighbors (Cosine Metric)</p>
+            <div class="text-xs text-muted">Sub-linear cosine matching against active requisitions</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 6: ADMIN PROFILE & SECURITY SETTINGS -->
+    <!-- ======================================================== -->
+    <!-- TAB 9: ADMIN PROFILE & SECURITY SETTINGS                -->
+    <!-- ======================================================== -->
     <div *ngIf="activeTab === 'settings'" class="flex flex-col gap-6">
       <!-- Admin Identity Card -->
-      <!-- Admin Profile Card -->
       <div class="sb-card p-6">
         <div class="flex items-center gap-5 flex-wrap">
           <div class="relative group">
@@ -634,6 +1296,7 @@
                 (change)="onAdminAvatarSelected($event)"
                 accept="image/png,image/jpeg,image/webp"
                 class="hidden"
+                aria-label="Upload administrator avatar"
               />
             </label>
           </div>
@@ -641,8 +1304,8 @@
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-1 flex-wrap">
               <h2 class="text-xl font-bold">{{ adminName || 'Admin' }}</h2>
-              <span class="badge badge-danger text-xs font-bold">SUPER ADMIN</span>
-              <span *ngIf="adminId" class="badge badge-outline text-[11px] font-mono text-secondary" title="Administrator MongoDB ID">
+              <span class="badge badge-danger text-xs font-bold">SUPER ADMINISTRATOR</span>
+              <span *ngIf="adminId" class="badge badge-outline text-[11px] font-mono text-secondary">
                 ID: {{ adminId }}
               </span>
             </div>
@@ -652,7 +1315,7 @@
         </div>
       </div>
 
-      <!-- Combined Admin Profile Management -->
+      <!-- Administrator Credentials Form -->
       <div class="sb-card p-6">
         <div class="flex items-center justify-between gap-3 mb-4 flex-wrap">
           <div>
@@ -660,29 +1323,31 @@
               <span>👤</span> Administrator Profile & Contact Details
             </h3>
             <p class="text-xs text-secondary mt-0.5">
-              Manage your master administrative name, Gmail ID used to sign in, and direct phone contact.
+              Manage your administrator name, login email ID, and direct phone contact.
             </p>
           </div>
+
           <button
             type="button"
             class="btn btn-primary btn-sm"
             [disabled]="isUpdatingAdminName"
             (click)="saveFullAdminProfile()"
           >
-            {{ isUpdatingAdminName ? 'Saving Changes...' : '💾 Save Full Profile Info' }}
+            {{ isUpdatingAdminName ? 'Saving Changes...' : '💾 Save Profile Information' }}
           </button>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           <!-- Admin Name -->
           <div>
-            <label class="form-label text-xs font-semibold">Admin Display Name</label>
+            <label for="admin-display-name" class="form-label text-xs font-semibold">Admin Display Name</label>
             <div class="flex gap-2">
               <input
+                id="admin-display-name"
                 type="text"
                 class="form-control text-sm"
                 [(ngModel)]="adminName"
-                placeholder="e.g. Master Administrator"
+                placeholder="Master Administrator"
               />
               <button
                 type="button"
@@ -697,13 +1362,14 @@
 
           <!-- Admin Gmail / Email -->
           <div>
-            <label class="form-label text-xs font-semibold">Admin Gmail / Login Email</label>
+            <label for="admin-login-email" class="form-label text-xs font-semibold">Admin Login Email</label>
             <div class="flex gap-2">
               <input
+                id="admin-login-email"
                 type="email"
                 class="form-control text-sm"
                 [(ngModel)]="adminEmail"
-                placeholder="e.g. admin@gmail.com"
+                placeholder="admin@skillbridge.com"
               />
               <button
                 type="button"
@@ -718,13 +1384,14 @@
 
           <!-- Admin Mobile Phone -->
           <div>
-            <label class="form-label text-xs font-semibold">Admin Contact Mobile Phone</label>
+            <label for="admin-mobile-phone" class="form-label text-xs font-semibold">Contact Mobile Phone</label>
             <div class="flex gap-2">
               <input
+                id="admin-mobile-phone"
                 type="tel"
                 class="form-control text-sm"
                 [(ngModel)]="adminPhone"
-                placeholder="e.g. +91 98765 43210"
+                placeholder="+1 555-0199"
               />
               <button
                 type="button"
@@ -739,18 +1406,19 @@
         </div>
       </div>
 
-      <!-- Change Admin Password -->
+      <!-- Password Rotation Form -->
       <div class="sb-card p-6">
         <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-base font-bold">Change Admin Password</h3>
+          <h3 class="text-base font-bold">Rotate Administrator Password</h3>
           <span class="badge badge-warning text-xs">Security Critical</span>
         </div>
-        <p class="text-xs text-secondary mb-4">Ensure your administrator account uses a strong, high-entropy password.</p>
+        <p class="text-xs text-secondary mb-4">Ensure your administrator account uses a high-entropy password of at least 6 characters.</p>
 
-        <form (ngSubmit)="saveAdminPassword()" style="max-width: 480px;">
+        <form (ngSubmit)="saveAdminPassword()" class="max-w-md">
           <div class="form-group mb-3">
-            <label class="form-label">Current Password</label>
+            <label for="admin-curr-pass" class="form-label">Current Password</label>
             <input
+              id="admin-curr-pass"
               type="password"
               class="form-control"
               [(ngModel)]="adminCurrentPassword"
@@ -761,8 +1429,9 @@
           </div>
 
           <div class="form-group mb-3">
-            <label class="form-label">New Password (Min. 6 characters)</label>
+            <label for="admin-new-pass" class="form-label">New Password (Min. 6 characters)</label>
             <input
+              id="admin-new-pass"
               type="password"
               class="form-control"
               [(ngModel)]="adminNewPassword"
@@ -773,8 +1442,9 @@
           </div>
 
           <div class="form-group mb-4">
-            <label class="form-label">Confirm New Password</label>
+            <label for="admin-confirm-pass" class="form-label">Confirm New Password</label>
             <input
+              id="admin-confirm-pass"
               type="password"
               class="form-control"
               [(ngModel)]="adminConfirmPassword"
@@ -789,7 +1459,7 @@
             class="btn btn-primary btn-sm"
             [disabled]="isUpdatingAdminPassword || !adminCurrentPassword || !adminNewPassword || !adminConfirmPassword"
           >
-            {{ isUpdatingAdminPassword ? 'Updating Password...' : 'Update Admin Password 🔒' }}
+            {{ isUpdatingAdminPassword ? 'Updating...' : 'Update Admin Password 🔒' }}
           </button>
         </form>
       </div>
@@ -797,45 +1467,140 @@
   </div>
 </div>
 
-<!-- MODAL: REPORT RESOLUTION -->
-<div *ngIf="showReportModal && selectedReport" class="modal-backdrop">
-  <div class="modal-card max-w-md">
+<!-- ======================================================== -->
+<!-- MODAL: SCAM REPORT INVESTIGATION & ACTION               -->
+<!-- ======================================================== -->
+<div *ngIf="showReportModal && selectedReport" class="modal-backdrop" (click)="closeReportModal()">
+  <div class="modal-card max-w-lg" (click)="$event.stopPropagation()">
     <div class="flex items-center justify-between pb-3 border-b border-border mb-3">
-      <h3 class="font-bold text-base">Audit Flagged Content</h3>
-      <button class="btn btn-sm btn-outline" (click)="showReportModal = false">✕</button>
+      <h3 class="font-bold text-base">Investigate & Action Scam Flag</h3>
+      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal" (click)="closeReportModal()">✕</button>
     </div>
 
-    <div class="text-xs mb-4 p-3 bg-surface-hover rounded-md">
-      <div class="font-bold text-danger mb-1">{{ selectedReport.reason }}</div>
-      <p class="text-secondary">{{ selectedReport.details || selectedReport.description }}</p>
+    <div class="text-xs mb-4 p-3 bg-surface-hover rounded-md border border-border">
+      <div class="flex items-center justify-between mb-1">
+        <span class="badge badge-danger text-[10px] font-bold">{{ selectedReport.reason }}</span>
+        <span class="text-secondary">{{ selectedReport.createdAt | date:'mediumDate' }}</span>
+      </div>
+      <div class="font-bold text-foreground mb-1">
+        Target: {{ selectedReport.targetType }} — {{ selectedReport.targetTitle || selectedReport.targetId }}
+      </div>
+      <p class="text-secondary leading-relaxed">{{ selectedReport.details || selectedReport.description }}</p>
     </div>
 
     <div class="flex flex-col gap-3">
       <div>
-        <label for="report-action-status" class="form-label">Set Resolution Status</label>
-        <select id="report-action-status" class="select-control" [(ngModel)]="reportActionStatus">
-          <option value="Resolved">Resolved (Action Taken)</option>
-          <option value="Under Review">Under Active Review</option>
-          <option value="Rejected">Dismiss / Inaccurate</option>
+        <label for="report-action-select" class="form-label text-xs font-semibold">Moderation Action</label>
+        <select id="report-action-select" class="select-control" [(ngModel)]="reportActionChoice">
+          <option value="resolve">Mark as Resolved (Action Taken)</option>
+          <option value="dismiss">Dismiss Flag (Inaccurate / Clean)</option>
+          <option value="under_review">Escalate to Active Review</option>
+          <option *ngIf="selectedReport.targetType === 'Job'" value="delete_job">Delete Job Posting Immediately</option>
+          <option *ngIf="selectedReport.targetType === 'User'" value="suspend_user">Suspend User Account Immediately</option>
         </select>
       </div>
 
       <div>
-        <label for="report-action-notes" class="form-label">Internal Resolution Notes</label>
-        <textarea id="report-action-notes" class="form-control" rows="3" [(ngModel)]="reportActionNotes" placeholder="Describe the outcome or communication with user..."></textarea>
+        <label for="report-admin-notes" class="form-label text-xs font-semibold">Resolution Notes</label>
+        <textarea
+          id="report-admin-notes"
+          class="form-control text-xs"
+          rows="3"
+          [(ngModel)]="reportActionNotes"
+          placeholder="Document the moderation findings and steps taken..."
+        ></textarea>
       </div>
 
       <div class="pt-3 border-t border-border flex justify-end gap-2">
-        <button type="button" class="btn btn-outline btn-sm" (click)="showReportModal = false">Cancel</button>
+        <button type="button" class="btn btn-outline btn-sm" (click)="closeReportModal()">Cancel</button>
         <button type="button" class="btn btn-primary btn-sm" (click)="submitReportAction()">Confirm Resolution</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL: USER DOSSIER DEEP INSPECTION -->
-<div *ngIf="showUserDetailsModal && selectedUserForDetails" class="modal-backdrop">
-  <div class="modal-card max-w-2xl max-h-[90vh] overflow-y-auto">
+<!-- ======================================================== -->
+<!-- MODAL: ENTERPRISE DETAILS INSPECTION                    -->
+<!-- ======================================================== -->
+<div *ngIf="showCompanyDetailsModal && selectedCompanyForDetails" class="modal-backdrop" (click)="closeCompanyDetails()">
+  <div class="modal-card max-w-xl" (click)="$event.stopPropagation()">
+    <div class="flex items-center justify-between pb-3 border-b border-border mb-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-surface flex items-center justify-center font-bold text-lg text-primary border border-border">
+          🏢
+        </div>
+        <div>
+          <h3 class="font-bold text-base flex items-center gap-2">
+            {{ selectedCompanyForDetails.name }}
+            <span class="badge text-xs" [class.badge-success]="selectedCompanyForDetails.isVerified" [class.badge-warning]="!selectedCompanyForDetails.isVerified">
+              {{ selectedCompanyForDetails.isVerified ? '✓ Verified' : '⏳ Pending' }}
+            </span>
+          </h3>
+          <div class="text-xs text-secondary">{{ selectedCompanyForDetails.industry }} • {{ selectedCompanyForDetails.location }}</div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal" (click)="closeCompanyDetails()">✕</button>
+    </div>
+
+    <div class="flex flex-col gap-3 text-xs mb-4">
+      <div class="p-3 bg-surface-hover rounded-md border border-border">
+        <span class="text-secondary block mb-1">Company Description</span>
+        <p class="text-foreground leading-relaxed">{{ selectedCompanyForDetails.description || 'No corporate description provided.' }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 p-3 bg-surface-hover rounded-md border border-border">
+        <div>
+          <span class="text-secondary block">Corporate Website</span>
+          <a
+            *ngIf="selectedCompanyForDetails.website"
+            [href]="selectedCompanyForDetails.website"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-primary underline font-medium truncate block"
+          >
+            {{ selectedCompanyForDetails.website }} ↗
+          </a>
+          <span *ngIf="!selectedCompanyForDetails.website" class="text-secondary">Not provided</span>
+        </div>
+
+        <div>
+          <span class="text-secondary block">Workforce Scale</span>
+          <span class="font-medium text-foreground">{{ selectedCompanyForDetails.companySize || 'Not specified' }}</span>
+        </div>
+
+        <div>
+          <span class="text-secondary block">Partner Since</span>
+          <span class="font-medium text-foreground">{{ selectedCompanyForDetails.createdAt | date:'mediumDate' }}</span>
+        </div>
+
+        <div>
+          <span class="text-secondary block">Active Requisitions</span>
+          <span class="font-bold text-primary">{{ selectedCompanyForDetails.totalJobs || 0 }} Opportunities</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-3 border-t border-border flex justify-between gap-2">
+      <button
+        type="button"
+        class="btn btn-xs"
+        [class.btn-outline]="selectedCompanyForDetails.isVerified"
+        [class.btn-primary]="!selectedCompanyForDetails.isVerified"
+        (click)="toggleCompanyVerification(selectedCompanyForDetails)"
+      >
+        {{ selectedCompanyForDetails.isVerified ? 'Revoke Partner Badge' : 'Approve Partner Badge' }}
+      </button>
+
+      <button type="button" class="btn btn-outline btn-sm" (click)="closeCompanyDetails()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL: USER DOSSIER DEEP INSPECTION                     -->
+<!-- ======================================================== -->
+<div *ngIf="showUserDetailsModal && selectedUserForDetails" class="modal-backdrop" (click)="closeUserDetails()">
+  <div class="modal-card max-w-2xl" (click)="$event.stopPropagation()">
     <!-- Header -->
     <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
       <div class="flex items-center gap-3">
@@ -855,195 +1620,129 @@
             </span>
           </div>
           <div class="text-xs text-secondary mt-0.5 font-mono">
-            User ID: {{ selectedUserForDetails._id }}
+            ID: {{ selectedUserForDetails._id }}
           </div>
         </div>
       </div>
-      <button class="btn btn-sm btn-outline" (click)="closeUserDetails()">✕</button>
+      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal" (click)="closeUserDetails()">✕</button>
     </div>
 
-    <!-- Section 1: Authentication & Contact Credentials -->
+    <!-- Login & Contact Credentials -->
     <div class="mb-4">
       <h4 class="text-xs font-bold uppercase tracking-wider text-secondary mb-2">
-        🔑 Login & Security Credentials
+        🔑 Account Credentials & Contact
       </h4>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-surface-hover rounded-lg border border-border">
         <div>
-          <span class="text-[11px] text-secondary block">Login Gmail / Email ID</span>
+          <span class="text-[11px] text-secondary block">Login Email</span>
           <span class="text-sm font-semibold text-primary font-mono select-all">
             {{ selectedUserForDetails.loginEmail || selectedUserForDetails.email }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Contact Mobile Phone</span>
+          <span class="text-[11px] text-secondary block">Contact Phone</span>
           <span class="text-sm font-semibold text-foreground flex items-center gap-1">
-            <span class="text-emerald-500">📞</span>
+            <span class="text-emerald">📞</span>
             {{ selectedUserForDetails.loginPhone || selectedUserForDetails.phone || 'Not provided' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Auth Provider / Sign-in Type</span>
+          <span class="text-[11px] text-secondary block">Authentication Type</span>
           <span class="text-xs font-medium text-foreground">
-            {{ selectedUserForDetails.authProvider === 'google' ? 'Google OAuth 2.0 (Gmail Direct)' : 'Direct Email & Password' }}
+            {{ selectedUserForDetails.authProvider === 'google' ? 'Google OAuth 2.0' : 'Email & Salted Password' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Registered On Platform</span>
+          <span class="text-[11px] text-secondary block">Registration Date</span>
           <span class="text-xs font-medium text-foreground">
             {{ selectedUserForDetails.createdAt | date:'medium' }}
           </span>
         </div>
-        <div class="sm:col-span-2 pt-2 border-t border-border/50">
-          <span class="text-[11px] text-secondary block">Password Security State</span>
-          <div class="flex items-center gap-2 mt-0.5">
-            <span class="badge badge-success text-[10px]">
-              {{ selectedUserForDetails.passwordStatus || 'Bcrypt Protected' }}
-            </span>
-          </div>
-          <p class="text-[10px] text-muted mt-1">
-            * Passwords are irreversibly hashed using industry-standard bcrypt salts; hashes and previews are never exposed.
-          </p>
-        </div>
       </div>
     </div>
 
-    <!-- Section 2: Candidate Real Career & Job Search Preferences (If Student/Jobseeker) -->
+    <!-- Student Career Intent (If Student) -->
     <div *ngIf="selectedUserForDetails.role === 'student'" class="mb-4">
       <h4 class="text-xs font-bold uppercase tracking-wider text-secondary mb-2">
-        🎯 Candidate Career Intent & Job Seeking Preferences
+        🎯 Candidate Career Intent & Skill Profile
       </h4>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-surface-hover rounded-lg border border-border">
         <div>
-          <span class="text-[11px] text-secondary block">Target Job Role Looking For</span>
+          <span class="text-[11px] text-secondary block">Target Job Role</span>
           <span class="text-sm font-bold text-primary">
             {{ selectedUserForDetails.preferredRole || 'Not specified' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Academic Degree / Stream Track</span>
+          <span class="text-[11px] text-secondary block">Academic Stream</span>
           <span class="text-sm font-semibold text-foreground">
-            {{ selectedUserForDetails.preferredStream || selectedUserForDetails.education || 'Not specified' }}
+            {{ selectedUserForDetails.preferredStream || selectedUserForDetails.education || 'General' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Preferred Work Location</span>
+          <span class="text-[11px] text-secondary block">Preferred Location</span>
           <span class="text-xs font-medium text-foreground">
-            📍 {{ selectedUserForDetails.preferredLocation || 'Not specified' }}
+            📍 {{ selectedUserForDetails.preferredLocation || 'Remote / Flexible' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Expected Salary Package</span>
-          <span class="text-xs font-semibold text-emerald-600">
-            💰 {{ selectedUserForDetails.expectedSalary || 'Not specified' }}
+          <span class="text-[11px] text-secondary block">Expected Compensation</span>
+          <span class="text-xs font-semibold text-emerald">
+            💰 {{ selectedUserForDetails.expectedSalary || 'Industry Standard' }}
           </span>
         </div>
         <div class="sm:col-span-2 pt-2 border-t border-border/50">
-          <span class="text-[11px] text-secondary block mb-1">Profile Skills</span>
-          <div class="flex flex-wrap gap-1.5" *ngIf="selectedUserForDetails.targetSkills?.length; else noSkillsSet">
-            <span
-              *ngFor="let skill of selectedUserForDetails.targetSkills"
-              class="badge badge-outline text-[11px] py-0.5 px-2 bg-surface"
-            >
-              {{ skill }}
+          <span class="text-[11px] text-secondary block mb-1">Skills</span>
+          <div class="flex flex-wrap gap-1.5" *ngIf="selectedUserForDetails.targetSkills?.length; else noSkills">
+            <span *ngFor="let s of selectedUserForDetails.targetSkills" class="badge badge-outline text-[11px] py-0.5 px-2 bg-surface">
+              {{ s }}
             </span>
           </div>
-          <ng-template #noSkillsSet>
-            <span class="text-xs text-secondary">No skills added yet</span>
+          <ng-template #noSkills>
+            <span class="text-xs text-secondary">No skills specified</span>
           </ng-template>
-        </div>
-        <div class="sm:col-span-2 pt-2 border-t border-border/50 flex items-center justify-between flex-wrap gap-3">
-          <div class="flex items-center gap-4">
-            <div>
-              <span class="text-[10px] text-secondary block">Applications Submitted</span>
-              <span class="text-base font-extrabold text-foreground">
-                {{ selectedUserForDetails.applicationsCount || 0 }}
-              </span>
-            </div>
-            <div>
-              <span class="text-[10px] text-secondary block">Saved Opportunities</span>
-              <span class="text-base font-extrabold text-foreground">
-                {{ selectedUserForDetails.savedJobsCount || 0 }}
-              </span>
-            </div>
-          </div>
-          <div *ngIf="selectedUserForDetails.resumeScore" class="flex items-center gap-2">
-            <span class="text-xs font-semibold">Resume ATS Score:</span>
-            <span class="badge badge-accent text-xs font-bold">
-              {{ selectedUserForDetails.resumeScore }}%
-            </span>
-          </div>
         </div>
       </div>
     </div>
 
-    <!-- Section 3: Recruiter Enterprise & Hiring Details (If Recruiter) -->
+    <!-- Recruiter Enterprise Info (If Recruiter) -->
     <div *ngIf="selectedUserForDetails.role === 'recruiter'" class="mb-4">
       <h4 class="text-xs font-bold uppercase tracking-wider text-secondary mb-2">
-        🏢 Recruiter Organization & Hiring Profile
+        🏢 Recruiter Organization Profile
       </h4>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 bg-surface-hover rounded-lg border border-border">
         <div>
-          <span class="text-[11px] text-secondary block">Company / Organization</span>
+          <span class="text-[11px] text-secondary block">Company</span>
           <span class="text-sm font-bold text-foreground">
             {{ selectedUserForDetails.companyName || 'Not specified' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Industry Sector</span>
+          <span class="text-[11px] text-secondary block">Industry</span>
           <span class="text-sm font-medium text-foreground">
-            {{ selectedUserForDetails.industry || 'Not specified' }}
+            {{ selectedUserForDetails.industry || 'Technology' }}
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Corporate Website</span>
-          <a
-            *ngIf="selectedUserForDetails.website"
-            [href]="selectedUserForDetails.website"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-xs text-primary underline truncate block"
-          >
-            {{ selectedUserForDetails.website }} ↗
-          </a>
-          <span *ngIf="!selectedUserForDetails.website" class="text-xs text-secondary">
-            Not specified
+          <span class="text-[11px] text-secondary block">Jobs Posted</span>
+          <span class="text-sm font-bold text-primary">
+            {{ selectedUserForDetails.totalJobsPosted || 0 }} Postings
           </span>
         </div>
         <div>
-          <span class="text-[11px] text-secondary block">Headquarters / Location</span>
-          <span class="text-xs font-medium text-foreground">
-            📍 {{ selectedUserForDetails.location || 'Not specified' }}
-          </span>
-        </div>
-        <div>
-          <span class="text-[11px] text-secondary block">Workforce Size</span>
-          <span class="text-xs font-medium text-foreground">
-            👥 {{ selectedUserForDetails.companySize || 'Not specified' }}
-          </span>
-        </div>
-        <div>
-          <span class="text-[11px] text-secondary block">Live Vacancies Posted</span>
-          <span class="text-sm font-extrabold text-primary">
-            {{ selectedUserForDetails.totalJobsPosted || 0 }} Active Jobs
-          </span>
-        </div>
-        <div class="sm:col-span-2 pt-2 border-t border-border/50 flex items-center justify-between">
-          <span class="text-xs font-semibold">Enterprise Verification:</span>
-          <span
-            class="badge text-xs"
-            [class.badge-success]="selectedUserForDetails.isVerified"
-            [class.badge-warning]="!selectedUserForDetails.isVerified"
-          >
-            {{ selectedUserForDetails.isVerified ? '✅ Officially Verified Enterprise' : '⏳ Pending Business Verification' }}
+          <span class="text-[11px] text-secondary block">Enterprise Verification</span>
+          <span class="badge text-xs" [class.badge-success]="selectedUserForDetails.isVerified" [class.badge-warning]="!selectedUserForDetails.isVerified">
+            {{ selectedUserForDetails.isVerified ? '✓ Verified Partner' : '⏳ Pending' }}
           </span>
         </div>
       </div>
     </div>
 
-    <!-- Modal Footer Actions -->
+    <!-- Footer Actions -->
     <div class="pt-4 border-t border-border flex items-center justify-between flex-wrap gap-2">
       <div class="flex items-center gap-2">
         <button
+          type="button"
           class="btn btn-xs"
           [class.btn-warning]="selectedUserForDetails.status === 'active'"
           [class.btn-success]="selectedUserForDetails.status === 'suspended'"
@@ -1051,14 +1750,48 @@
         >
           {{ selectedUserForDetails.status === 'active' ? 'Suspend Account' : 'Reactivate Account' }}
         </button>
+
         <button
+          type="button"
           class="btn btn-danger btn-xs"
-          (click)="deleteUser(selectedUserForDetails._id); closeUserDetails()"
+          (click)="confirmDeleteUser(selectedUserForDetails); closeUserDetails()"
         >
-          Delete User Record
+          Delete Account
         </button>
       </div>
-      <button class="btn btn-primary btn-sm" (click)="closeUserDetails()">Close Dossier</button>
+
+      <button type="button" class="btn btn-primary btn-sm" (click)="closeUserDetails()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================== -->
+<!-- MODAL: ACCESSIBLE CONFIRMATION DELETION DIALOG          -->
+<!-- ======================================================== -->
+<div *ngIf="showDeleteModal && itemToDelete" class="modal-backdrop" (click)="cancelDelete()">
+  <div class="modal-card max-w-md border-danger/40" (click)="$event.stopPropagation()">
+    <div class="flex items-center gap-3 mb-3">
+      <div class="w-10 h-10 rounded-full bg-danger/20 flex items-center justify-center text-danger text-lg font-bold shrink-0">
+        ⚠️
+      </div>
+      <div>
+        <h3 class="font-bold text-base text-danger">Permanent Deletion Confirmation</h3>
+        <p class="text-xs text-secondary">This action is irreversible and recorded in the audit log.</p>
+      </div>
+    </div>
+
+    <div class="p-3 bg-surface-hover rounded-md border border-border text-xs mb-4">
+      <div class="font-bold text-foreground mb-0.5">{{ itemToDelete.name }}</div>
+      <div class="text-secondary">{{ itemToDelete.extra }}</div>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2 border-t border-border">
+      <button type="button" class="btn btn-outline btn-sm" [disabled]="isDeleting" (click)="cancelDelete()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-danger btn-sm" [disabled]="isDeleting" (click)="executeDelete()">
+        {{ isDeleting ? 'Deleting...' : 'Confirm Permanent Deletion' }}
+      </button>
     </div>
   </div>
 </div>

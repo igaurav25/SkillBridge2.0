@@ -491,5 +491,44 @@ test('API Regression Suite (Auth, IDOR, Mass Assignment, C++ Search, Admin Priva
     assert.equal(reschedJson.data.status, 'Rescheduled');
     assert.equal(reschedJson.data.duration, 60);
   }
+
+  // 14. Phase 7: Admin Control Center Endpoints & Audit Logging
+  // A. Admin Stats includes Funnel, Trends, and Audit Snip
+  const adminStatsRes = await fetch(`${baseUrl}/admin/stats`, {
+    headers: { Authorization: `Bearer ${adminAuth.token}` },
+  });
+  const adminStatsJson = await adminStatsRes.json();
+  assert.equal(adminStatsRes.status, 200);
+  assert.equal(adminStatsJson.success, true);
+  assert.ok(adminStatsJson.data.funnelStages, 'Includes funnelStages');
+  assert.ok(adminStatsJson.data.workTypes, 'Includes workTypes');
+  assert.ok(Array.isArray(adminStatsJson.data.userTrend), 'Includes 7-day userTrend');
+  assert.equal(adminStatsJson.data.userTrend.length, 7);
+
+  // B. Admin Companies inspection endpoint
+  const adminCompsRes = await fetch(`${baseUrl}/admin/companies`, {
+    headers: { Authorization: `Bearer ${adminAuth.token}` },
+  });
+  const adminCompsJson = await adminCompsRes.json();
+  assert.equal(adminCompsRes.status, 200);
+  assert.ok(adminCompsJson.data.length >= 1, 'Admin lists companies');
+  assert.equal(typeof adminCompsJson.data[0].totalJobs, 'number');
+
+  // C. Admin Applications platform-wide monitoring endpoint
+  const adminAppsMonRes = await fetch(`${baseUrl}/admin/applications`, {
+    headers: { Authorization: `Bearer ${adminAuth.token}` },
+  });
+  const adminAppsMonJson = await adminAppsMonRes.json();
+  assert.equal(adminAppsMonRes.status, 200);
+  assert.ok(Array.isArray(adminAppsMonJson.data), 'Admin applications list returned');
+
+  // D. Admin Audit Logs endpoint
+  const adminLogsRes = await fetch(`${baseUrl}/admin/audit-logs`, {
+    headers: { Authorization: `Bearer ${adminAuth.token}` },
+  });
+  const adminLogsJson = await adminLogsRes.json();
+  assert.equal(adminLogsRes.status, 200);
+  assert.ok(Array.isArray(adminLogsJson.data), 'Audit logs list returned');
 });
+
 
