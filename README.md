@@ -780,3 +780,4 @@ node test_e2e.js
 ## 🛡️ License & Acknowledgements
 
 Created for students, developers, educators, and recruiters worldwide to accelerate tech careers through verified skill progression and AI career intelligence.
+"# SkillBridge2.0" 
