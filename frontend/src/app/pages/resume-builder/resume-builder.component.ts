@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ResumeService } from '../../services/resume.service';
 import { ProfileService } from '../../services/profile.service';
+import { JobService } from '../../services/job.service';
 import { ToastService } from '../../services/toast.service';
 import { Resume } from '../../models/resume.model';
 
@@ -24,6 +25,7 @@ export interface QualitySuggestion {
 export class ResumeBuilderComponent implements OnInit {
   private resumeService = inject(ResumeService);
   private profileService = inject(ProfileService);
+  private jobService = inject(JobService);
   private toast = inject(ToastService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -42,6 +44,12 @@ export class ResumeBuilderComponent implements OnInit {
   selectedTemplate: 'modern' | 'executive' | 'tech' | 'minimal' = 'modern';
   skillsInput = '';
   isSaving = false;
+  isParsingPdf = false;
+  isTailoring = false;
+  showTailorModal = false;
+  availableJobs: any[] = [];
+  selectedJobId = '';
+  tailoredResult: any = null;
 
   // New item draft states
   newEdu = { degree: '', institution: '', graduationYear: new Date().getFullYear(), gpa: '' };
@@ -331,6 +339,158 @@ export class ResumeBuilderComponent implements OnInit {
 
   removeProject(idx: number) {
     this.activeResume.projects?.splice(idx, 1);
+    this.cdr.markForCheck();
+  }
+
+  onPdfUpload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      this.toast.error('Please select a valid PDF file.');
+      return;
+    }
+
+    this.isParsingPdf = true;
+    this.cdr.markForCheck();
+
+    const formData = new FormData();
+    formData.append('resume', file);
+
+    this.resumeService.parseUploadedPdf(formData).subscribe({
+      next: (res) => {
+        this.isParsingPdf = false;
+        input.value = '';
+        if (res.data) {
+          const d = res.data;
+          if (d.personalDetails) {
+            this.activeResume.personalDetails = {
+              ...this.activeResume.personalDetails,
+              fullName: d.personalDetails.fullName || this.activeResume.personalDetails?.fullName || '',
+              email: d.personalDetails.email || this.activeResume.personalDetails?.email || '',
+              phone: d.personalDetails.phone || this.activeResume.personalDetails?.phone || '',
+              github: d.personalDetails.github || this.activeResume.personalDetails?.github || '',
+              linkedin: d.personalDetails.linkedin || this.activeResume.personalDetails?.linkedin || '',
+              portfolio: d.personalDetails.portfolio || this.activeResume.personalDetails?.portfolio || '',
+            };
+          }
+          if (d.summary) {
+            this.activeResume.summary = d.summary;
+          }
+          if (d.skills && d.skills.length > 0) {
+            const existingSkills = this.getSkillsArray();
+            const merged = Array.from(new Set([...existingSkills, ...d.skills]));
+            this.skillsInput = merged.join(', ');
+            this.activeResume.skills = merged.map(name => ({ name, category: 'General' }));
+          }
+          if (d.education && d.education.length > 0) {
+            this.activeResume.education = [...(this.activeResume.education || []), ...d.education];
+          }
+          this.toast.success('Resume parsed and auto-filled from PDF successfully!');
+        }
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.isParsingPdf = false;
+        input.value = '';
+        this.toast.error(err?.error?.message || 'Failed to parse resume from PDF.');
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  openTailorModal() {
+    this.showTailorModal = true;
+    if (this.availableJobs.length === 0) {
+      this.jobService.getJobs({ limit: 30 }).subscribe({
+        next: (res) => {
+          this.availableJobs = res.data || [];
+          if (this.availableJobs.length > 0 && !this.selectedJobId) {
+            this.selectedJobId = this.availableJobs[0]._id;
+          }
+          this.cdr.markForCheck();
+        },
+        error: () => this.cdr.markForCheck(),
+      });
+    }
+    this.cdr.markForCheck();
+  }
+
+  closeTailorModal() {
+    this.showTailorModal = false;
+    this.tailoredResult = null;
+    this.cdr.markForCheck();
+  }
+
+  runTailoring() {
+    if (!this.selectedJobId) {
+      this.toast.warning('Please select a target job position to tailor against.');
+      return;
+    }
+    this.isTailoring = true;
+    this.tailoredResult = null;
+    this.cdr.markForCheck();
+
+    const skills = this.getSkillsArray();
+    const payload = {
+      jobId: this.selectedJobId,
+      resumeId: this.activeResume._id,
+      resumeData: {
+        ...this.activeResume,
+        skills: skills.map(name => ({ name, category: 'General' })),
+      },
+    };
+
+    this.resumeService.tailorToJob(payload).subscribe({
+      next: (res) => {
+        this.isTailoring = false;
+        this.tailoredResult = res.data;
+        this.toast.success('Tailoring recommendations ready!');
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        this.isTailoring = false;
+        this.toast.error(err?.error?.message || 'Failed to tailor resume to target job.');
+        this.cdr.markForCheck();
+      },
+    });
+  }
+
+  applyTailoredSummary(summary: string) {
+    if (!summary) return;
+    this.activeResume.summary = summary;
+    this.toast.success('Professional summary updated with tailored version!');
+    this.cdr.markForCheck();
+  }
+
+  applyMissingSkill(skill: string) {
+    if (!skill) return;
+    const current = this.getSkillsArray();
+    if (!current.some(s => s.toLowerCase() === skill.toLowerCase())) {
+      current.push(skill);
+      this.skillsInput = current.join(', ');
+      this.activeResume.skills = current.map(name => ({ name, category: 'General' }));
+      this.toast.success(`Added "${skill}" to skills!`);
+      this.cdr.markForCheck();
+    }
+  }
+
+  applyTailoredBullet(bullet: string) {
+    if (!bullet) return;
+    if (!this.activeResume.experience || this.activeResume.experience.length === 0) {
+      if (!this.activeResume.projects || this.activeResume.projects.length === 0) {
+        this.activeResume.summary = `${this.activeResume.summary ? this.activeResume.summary + '\n\n' : ''}Achievement: ${bullet}`;
+        this.toast.success('Appended achievement bullet to summary!');
+      } else {
+        const p = this.activeResume.projects[0];
+        p.description = p.description ? `${p.description}\n• ${bullet}` : bullet;
+        this.toast.success(`Appended tailored bullet to project "${p.title}"!`);
+      }
+    } else {
+      const exp = this.activeResume.experience[0];
+      exp.description = exp.description ? `${exp.description}\n• ${bullet}` : bullet;
+      this.toast.success(`Appended tailored bullet to "${exp.title}" experience!`);
+    }
     this.cdr.markForCheck();
   }
 }

@@ -15,10 +15,12 @@ const {
   addCertification,
   deleteCertification,
   getProfileByUserId,
+  getPublicPortfolio,
 } = require('../controllers/profileController');
 const { protect } = require('../middleware/authMiddleware');
 const { uploadResume } = require('../middleware/uploadMiddleware');
 
+router.get('/portfolio/:id', getPublicPortfolio);
 router.get('/me', protect, getMyProfile);
 router.put('/me', protect, updateProfile);
 router.post('/resume', protect, uploadResume.single('resume'), uploadProfileResume);

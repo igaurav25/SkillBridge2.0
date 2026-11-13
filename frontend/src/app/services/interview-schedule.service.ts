@@ -62,4 +62,8 @@ export class InterviewScheduleService {
   ): Observable<ApiResponse<InterviewSchedule>> {
     return this.http.post<ApiResponse<InterviewSchedule>>(`${this.API_URL}/${id}/feedback`, data);
   }
+
+  getUpcomingReminders(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.API_URL}/upcoming-reminders`);
+  }
 }

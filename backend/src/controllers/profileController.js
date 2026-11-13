@@ -364,6 +364,58 @@ const uploadProfileResume = async (req, res, next) => {
   }
 };
 
+// @desc    Get public candidate portfolio by ID
+// @route   GET /api/profiles/portfolio/:id
+// @access  Public
+const getPublicPortfolio = async (req, res, next) => {
+  try {
+    const candidateId = req.params.id;
+    const user = await User.findById(candidateId).select('name headline avatar isVerified streak role').lean();
+    if (!user || user.role !== 'student') {
+      return res.status(404).json({ success: false, message: 'Candidate portfolio not found.' });
+    }
+
+    const profile = await Profile.findOne({ user: candidateId }).lean();
+    const Achievement = require('../models/Achievement');
+    const achievements = await Achievement.find({ user: candidateId }).lean();
+
+    const safePortfolio = {
+      id: user._id,
+      name: user.name,
+      headline: profile?.headline || user.headline || 'Software Developer',
+      avatar: user.avatar || '',
+      about: profile?.about || '',
+      location: profile?.location || '',
+      preferredRole: profile?.preferredRole || '',
+      workTypePreference: profile?.workTypePreference || 'remote',
+      github: profile?.github || '',
+      linkedin: profile?.linkedin || '',
+      portfolio: profile?.portfolio || '',
+      skills: profile?.skills || [],
+      education: profile?.education || [],
+      projects: profile?.projects || [],
+      experience: profile?.experience || [],
+      certifications: profile?.certifications || [],
+      profileCompletion: profile?.profileCompletion || 85,
+      streak: user.streak || { current: 1, longest: 1 },
+      isVerified: user.isVerified || false,
+      badges: achievements.map((a) => ({
+        badgeId: a.badgeId,
+        title: a.title,
+        icon: a.icon,
+        category: a.category,
+      })),
+    };
+
+    res.status(200).json({
+      success: true,
+      data: safePortfolio,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   getMyProfile,
   updateProfile,
@@ -379,4 +431,5 @@ module.exports = {
   addCertification,
   deleteCertification,
   getProfileByUserId,
+  getPublicPortfolio,
 };

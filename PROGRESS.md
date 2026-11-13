@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-9`
+**Current Active Branch:** `redesign/phase-10`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -17,7 +17,7 @@
 - [x] **Phase 7**: Admin control center (`redesign/phase-7`) — *Completed & Verified*
 - [x] **Phase 8**: Mobile: all phones + Android app (`redesign/phase-8`) — *Completed & Verified*
 - [x] **Phase 9**: Performance and release (`redesign/phase-9`) — *Completed & Verified*
-- [ ] **Phase 10**: Extra features (ask user which ones before building) (`redesign/phase-10`)
+- [x] **Phase 10**: Extra features (Command Palette, Public Portfolio, Resume PDF Auto-Fill & Job Tailoring, Learning Streaks, Interview Reminders, Dynamic Sitemap, Bilingual Support) (`redesign/phase-10`) — *Completed & Verified*
 
 ---
 
@@ -308,6 +308,41 @@
   - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0002** on landing and career-explorer.
 
+### Phase 10 — Extra Features (`redesign/phase-10`)
+- **Status:** Complete (Platform fully upgraded and verified across all 11 phases).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-10.json`, `tests/reports/lighthouse-phase-10.json`, `tests/screenshots/phase-10/`.
+- **Key Deliverables:**
+  - **1. Universal Global Command Palette (`Ctrl+K` / `Cmd+K`)**:
+    - Standalone OnPush modal (`CommandPaletteComponent`) accessible from any page via global hotkey (`Ctrl+K` / `Cmd+K`), quick navbar icon, or search bar.
+    - Categorized instant fuzzy search (Navigation, Quick Actions, AI Tools, Role consoles).
+    - Full keyboard navigation (Arrow Up/Down, Enter to execute, Escape to dismiss) and screen-reader accessibility (`role="dialog"`, `aria-modal="true"`).
+  - **2. Public Shareable Candidate Portfolio (`/portfolio/:id`)**:
+    - Responsive public candidate portfolio page (`PublicPortfolioComponent`) displaying verified credentials, career headline, location, learning streak badge, skill tags with proficiency levels, experience timeline, and project showcase with live demo links.
+    - Public REST API endpoint (`GET /api/profiles/portfolio/:id`) returning sanitized candidate profile DTO with private credentials excluded.
+    - 1-click clipboard link sharing with instant toast feedback.
+  - **3. Resume Auto-Fill from PDF & Job Tailoring Engine**:
+    - Backend Multer upload endpoint (`POST /api/resumes/parse-pdf`) extracting contact info, summary, detected skills, and education from uploaded PDF resumes with regex/heuristic section parser.
+    - AI/Heuristic tailoring endpoint (`POST /api/resumes/tailor-to-job`) comparing resume skills with job listings, providing ATS compatibility match scores, matched/missing skill tags, tailored executive summary, and Google X-Y-Z bullet rewrites.
+    - Frontend interactive tailoring modal in `ResumeBuilderComponent` with 1-click apply for tailored summaries, missing skills, and achievement bullets.
+  - **4. Candidate Learning Streaks (`🔥 Nd`)**:
+    - Daily streak tracking in `User` model (`streak: { current, longest, lastActiveDate }`) and calculated on login/session initialization.
+    - High-visibility streak pill in navbar and student dashboard celebrating consistent learning habits.
+  - **5. Automated Interview Urgency Reminders Banner**:
+    - Endpoint (`GET /api/interviews/schedules/upcoming-reminders`) identifying interviews scheduled within 48h and tagging urgency (`high` for <=6h, `medium` for <=24h).
+    - Real-time urgency banners across `StudentDashboardComponent` and `RecruiterDashboardComponent` with countdown hours, round/mode badge, and direct "Launch/Join Meeting Room" link.
+  - **6. Dynamic XML Sitemap & SEO Discovery**:
+    - Dynamic XML sitemap generator (`GET /sitemap.xml`) in Express `app.js` generating standard XML index of static pages, active job listings, and verified companies.
+    - Static fallback base sitemap in `frontend/public/sitemap.xml`.
+  - **7. Bilingual Localization Support (English + Hindi)**:
+    - Reactive `LanguageService` with persistent language toggle (`currentLang`, `t`), full UI dictionary covering navigation, headers, and actions.
+    - Integrated language switcher in header and mobile navigation drawer.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **590.71 kB** raw (**157.07 kB** transfer), `main`: **124.50 kB** raw / **27.53 kB** transfer + 45 lazy chunks (`public-portfolio-component`: 18.05 kB raw / 4.62 kB transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing (100%)**.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing (100%)**.
+  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 horizontal overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, SEO **91–92**, CLS = **0.0002** on landing.
+
 ### Phase 9 — Performance and Release (`redesign/phase-9`)
 - **Status:** Complete (awaiting user selection of Phase 10 extra features).
 - **Artifacts & Reports:** `README.md`, `.github/workflows/ci.yml`, `tests/reports/playwright-phase-9.json`, `tests/reports/lighthouse-phase-9.json`, `tests/screenshots/phase-9/`.
@@ -357,3 +392,38 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0002** on landing and career-explorer.
+
+### Phase 10 — Extra Features (`redesign/phase-10`)
+- **Status:** Complete (Platform fully upgraded and verified across all 11 phases).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-10.json`, `tests/reports/lighthouse-phase-10.json`, `tests/screenshots/phase-10/`.
+- **Key Deliverables:**
+  - **1. Universal Global Command Palette (`Ctrl+K` / `Cmd+K`)**:
+    - Standalone OnPush modal (`CommandPaletteComponent`) accessible from any page via global hotkey (`Ctrl+K` / `Cmd+K`), quick navbar icon, or search bar.
+    - Categorized instant fuzzy search (Navigation, Quick Actions, AI Tools, Role consoles).
+    - Full keyboard navigation (Arrow Up/Down, Enter to execute, Escape to dismiss) and screen-reader accessibility (`role="dialog"`, `aria-modal="true"`).
+  - **2. Public Shareable Candidate Portfolio (`/portfolio/:id`)**:
+    - Responsive public candidate portfolio page (`PublicPortfolioComponent`) displaying verified credentials, career headline, location, learning streak badge, skill tags with proficiency levels, experience timeline, and project showcase with live demo links.
+    - Public REST API endpoint (`GET /api/profiles/portfolio/:id`) returning sanitized candidate profile DTO with private credentials excluded.
+    - 1-click clipboard link sharing with instant toast feedback.
+  - **3. Resume Auto-Fill from PDF & Job Tailoring Engine**:
+    - Backend Multer upload endpoint (`POST /api/resumes/parse-pdf`) extracting contact info, summary, detected skills, and education from uploaded PDF resumes with regex/heuristic section parser.
+    - AI/Heuristic tailoring endpoint (`POST /api/resumes/tailor-to-job`) comparing resume skills with job listings, providing ATS compatibility match scores, matched/missing skill tags, tailored executive summary, and Google X-Y-Z bullet rewrites.
+    - Frontend interactive tailoring modal in `ResumeBuilderComponent` with 1-click apply for tailored summaries, missing skills, and achievement bullets.
+  - **4. Candidate Learning Streaks (`🔥 Nd`)**:
+    - Daily streak tracking in `User` model (`streak: { current, longest, lastActiveDate }`) and calculated on login/session initialization.
+    - High-visibility streak pill in navbar and student dashboard celebrating consistent learning habits.
+  - **5. Automated Interview Urgency Reminders Banner**:
+    - Endpoint (`GET /api/interviews/schedules/upcoming-reminders`) identifying interviews scheduled within 48h and tagging urgency (`high` for <=6h, `medium` for <=24h).
+    - Real-time urgency banners across `StudentDashboardComponent` and `RecruiterDashboardComponent` with countdown hours, round/mode badge, and direct "Launch/Join Meeting Room" link.
+  - **6. Dynamic XML Sitemap & SEO Discovery**:
+    - Dynamic XML sitemap generator (`GET /sitemap.xml`) in Express `app.js` generating standard XML index of static pages, active job listings, and verified companies.
+    - Static fallback base sitemap in `frontend/public/sitemap.xml`.
+  - **7. Bilingual Localization Support (English + Hindi)**:
+    - Reactive `LanguageService` with persistent language toggle (`currentLang`, `t`), full UI dictionary covering navigation, headers, and actions.
+    - Integrated language switcher in header and mobile navigation drawer.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **590.71 kB** raw (**157.07 kB** transfer), `main`: **124.50 kB** raw / **27.53 kB** transfer + 45 lazy chunks (`public-portfolio-component`: 18.05 kB raw / 4.62 kB transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing (100%)**.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing (100%)**.
+  - `node tests/run-audit-harness.mjs`: **35 routes × 10 viewports = 350/350 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 horizontal overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, SEO **91–92**, CLS = **0.0002** on landing.

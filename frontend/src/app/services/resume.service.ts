@@ -39,4 +39,12 @@ export class ResumeService {
   analyzeExistingResume(id: string, targetRole: string): Observable<ApiResponse<Resume>> {
     return this.http.post<ApiResponse<Resume>>(`${this.API_URL}/${id}/analyze`, { targetRole });
   }
+
+  parseUploadedPdf(formData: FormData): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/parse-pdf`, formData);
+  }
+
+  tailorToJob(payload: { resumeId?: string; jobId: string; resumeData?: any }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(`${this.API_URL}/tailor-to-job`, payload);
+  }
 }

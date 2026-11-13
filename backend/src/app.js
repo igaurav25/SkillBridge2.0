@@ -144,6 +144,56 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Dynamic XML Sitemap for Search Engine Discovery & SEO
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const Job = require('./models/Job');
+    const Company = require('./models/Company');
+
+    const [activeJobs, companies] = await Promise.all([
+      Job.find({ status: 'active' }).select('_id updatedAt').sort('-updatedAt').limit(500).lean(),
+      Company.find({}).select('_id updatedAt').sort('-updatedAt').limit(200).lean(),
+    ]);
+
+    const baseUrl = process.env.CLIENT_URL || 'https://skillbridge.com';
+    const staticPages = [
+      { loc: '', changefreq: 'daily', priority: '1.0' },
+      { loc: '/jobs', changefreq: 'hourly', priority: '0.9' },
+      { loc: '/companies', changefreq: 'daily', priority: '0.8' },
+      { loc: '/career-explorer', changefreq: 'weekly', priority: '0.8' },
+      { loc: '/assessments', changefreq: 'weekly', priority: '0.7' },
+      { loc: '/learning-roadmap', changefreq: 'weekly', priority: '0.7' },
+      { loc: '/login', changefreq: 'monthly', priority: '0.5' },
+      { loc: '/register', changefreq: 'monthly', priority: '0.5' },
+    ];
+
+    const today = new Date().toISOString().split('T')[0];
+    let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+
+    for (const page of staticPages) {
+      xml += `  <url>\n    <loc>${baseUrl}${page.loc}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>${page.changefreq}</changefreq>\n    <priority>${page.priority}</priority>\n  </url>\n`;
+    }
+
+    for (const job of activeJobs) {
+      const lastmod = job.updatedAt ? new Date(job.updatedAt).toISOString().split('T')[0] : today;
+      xml += `  <url>\n    <loc>${baseUrl}/jobs/${job._id}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n`;
+    }
+
+    for (const comp of companies) {
+      const lastmod = comp.updatedAt ? new Date(comp.updatedAt).toISOString().split('T')[0] : today;
+      xml += `  <url>\n    <loc>${baseUrl}/companies/${comp._id}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+    }
+
+    xml += `</urlset>`;
+
+    res.header('Content-Type', 'application/xml');
+    res.header('Cache-Control', 'public, max-age=3600');
+    res.send(xml);
+  } catch (err) {
+    res.status(500).send('Error generating sitemap');
+  }
+});
+
 // API Routes Mount
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

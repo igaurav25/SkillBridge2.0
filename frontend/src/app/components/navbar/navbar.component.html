@@ -51,6 +51,40 @@
 
     <!-- Right Controls: Theme Toggle, Notifications, User Menu / Auth Buttons -->
     <div class="nav-actions flex items-center gap-3">
+      <!-- Universal Command Palette Trigger (Ctrl+K) -->
+      <button
+        type="button"
+        class="cmd-trigger-btn"
+        (click)="triggerCommandPalette()"
+        aria-label="Open Command Palette (Ctrl+K)"
+        title="Command Palette (Ctrl+K)"
+      >
+        <span class="cmd-icon" aria-hidden="true">🔍</span>
+        <span class="cmd-text">Search...</span>
+        <kbd class="cmd-kbd">⌘K</kbd>
+      </button>
+
+      <!-- Language Switcher Toggle (EN / HI) -->
+      <button
+        type="button"
+        class="lang-toggle-btn"
+        (click)="langService.toggleLanguage()"
+        [attr.aria-label]="'Current Language: ' + (langService.currentLang() === 'en' ? 'English' : 'Hindi') + '. Click to switch.'"
+        [title]="'Switch language to ' + (langService.currentLang() === 'en' ? 'Hindi' : 'English')"
+      >
+        <span class="lang-icon" aria-hidden="true">🌐</span>
+        <span class="lang-code">{{ langService.currentLang() | uppercase }}</span>
+      </button>
+
+      <!-- Candidate Streak Pill -->
+      <span
+        *ngIf="authService.isStudent() && (authService.currentUser()?.streak?.current || 0) > 0"
+        class="streak-pill"
+        title="Active Day Learning Streak"
+      >
+        🔥 {{ authService.currentUser()?.streak?.current }}d
+      </span>
+
       <!-- Dark/Light/System Theme Switcher -->
       <button
         class="theme-toggle-btn"
@@ -135,6 +169,7 @@
               <!-- Student specific -->
               <ng-container *ngIf="authService.isStudent()">
                 <a routerLink="/student/dashboard" (click)="closeDropdowns()" class="dropdown-item">📊 My Dashboard</a>
+                <a [routerLink]="['/portfolio', authService.currentUser()?._id]" (click)="closeDropdowns()" class="dropdown-item">🌟 Public Portfolio</a>
                 <a routerLink="/career-explorer" (click)="closeDropdowns()" class="dropdown-item">🤖 Career Explorer</a>
                 <a routerLink="/assessments" (click)="closeDropdowns()" class="dropdown-item">📝 Skill Assessments</a>
                 <a routerLink="/learning-roadmap" (click)="closeDropdowns()" class="dropdown-item">🗺️ Learning Roadmap</a>
@@ -231,7 +266,19 @@
       <span class="font-bold text-base">Workspace</span>
       <app-sb-badge variant="cyan">Menu</app-sb-badge>
     </div>
-    <button type="button" class="btn btn-outline btn-sm" (click)="closeMobileMenu()" aria-label="Close workspace navigation">✕</button>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="lang-toggle-btn"
+        (click)="langService.toggleLanguage()"
+        [attr.aria-label]="'Current Language: ' + (langService.currentLang() === 'en' ? 'English' : 'Hindi')"
+        [title]="'Switch language to ' + (langService.currentLang() === 'en' ? 'Hindi' : 'English')"
+      >
+        <span aria-hidden="true">🌐</span>
+        <span>{{ langService.currentLang() | uppercase }}</span>
+      </button>
+      <button type="button" class="btn btn-outline btn-sm" (click)="closeMobileMenu()" aria-label="Close workspace navigation">✕</button>
+    </div>
   </div>
   <div class="dropdown-divider"></div>
   <div class="mobile-links flex flex-col gap-1 p-4">

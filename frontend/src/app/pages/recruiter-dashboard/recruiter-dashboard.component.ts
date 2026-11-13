@@ -74,6 +74,7 @@ export class RecruiterDashboardComponent implements OnInit {
   candidates: any[] = [];
   myCompany: Company | null = null;
   interviews: InterviewSchedule[] = [];
+  upcomingInterviewReminders: any[] = [];
   analyticsData: RecruiterAnalyticsData | null = null;
   isLoading = true;
 
@@ -334,6 +335,13 @@ export class RecruiterDashboardComponent implements OnInit {
       next: (res) => {
         this.interviews = res.data || [];
         this.buildCalendarGrid();
+      },
+      error: () => {},
+    });
+
+    this.interviewScheduleService.getUpcomingReminders().subscribe({
+      next: (res) => {
+        this.upcomingInterviewReminders = res.data || [];
       },
       error: () => {},
     });

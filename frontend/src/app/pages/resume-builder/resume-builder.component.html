@@ -9,6 +9,24 @@
       </div>
 
       <div class="flex items-center gap-2 flex-wrap">
+        <input #pdfFileInput type="file" accept=".pdf" style="display: none;" (change)="onPdfUpload($event)" />
+        <button
+          type="button"
+          class="btn btn-outline btn-sm"
+          [disabled]="isParsingPdf"
+          (click)="pdfFileInput.click()"
+          title="Upload an existing PDF resume to auto-fill details"
+        >
+          {{ isParsingPdf ? '⏳ Parsing...' : '📄 Auto-Fill PDF' }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          (click)="openTailorModal()"
+          title="Tailor this resume to a target job opening"
+        >
+          ✨ Tailor to Job
+        </button>
         <button type="button" class="btn btn-outline btn-sm" (click)="createNewBlank()">+ New</button>
         <button type="button" class="btn btn-secondary btn-sm" (click)="populateFromProfile()">Sync Profile</button>
         <button
@@ -420,6 +438,155 @@
               <div class="text-secondary">{{ edu.institution || edu.college }}</div>
             </div>
           </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tailor Resume to Job Modal -->
+  <div
+    *ngIf="showTailorModal"
+    class="tailor-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tailorModalTitle"
+    (click)="closeTailorModal()"
+  >
+    <div class="tailor-modal-card" (click)="$event.stopPropagation()">
+      <div class="tailor-modal-header">
+        <div>
+          <h2 id="tailorModalTitle" class="text-base font-bold text-primary flex items-center gap-2">
+            <span>✨</span> Tailor Resume to Target Job Opening
+          </h2>
+          <p class="text-xs text-muted">Optimize ATS keywords, metrics, and professional summary against job criteria</p>
+        </div>
+        <button
+          type="button"
+          class="btn btn-outline btn-sm"
+          aria-label="Close modal"
+          (click)="closeTailorModal()"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="tailor-modal-body">
+        <!-- Job Selection -->
+        <div class="space-y-2">
+          <label for="targetJobSelect" class="block text-xs font-semibold text-secondary">
+            Select Target Job Position
+          </label>
+          <div class="flex gap-2">
+            <select
+              id="targetJobSelect"
+              class="form-control text-xs flex-1"
+              [(ngModel)]="selectedJobId"
+            >
+              <option value="" disabled>-- Select a job from SkillBridge openings --</option>
+              <option *ngFor="let job of availableJobs" [value]="job._id">
+                {{ job.title }} &middot; {{ job.companyName || 'Company' }} ({{ job.location || 'Remote' }})
+              </option>
+            </select>
+            <button
+              type="button"
+              class="btn btn-primary btn-sm flex-shrink-0"
+              [disabled]="isTailoring || !selectedJobId"
+              (click)="runTailoring()"
+            >
+              {{ isTailoring ? 'Analyzing...' : '🎯 Analyze & Match' }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Tailoring Results -->
+        <div *ngIf="tailoredResult" class="space-y-4">
+          <!-- Score Banner -->
+          <div class="tailored-box flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <div class="text-xs text-muted uppercase tracking-wider font-semibold">ATS Compatibility Score</div>
+              <div class="text-xl font-bold text-primary flex items-center gap-2">
+                <span>{{ tailoredResult.atsScore }}% Match</span>
+                <span class="badge badge-primary text-xs">{{ tailoredResult.engine }}</span>
+              </div>
+            </div>
+            <div class="text-xs text-muted text-right">
+              Targeting: <strong class="text-primary">{{ tailoredResult.jobTitle }}</strong><br>
+              Employer: <strong class="text-secondary">{{ tailoredResult.companyName }}</strong>
+            </div>
+          </div>
+
+          <!-- Skills Breakdown -->
+          <div class="tailored-box space-y-2">
+            <div class="text-xs font-bold text-primary">Matched Skills ({{ tailoredResult.matchedSkills?.length || 0 }})</div>
+            <div class="flex flex-wrap gap-1.5" *ngIf="tailoredResult.matchedSkills?.length; else noMatched">
+              <span *ngFor="let s of tailoredResult.matchedSkills" class="tailor-badge-pill matched">
+                ✓ {{ s }}
+              </span>
+            </div>
+            <ng-template #noMatched>
+              <p class="text-xs text-muted">No explicit skills overlap detected yet.</p>
+            </ng-template>
+
+            <div class="text-xs font-bold text-primary pt-2">Missing Skills from Job Listing (Click to Add)</div>
+            <div class="flex flex-wrap gap-1.5" *ngIf="tailoredResult.missingSkills?.length; else allSkillsMatched">
+              <button
+                *ngFor="let s of tailoredResult.missingSkills"
+                type="button"
+                class="tailor-badge-pill missing"
+                title="Click to add this skill to your resume"
+                (click)="applyMissingSkill(s)"
+              >
+                + {{ s }}
+              </button>
+            </div>
+            <ng-template #allSkillsMatched>
+              <p class="text-xs text-success">Outstanding! Your resume covers all required skills.</p>
+            </ng-template>
+          </div>
+
+          <!-- Tailored Summary -->
+          <div class="tailored-box space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-primary">Tailored Professional Summary</span>
+              <button
+                type="button"
+                class="btn btn-outline btn-xs text-primary"
+                (click)="applyTailoredSummary(tailoredResult.tailoredSummary)"
+              >
+                Apply to Resume
+              </button>
+            </div>
+            <p class="text-xs text-secondary leading-relaxed bg-black/20 p-2.5 rounded border border-white/5">
+              {{ tailoredResult.tailoredSummary }}
+            </p>
+          </div>
+
+          <!-- Suggested Bullet Rewrites (Google XYZ format) -->
+          <div class="tailored-box space-y-2" *ngIf="tailoredResult.suggestedBulletRewrites?.length">
+            <div class="text-xs font-bold text-primary">High-Impact Bullet Rewrites (Google X-Y-Z Format)</div>
+            <div class="space-y-2">
+              <div *ngFor="let rewrite of tailoredResult.suggestedBulletRewrites" class="rewrite-card">
+                <div class="flex items-center justify-between">
+                  <span class="badge badge-neutral text-xs">{{ rewrite.skillTarget }}</span>
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-xs"
+                    (click)="applyTailoredBullet(rewrite.tailored)"
+                  >
+                    + Use this Bullet
+                  </button>
+                </div>
+                <div class="text-xs text-muted line-through">Before: {{ rewrite.original }}</div>
+                <div class="text-xs text-primary font-medium">After: {{ rewrite.tailored }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button type="button" class="btn btn-secondary btn-sm" (click)="closeTailorModal()">
+            Done / Close
+          </button>
         </div>
       </div>
     </div>

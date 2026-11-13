@@ -27,8 +27,60 @@
       </div>
     </div>
 
+    <!-- Upcoming Interview Schedule Reminders (Phase 10: Urgency Banner) -->
+    <div
+      *ngIf="upcomingInterviewReminders.length > 0"
+      class="sb-card sb-card-glow mb-8 p-4 border-l-4"
+      [class.border-l-warning]="upcomingInterviewReminders[0].urgency === 'medium'"
+      [class.border-l-danger]="upcomingInterviewReminders[0].urgency === 'high'"
+      [class.border-l-primary]="upcomingInterviewReminders[0].urgency === 'normal'"
+    >
+      <div class="flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center gap-3">
+          <div class="text-3xl">⏰</div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <span class="font-bold text-base text-primary">
+                Technical Interview in {{ upcomingInterviewReminders[0].hoursRemaining }}h!
+              </span>
+              <span
+                class="badge"
+                [class.badge-danger]="upcomingInterviewReminders[0].urgency === 'high'"
+                [class.badge-warning]="upcomingInterviewReminders[0].urgency === 'medium'"
+                [class.badge-primary]="upcomingInterviewReminders[0].urgency === 'normal'"
+              >
+                {{ upcomingInterviewReminders[0].urgency === 'high' ? '🚨 Starting Soon' : 'Upcoming' }}
+              </span>
+              <span class="badge badge-neutral text-xs">
+                {{ upcomingInterviewReminders[0].round }} &middot; {{ upcomingInterviewReminders[0].mode }}
+              </span>
+            </div>
+            <div class="text-xs text-secondary mt-0.5">
+              Role: <strong>{{ upcomingInterviewReminders[0].job?.title }}</strong> at
+              <strong>{{ upcomingInterviewReminders[0].job?.companyName }}</strong>
+            </div>
+            <div class="text-xs text-muted mt-0.5">
+              📅 {{ upcomingInterviewReminders[0].scheduledAt | date:'medium' }}
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a
+            *ngIf="upcomingInterviewReminders[0].meetingLink"
+            [href]="upcomingInterviewReminders[0].meetingLink"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-success btn-sm"
+          >
+            📹 Join Meeting Room
+          </a>
+          <a routerLink="/interview-prep" class="btn btn-outline btn-sm">🎯 Practice Questions</a>
+        </div>
+      </div>
+    </div>
+
     <!-- Upcoming Interview Alert Banner (if any) -->
-    <div *ngIf="upcomingInterviews.length > 0" class="interview-alert-card sb-card sb-card-glow mb-8 p-4">
+    <div *ngIf="upcomingInterviews.length > 0 && upcomingInterviewReminders.length === 0" class="interview-alert-card sb-card sb-card-glow mb-8 p-4">
       <div class="flex items-center justify-between flex-wrap gap-4">
         <div class="flex items-center gap-3">
           <div class="alert-icon text-2xl">📅</div>

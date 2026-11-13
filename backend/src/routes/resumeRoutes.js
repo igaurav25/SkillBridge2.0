@@ -8,12 +8,16 @@ const {
   deleteResume,
   uploadAndAnalyzeResume,
   analyzeExistingResume,
+  parseUploadedPdfResume,
+  tailorResumeToJob,
 } = require('../controllers/resumeController');
 const { protect } = require('../middleware/authMiddleware');
 const { uploadResume } = require('../middleware/uploadMiddleware');
 
 router.get('/', protect, getMyResumes);
 router.post('/', protect, createResume);
+router.post('/parse-pdf', protect, uploadResume.single('resume'), parseUploadedPdfResume);
+router.post('/tailor-to-job', protect, tailorResumeToJob);
 router.get('/:id', protect, getResumeById);
 router.put('/:id', protect, updateResume);
 router.delete('/:id', protect, deleteResume);

@@ -4,6 +4,7 @@ import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { ThemeService } from '../../services/theme.service';
 import { NotificationService } from '../../services/notification.service';
+import { LanguageService } from '../../services/language.service';
 import { SbBadgeComponent } from '../ui';
 
 @Component({
@@ -17,6 +18,7 @@ export class NavbarComponent implements OnInit {
   authService = inject(AuthService);
   themeService = inject(ThemeService);
   notificationService = inject(NotificationService);
+  langService = inject(LanguageService);
   private router = inject(Router);
 
   isMobileMenuOpen = false;
@@ -33,6 +35,10 @@ export class NavbarComponent implements OnInit {
   onEscape() {
     this.closeMobileMenu();
     this.closeDropdowns();
+  }
+
+  triggerCommandPalette() {
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true, bubbles: true }));
   }
 
   toggleMobileMenu() {

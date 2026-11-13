@@ -39,6 +39,11 @@ export interface User {
   };
   themePreference?: 'dark' | 'light' | 'system';
   preferred3DMode?: 'auto' | 'force-3d' | 'force-2d';
+  streak?: {
+    current: number;
+    longest: number;
+    lastActiveDate?: string;
+  };
   createdAt?: string;
   updatedAt?: string;
 }

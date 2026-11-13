@@ -11,6 +11,7 @@ export const routes: Routes = [
   { path: 'jobs/:id', loadComponent: () => import('./pages/jobs/job-details.component').then(m => m.JobDetailsComponent) },
   { path: 'companies', loadComponent: () => import('./pages/companies/companies.component').then(m => m.CompaniesComponent) },
   { path: 'companies/:id', loadComponent: () => import('./pages/companies/company-details.component').then(m => m.CompanyDetailsComponent) },
+  { path: 'portfolio/:id', loadComponent: () => import('./pages/portfolio/public-portfolio.component').then(m => m.PublicPortfolioComponent) },
 
   // Student & Candidate Protected
   { path: 'dashboard', loadComponent: () => import('./pages/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent), canActivate: [authGuard] },

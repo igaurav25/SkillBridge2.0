@@ -75,6 +75,11 @@ const userSchema = new mongoose.Schema(
       enum: ['auto', 'force-3d', 'force-2d'],
       default: 'auto',
     },
+    streak: {
+      current: { type: Number, default: 1 },
+      longest: { type: Number, default: 1 },
+      lastActiveDate: { type: Date, default: Date.now },
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },

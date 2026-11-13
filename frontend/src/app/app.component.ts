@@ -5,6 +5,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { BottomNavComponent } from './components/bottom-nav/bottom-nav.component';
 import { PwaInstallBannerComponent } from './components/pwa-install-banner/pwa-install-banner.component';
+import { CommandPaletteComponent } from './components/command-palette/command-palette.component';
 import { ThemeService } from './services/theme.service';
 import { MobileNativeService } from './services/mobile-native.service';
 
@@ -12,7 +13,7 @@ import { MobileNativeService } from './services/mobile-native.service';
   selector: 'app-root',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastComponent, BottomNavComponent, PwaInstallBannerComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, ToastComponent, BottomNavComponent, PwaInstallBannerComponent, CommandPaletteComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

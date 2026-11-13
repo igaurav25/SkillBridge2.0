@@ -11,6 +11,7 @@ import { MlService, CareerRecommendationItem } from '../../services/ml.service';
 import { RoadmapService, LearningProgress } from '../../services/roadmap.service';
 import { AssessmentService } from '../../services/assessment.service';
 import { ProjectService, ProjectRecommendation } from '../../services/project.service';
+import { InterviewScheduleService } from '../../services/interview-schedule.service';
 import { JobCardComponent } from '../../components/job-card/job-card.component';
 import { Career3dVisualizerComponent } from '../../components/career-3d-visualizer/career-3d-visualizer.component';
 import { Profile } from '../../models/profile.model';
@@ -33,6 +34,7 @@ export class StudentDashboardComponent implements OnInit {
   private roadmapService = inject(RoadmapService);
   private assessmentService = inject(AssessmentService);
   private projectService = inject(ProjectService);
+  private interviewScheduleService = inject(InterviewScheduleService);
   private toast = inject(ToastService);
 
   profile: Profile | null = null;
@@ -41,6 +43,7 @@ export class StudentDashboardComponent implements OnInit {
   recentApplications: Application[] = [];
   savedJobsCount = 0;
   upcomingInterviews: Application[] = [];
+  upcomingInterviewReminders: any[] = [];
   recommendedProjects: ProjectRecommendation[] = [];
 
   // ML & Telemetry Data
@@ -124,6 +127,14 @@ export class StudentDashboardComponent implements OnInit {
       next: (res) => {
         this.savedJobsCount = res.count || 0;
       },
+    });
+
+    // 6. Fetch Upcoming Interview Schedule Reminders (Phase 10)
+    this.interviewScheduleService.getUpcomingReminders().subscribe({
+      next: (res) => {
+        this.upcomingInterviewReminders = res.data || [];
+      },
+      error: () => {},
     });
 
     // 6. Fetch Assessment History

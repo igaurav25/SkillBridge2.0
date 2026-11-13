@@ -289,10 +289,57 @@ const submitFeedback = async (req, res, next) => {
   }
 };
 
+// @desc    Get upcoming interview reminders (next 48h)
+// @route   GET /api/interviews/schedules/upcoming-reminders
+// @access  Private
+const getUpcomingReminders = async (req, res, next) => {
+  try {
+    const now = new Date();
+    const in48Hours = new Date(now.getTime() + 48 * 3600 * 1000);
+
+    const query = {
+      status: 'Scheduled',
+      scheduledAt: { $gte: now, $lte: in48Hours },
+    };
+
+    if (req.user.role === 'recruiter') {
+      query.recruiter = req.user.id;
+    } else if (req.user.role === 'student') {
+      query.candidate = req.user.id;
+    }
+
+    const upcoming = await InterviewSchedule.find(query)
+      .populate('job', 'title companyName location workType')
+      .populate('candidate', 'name email avatar headline')
+      .populate('recruiter', 'name email companyName')
+      .sort('scheduledAt')
+      .lean();
+
+    const reminders = upcoming.map((inv) => {
+      const diffMs = new Date(inv.scheduledAt) - now;
+      const diffHours = Math.round(diffMs / (3600 * 1000));
+      return {
+        ...inv,
+        hoursRemaining: Math.max(1, diffHours),
+        urgency: diffHours <= 6 ? 'high' : diffHours <= 24 ? 'medium' : 'normal',
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      count: reminders.length,
+      data: reminders,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   scheduleInterview,
   getInterviews,
   rescheduleInterview,
   cancelInterview,
   submitFeedback,
+  getUpcomingReminders,
 };

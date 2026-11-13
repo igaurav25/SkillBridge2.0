@@ -6,10 +6,12 @@ const {
   rescheduleInterview,
   cancelInterview,
   submitFeedback,
+  getUpcomingReminders,
 } = require('../controllers/interviewScheduleController');
 const { protect } = require('../middleware/authMiddleware');
 const { authorize } = require('../middleware/roleMiddleware');
 
+router.get('/upcoming-reminders', protect, getUpcomingReminders);
 router.post('/', protect, authorize('recruiter', 'admin'), scheduleInterview);
 router.get('/', protect, getInterviews);
 router.patch('/:id/reschedule', protect, authorize('recruiter', 'admin'), rescheduleInterview);

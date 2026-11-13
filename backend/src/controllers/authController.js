@@ -96,6 +96,34 @@ const login = async (req, res, next) => {
       });
     }
 
+    // Update streak tracking
+    try {
+      const now = new Date();
+      if (!user.streak) {
+        user.streak = { current: 1, longest: 1, lastActiveDate: now };
+      } else {
+        const last = user.streak.lastActiveDate ? new Date(user.streak.lastActiveDate) : null;
+        if (last) {
+          const diffDays = Math.floor((new Date(now).setHours(0,0,0,0) - new Date(last).setHours(0,0,0,0)) / (24 * 3600 * 1000));
+          if (diffDays === 1) {
+            user.streak.current = (user.streak.current || 0) + 1;
+            user.streak.longest = Math.max(user.streak.longest || 1, user.streak.current);
+            user.streak.lastActiveDate = now;
+          } else if (diffDays > 1) {
+            user.streak.current = 1;
+            user.streak.lastActiveDate = now;
+          }
+        } else {
+          user.streak.current = 1;
+          user.streak.longest = Math.max(user.streak.longest || 1, 1);
+          user.streak.lastActiveDate = now;
+        }
+      }
+      await User.findByIdAndUpdate(user._id, { streak: user.streak });
+    } catch (e) {
+      // Non-critical telemetry error
+    }
+
     sendTokenResponse(user, 200, res, 'Login successful! Welcome back.');
   } catch (err) {
     next(err);
