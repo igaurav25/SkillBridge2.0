@@ -116,3 +116,4 @@ export class LanguageService {
     return dict[key] || fallback || key;
   }
 }
+

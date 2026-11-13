@@ -65,7 +65,7 @@ export interface PublicPortfolio {
                     {{ getInitials(portfolio()!.name) }}
                   </div>
                 }
-                @if (portfolio()!.streak.current > 0) {
+                @if (portfolio()!.streak && portfolio()!.streak.current > 0) {
                   <span class="streak-badge" title="Active Learning Streak">
                     🔥 {{ portfolio()!.streak.current }}d
                   </span>
@@ -826,3 +826,4 @@ export class PublicPortfolioComponent implements OnInit {
       .toUpperCase();
   }
 }
+
