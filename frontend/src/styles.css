@@ -228,6 +228,7 @@ h4 { font-size: var(--text-lg); }
   color: #a5b4fc;
   background: linear-gradient(135deg, #c7d2fe 0%, #818cf8 50%, #22d3ee 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
@@ -235,6 +236,7 @@ h4 { font-size: var(--text-lg); }
   color: #4338ca;
   background: linear-gradient(135deg, #4338ca 0%, #4f46e5 55%, #0284c7 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
