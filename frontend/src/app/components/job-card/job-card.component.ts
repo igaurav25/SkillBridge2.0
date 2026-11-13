@@ -12,17 +12,20 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="sb-card sb-card-interactive job-card" [class.new-arrival-glow]="job.isNewArrival">
-      <!-- Platform Origin Bar -->
-      <div class="platform-bar flex items-center justify-between mb-3 pb-2 border-bottom">
+    <div class="sb-card sb-card-interactive job-card" [class.new-arrival-glow]="job.isNewArrival" [class.job-expired]="isExpired">
+      <!-- Platform Origin & Source Bar -->
+      <div class="platform-bar flex items-center justify-between mb-3 pb-2 border-bottom flex-wrap gap-2">
         <div class="flex items-center gap-2 flex-wrap">
-          <!-- Real-Time Incoming Arrival Badge -->
-          <span *ngIf="job.isNewArrival" class="new-arrival-pill font-black text-xs">
+          <!-- Real-Time Incoming Arrival Badge or Expired Badge -->
+          <span *ngIf="isExpired" class="badge badge-danger font-bold text-xs">
+            ⚠️ CLOSED / EXPIRED
+          </span>
+          <span *ngIf="!isExpired && job.isNewArrival" class="new-arrival-pill font-black text-xs">
             🔥 NEW ARRIVAL (Just Now)
           </span>
 
           <span class="platform-icon-pill" [ngClass]="getPlatformClass(job.platform)">
-            <span>{{ job.platform || 'Verified Portal' }}</span>
+            <span>{{ job.platform || 'SkillBridge Network' }}</span>
           </span>
 
           <!-- Stream Eligibility Tag -->
@@ -30,60 +33,82 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
             {{ getStreamLabel(job.stream) }}
           </span>
 
-          <span class="live-dot" title="Active Opportunity"></span>
+          <span class="source-tag text-[11px] text-muted">
+            Source: {{ job.platform ? job.platform : 'Direct Recruiter' }}
+          </span>
+
+          <span *ngIf="!isExpired" class="live-dot" title="Active Opportunity"></span>
           <span class="text-xs text-muted font-medium">{{ job.postedAt || 'Recent' }}</span>
         </div>
 
         <!-- Direct Apply Button (Clicks directly to external platform job apply page) -->
-        <a
-          *ngIf="directApplyUrl"
-          [href]="directApplyUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="direct-apply-pill text-xs font-bold"
-          (click)="$event.stopPropagation()"
-          title="Direct Apply on {{ job.platform || 'Official Portal' }} (Opens Web Application Page)"
-        >
-          Apply on {{ job.platform || 'Official Portal' }} ↗
-        </a>
+        <div class="flex items-center gap-2">
+          <a
+            *ngIf="!isExpired && directApplyUrl"
+            [href]="directApplyUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="direct-apply-pill text-xs font-bold"
+            (click)="$event.stopPropagation()"
+            title="Direct Apply on {{ job.platform || 'Official Portal' }} (Opens Web Application Page)"
+          >
+            Apply on {{ job.platform || 'Official Portal' }} ↗
+          </a>
+          <span *ngIf="isExpired" class="text-xs text-danger font-semibold">
+            Applications Closed
+          </span>
+        </div>
       </div>
 
       <div class="card-header flex items-start justify-between gap-4 mb-3">
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3 min-w-0">
           <img
             [src]="(job.companyLogo || job.company?.logo) && ((job.companyLogo || job.company?.logo || '').startsWith('/uploads/') || (job.companyLogo || job.company?.logo || '').startsWith('data:image/')) ? (job.companyLogo || job.company?.logo) : 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231e293b%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23818cf8%22%20font-family%3D%22system-ui%2Csans-serif%22%3ESB%3C%2Ftext%3E%3C%2Fsvg%3E'"
             alt="{{ job.companyName }} logo"
-            class="company-logo"
+            class="company-logo flex-shrink-0"
             (error)="onImgError($event)"
           />
-          <div>
-            <div class="flex items-center gap-2">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="company-name text-xs font-semibold text-secondary">{{ job.companyName }}</span>
-              <span *ngIf="job.company?.isVerified" class="verified-icon text-xs" title="Verified Company">✓</span>
+              <span *ngIf="job.company?.isVerified" class="verified-icon text-xs text-emerald font-bold" title="Verified by SkillBridge">✓ Verified</span>
               <span *ngIf="job.platformBadge" class="badge badge-neutral text-xs py-0 px-2 font-medium">
                 {{ job.platformBadge }}
               </span>
             </div>
-            <h3 class="job-title text-base font-bold">{{ job.title }}</h3>
+            <h3 class="job-title text-base font-bold truncate">{{ job.title }}</h3>
           </div>
         </div>
 
-        <!-- Bookmark button -->
-        <button
-          *ngIf="authService.isStudent()"
-          type="button"
-          class="bookmark-btn"
-          [class.saved]="isSaved"
-          (click)="onToggleSave($event)"
-          title="{{ isSaved ? 'Remove bookmark' : 'Bookmark job' }}"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="isSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
-            <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
-          </svg>
-        </button>
+        <!-- Card Top Actions: Scam Report + Bookmark button -->
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <button
+            type="button"
+            class="btn-flag text-xs text-muted hover:text-danger"
+            (click)="onReportClick($event)"
+            title="Report fake job or scam"
+            aria-label="Report listing"
+          >
+            🚩
+          </button>
+
+          <button
+            *ngIf="authService.isStudent()"
+            type="button"
+            class="bookmark-btn"
+            [class.saved]="isSaved"
+            (click)="onToggleSave($event)"
+            title="{{ isSaved ? 'Remove bookmark' : 'Bookmark job' }}"
+            aria-label="Bookmark job"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" [attr.fill]="isSaved ? 'currentColor' : 'none'" stroke="currentColor" stroke-width="2">
+              <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/>
+            </svg>
+          </button>
+        </div>
       </div>
 
-      <!-- Badges -->
+      <!-- Badges Row -->
       <div class="badges-row flex items-center gap-2 flex-wrap mb-3">
         <span class="badge" [ngClass]="getWorkTypeClass(job.workType || job.workMode)">
           {{ (job.workType || job.workMode || 'onsite') | uppercase }}
@@ -94,18 +119,26 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         <span class="badge badge-neutral">
           {{ (job.experienceLevel || 'Entry') | titlecase }}
         </span>
-        <span *ngIf="job.matchAnalysis?.matchScore" class="badge badge-cyan font-bold">
-          ⚡ {{ job.matchAnalysis?.matchScore }}% Match
+        <span *ngIf="computedMatch" class="badge badge-cyan font-bold" [title]="computedMatch.matched.length + ' matching skills'">
+          ⚡ {{ computedMatch.score }}% Match
+        </span>
+        <span *ngIf="job.deadline" class="badge text-xs" [class.badge-danger]="isExpired" [class.badge-neutral]="!isExpired">
+          🕒 {{ isExpired ? 'Closed' : 'Deadline: ' + (job.deadline | date:'mediumDate') }}
         </span>
       </div>
 
-      <!-- Skills Preview -->
-      <div class="skills-preview flex items-center gap-1 flex-wrap mb-4">
-        <span *ngFor="let skill of (job.requiredSkills || job.skillsRequired || []).slice(0, 4)" class="skill-pill text-xs">
+      <!-- Skills Preview with Highlighted Matches -->
+      <div class="skills-preview flex items-center gap-1.5 flex-wrap mb-4">
+        <span
+          *ngFor="let skill of (job.requiredSkills || job.skillsRequired || []).slice(0, 5)"
+          class="skill-pill text-xs"
+          [class.skill-matched]="isSkillMatched(skill)"
+        >
           {{ skill }}
+          <span *ngIf="isSkillMatched(skill)" class="match-check text-emerald font-bold">✓</span>
         </span>
-        <span *ngIf="((job.requiredSkills || job.skillsRequired)?.length || 0) > 4" class="text-xs text-muted">
-          +{{ ((job.requiredSkills || job.skillsRequired)?.length || 0) - 4 }} more
+        <span *ngIf="((job.requiredSkills || job.skillsRequired)?.length || 0) > 5" class="text-xs text-muted">
+          +{{ ((job.requiredSkills || job.skillsRequired)?.length || 0) - 5 }} more
         </span>
       </div>
 
@@ -132,18 +165,32 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
           </button>
 
           <!-- Direct Apply CTA -->
-          <a
-            *ngIf="directApplyUrl"
-            [href]="directApplyUrl"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn btn-primary btn-xs font-bold flex items-center gap-1 direct-apply-btn"
-            (click)="$event.stopPropagation()"
-            title="Direct Apply on {{ job.platform || 'Official Portal' }} (Opens Web Application Page)"
-          >
-            <span>Direct Apply</span>
-            <span class="text-xs">↗</span>
-          </a>
+          <ng-container *ngIf="!isExpired">
+            <a
+              *ngIf="directApplyUrl"
+              [href]="directApplyUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-primary btn-xs font-bold flex items-center gap-1 direct-apply-btn"
+              (click)="$event.stopPropagation()"
+              title="Direct Apply on {{ job.platform || 'Official Portal' }} (Opens Web Application Page)"
+            >
+              <span>Direct Apply</span>
+              <span class="text-xs">↗</span>
+            </a>
+            <button
+              *ngIf="!directApplyUrl"
+              type="button"
+              class="btn btn-primary btn-xs font-bold"
+              (click)="onDetailsClick($event)"
+            >
+              Apply Now
+            </button>
+          </ng-container>
+
+          <span *ngIf="isExpired" class="btn btn-xs btn-neutral opacity-50 cursor-not-allowed">
+            Closed
+          </span>
         </div>
       </div>
     </div>
@@ -159,6 +206,10 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         transform: translateY(-2px);
         border-color: var(--primary-500, #3b82f6);
         box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12);
+      }
+      .job-expired {
+        opacity: 0.78;
+        border-color: rgba(239, 68, 68, 0.25);
       }
       .platform-bar {
         border-bottom: 1px solid var(--border-subtle);
@@ -251,11 +302,6 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         background: var(--bg-tertiary);
         color: var(--text-secondary);
       }
-      .platform-mini-icon {
-        width: 14px;
-        height: 14px;
-        object-fit: contain;
-      }
       .live-dot {
         width: 7px;
         height: 7px;
@@ -280,6 +326,17 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         padding: 4px 10px;
         font-size: 0.75rem;
       }
+      .btn-flag {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 4px;
+        transition: transform 0.15s ease;
+      }
+      .btn-flag:hover {
+        transform: scale(1.15);
+      }
       .company-logo {
         width: 44px;
         height: 44px;
@@ -289,7 +346,7 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         border: 1px solid var(--border-subtle);
       }
       .verified-icon {
-        color: var(--accent-emerald);
+        color: var(--accent-emerald, #10b981);
         font-weight: 800;
       }
       .bookmark-btn {
@@ -314,6 +371,15 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
         padding: 0.15rem 0.5rem;
         border-radius: 4px;
         color: var(--text-secondary);
+      }
+      .skill-matched {
+        background: rgba(16, 185, 129, 0.12);
+        border-color: rgba(16, 185, 129, 0.4);
+        color: var(--accent-emerald, #10b981);
+        font-weight: 600;
+      }
+      .match-check {
+        margin-left: 2px;
       }
       .border-top {
         border-top: 1px solid var(--border-subtle);
@@ -357,8 +423,10 @@ import { getDirectApplyUrl } from '../../utils/direct-apply.util';
 })
 export class JobCardComponent {
   @Input({ required: true }) job!: Job;
+  @Input() candidateSkills: string[] = [];
   @Output() viewDetails = new EventEmitter<Job>();
   @Output() savedChanged = new EventEmitter<boolean>();
+  @Output() reportJob = new EventEmitter<Job>();
 
   authService = inject(AuthService);
   private jobService = inject(JobService);
@@ -367,6 +435,37 @@ export class JobCardComponent {
 
   get isSaved(): boolean {
     return !!this.job.isSaved;
+  }
+
+  get isExpired(): boolean {
+    if (this.job.status === 'closed') return true;
+    if (this.job.deadline) {
+      return new Date(this.job.deadline).getTime() < Date.now();
+    }
+    return false;
+  }
+
+  get computedMatch(): { score: number; matched: string[]; missing: string[] } | null {
+    if (this.job.matchAnalysis && this.job.matchAnalysis.matchScore) {
+      return {
+        score: this.job.matchAnalysis.matchScore,
+        matched: this.job.matchAnalysis.matchedSkills || [],
+        missing: this.job.matchAnalysis.missingSkills || [],
+      };
+    }
+    const reqSkills = (this.job.requiredSkills || this.job.skillsRequired || []).map((s: string) => s.trim());
+    if (!reqSkills.length || !this.candidateSkills || !this.candidateSkills.length) return null;
+    const candLower = this.candidateSkills.map((s) => s.toLowerCase());
+    const matched = reqSkills.filter((s: string) => candLower.includes(s.toLowerCase()));
+    const missing = reqSkills.filter((s: string) => !candLower.includes(s.toLowerCase()));
+    const score = Math.min(100, Math.max(10, Math.round((matched.length / reqSkills.length) * 100)));
+    return { score, matched, missing };
+  }
+
+  isSkillMatched(skill: string): boolean {
+    if (!this.computedMatch) return false;
+    const skillLower = skill.toLowerCase();
+    return this.computedMatch.matched.some((s) => s.toLowerCase() === skillLower);
   }
 
   get directApplyUrl(): string {
@@ -432,11 +531,6 @@ export class JobCardComponent {
     event.target.src = 'data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231e293b%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20font-size%3D%2224%22%20font-weight%3D%22700%22%20text-anchor%3D%22middle%22%20fill%3D%22%23818cf8%22%20font-family%3D%22system-ui%2Csans-serif%22%3ESB%3C%2Ftext%3E%3C%2Fsvg%3E';
   }
 
-  onPlatformIconError(event: any) {
-    event.target.style.display = 'none';
-  }
-
-  // Click on the card opens Details (as requested: "usme click krte hi jobs ki details sb chiz")
   onCardClick() {
     this.viewDetails.emit(this.job);
   }
@@ -446,7 +540,11 @@ export class JobCardComponent {
     this.viewDetails.emit(this.job);
   }
 
-  // Click on Apply opens the authentic platform website directly (as requested: "or APPLY mai click krte hi vo website khul jayegi jis app se vo job ka show hora hoga")
+  onReportClick(event: Event) {
+    event.stopPropagation();
+    this.reportJob.emit(this.job);
+  }
+
   onApplyClick(event: Event) {
     event.stopPropagation();
     const url = this.directApplyUrl;

@@ -45,7 +45,11 @@ export class JobService {
     minSalary?: number;
     maxSalary?: number;
     jobType?: string;
+    workType?: string;
     experienceLevel?: string;
+    datePosted?: string;
+    skill?: string;
+    hideExpired?: boolean;
     page?: number;
     limit?: number;
   }): Observable<ApiResponse<Job[]> & { hasMore?: boolean; streamStats?: any; availablePlatforms?: any[] }> {
@@ -112,5 +116,9 @@ export class JobService {
 
   toggleSaveJob(jobId: string, category = 'General', notes = ''): Observable<ApiResponse> {
     return this.http.post<ApiResponse>(`${this.SAVED_API_URL}/${jobId}`, { category, notes });
+  }
+
+  updateSavedJob(id: string, data: { category?: string; notes?: string }): Observable<ApiResponse> {
+    return this.http.put<ApiResponse>(`${this.SAVED_API_URL}/${id}`, data);
   }
 }

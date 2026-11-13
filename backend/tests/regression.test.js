@@ -299,5 +299,81 @@ test('API Regression Suite (Auth, IDOR, Mass Assignment, C++ Search, Admin Priva
     body: JSON.stringify({ currentPassword: 'WrongPassword!', newPassword: 'NewPassword123!' }),
   });
   assert.equal(badPassRes.status, 401);
+
+  // 12. Phase 5: Job Marketplace, Criteria Filtering, Report Scam, and Applications
+  // A. Date posted filtering on /api/jobs
+  const jobs24hRes = await fetch(`${baseUrl}/jobs?datePosted=24h&hideExpired=true`);
+  const jobs24hJson = await jobs24hRes.json();
+  assert.equal(jobs24hRes.status, 200);
+  assert.equal(jobs24hJson.success, true);
+  assert.ok(Array.isArray(jobs24hJson.data));
+
+  // B. Live platform jobs criteria search with workType, datePosted, and hideExpired
+  const liveCriteriaRes = await fetch(`${baseUrl}/jobs/criteria-search`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      role: 'Engineer',
+      stream: 'btech',
+      workType: 'remote',
+      datePosted: 'all',
+      hideExpired: true,
+      page: 1,
+      limit: 5,
+    }),
+  });
+  const liveCriteriaJson = await liveCriteriaRes.json();
+  assert.equal(liveCriteriaRes.status, 200);
+  assert.equal(liveCriteriaJson.success, true);
+
+  // C. Report Scam: Student reports a job with ObjectId
+  const seededJob = jobs24hJson.data[0];
+  if (seededJob) {
+    const reportRes = await fetch(`${baseUrl}/reports`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${studentAuth.token}`,
+      },
+      body: JSON.stringify({
+        targetType: 'Job',
+        targetId: seededJob._id,
+        targetTitle: seededJob.title,
+        reason: 'Scam',
+        description: 'Suspicious third-party fee requested.',
+      }),
+    });
+    const reportJson = await reportRes.json();
+    assert.equal(reportRes.status, 201);
+    assert.equal(reportJson.success, true);
+  }
+
+  // D. Report external platform job with string ID (e.g. remotive_test123)
+  const reportExtRes = await fetch(`${baseUrl}/reports`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${studentAuth.token}`,
+    },
+    body: JSON.stringify({
+      targetType: 'Job',
+      targetId: 'remotive_test123',
+      targetTitle: 'Remote Dev Scam Listing',
+      reason: 'Fake Job',
+      description: 'Non-existent position on external platform.',
+    }),
+  });
+  const reportExtJson = await reportExtRes.json();
+  assert.equal(reportExtRes.status, 201);
+  assert.equal(reportExtJson.success, true);
+
+  // E. Candidate applications status & stats check
+  const myAppsRes = await fetch(`${baseUrl}/applications/my`, {
+    headers: { Authorization: `Bearer ${studentAuth.token}` },
+  });
+  const myAppsJson = await myAppsRes.json();
+  assert.equal(myAppsRes.status, 200);
+  assert.ok(myAppsJson.stats !== undefined);
+  assert.equal(typeof myAppsJson.stats.total, 'number');
 });
 

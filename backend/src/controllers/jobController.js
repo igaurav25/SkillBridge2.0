@@ -48,6 +48,8 @@ const getJobs = async (req, res, next) => {
       experienceLevel,
       skill,
       minSalary,
+      datePosted,
+      hideExpired,
       sort = 'recent',
     } = req.query;
 
@@ -99,6 +101,19 @@ const getJobs = async (req, res, next) => {
       if (Number.isFinite(minSalNum) && minSalNum >= 0) {
         query['salary.min'] = { $gte: minSalNum };
       }
+    }
+
+    if (datePosted && datePosted !== 'all') {
+      const now = Date.now();
+      let cutoff = null;
+      if (datePosted === '24h') cutoff = new Date(now - 24 * 3600 * 1000);
+      else if (datePosted === 'week') cutoff = new Date(now - 7 * 24 * 3600 * 1000);
+      else if (datePosted === 'month') cutoff = new Date(now - 30 * 24 * 3600 * 1000);
+      if (cutoff) query.createdAt = { $gte: cutoff };
+    }
+
+    if (hideExpired === 'true' || hideExpired === true) {
+      query.deadline = { $not: { $lt: new Date() } };
     }
 
     // Sorting
@@ -398,7 +413,11 @@ const getLivePlatformJobs = async (req, res, next) => {
       minSalary = 0,
       maxSalary = 0,
       jobType = '',
+      workType = '',
       experienceLevel = '',
+      datePosted = 'all',
+      skill = '',
+      hideExpired = false,
       page = 1,
       limit = 12,
     } = req.query;
@@ -412,7 +431,11 @@ const getLivePlatformJobs = async (req, res, next) => {
       minSalary: Number(minSalary) || 0,
       maxSalary: Number(maxSalary) || 0,
       jobType,
+      workType,
       experienceLevel,
+      datePosted,
+      skill,
+      hideExpired: hideExpired === 'true' || hideExpired === true,
       page: Number(page) || 1,
       limit: Number(limit) || 12,
     });
@@ -448,7 +471,11 @@ const searchJobsByCriteria = async (req, res, next) => {
       minSalary = 0,
       maxSalary = 0,
       jobType = '',
+      workType = '',
       experienceLevel = '',
+      datePosted = 'all',
+      skill = '',
+      hideExpired = false,
       page = 1,
       limit = 12,
     } = req.body;
@@ -464,7 +491,11 @@ const searchJobsByCriteria = async (req, res, next) => {
       minSalary: Number(minSalary) || 0,
       maxSalary: Number(maxSalary) || 0,
       jobType,
+      workType,
       experienceLevel,
+      datePosted,
+      skill,
+      hideExpired: hideExpired === 'true' || hideExpired === true,
       page: Number(page) || 1,
       limit: Number(limit) || 12,
     });

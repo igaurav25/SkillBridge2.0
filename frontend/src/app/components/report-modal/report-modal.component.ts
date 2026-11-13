@@ -65,7 +65,7 @@ import { ToastService } from '../../services/toast.service';
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 2000;
+        z-index: var(--z-modal, 100);
         padding: 1rem;
       }
       .modal-card {

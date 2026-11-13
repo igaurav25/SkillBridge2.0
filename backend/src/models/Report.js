@@ -13,7 +13,7 @@ const reportSchema = new mongoose.Schema(
       required: true,
     },
     targetId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
     },
     targetTitle: {

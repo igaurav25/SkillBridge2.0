@@ -537,11 +537,15 @@ async function searchLivePlatformJobs({
   minSalary = 0,
   maxSalary = 0,
   jobType = '',
+  workType = '',
   experienceLevel = '',
+  datePosted = 'all',
+  skill = '',
+  hideExpired = false,
   page = 1,
   limit = 12,
 }) {
-  const cacheKey = `${query}_${stream}_${course}_${platform}_${location}_${minSalary}_${maxSalary}_${jobType}_${experienceLevel}`;
+  const cacheKey = `${query}_${stream}_${course}_${platform}_${location}_${minSalary}_${maxSalary}_${jobType}_${workType}_${experienceLevel}_${datePosted}_${skill}_${hideExpired}`;
   let aggregated = [];
 
   const cached = cache.get(cacheKey);
@@ -685,6 +689,37 @@ async function searchLivePlatformJobs({
     if (experienceLevel && experienceLevel !== 'all') {
       const levels = experienceLevel.toLowerCase().split(',');
       if (!levels.includes(job.experienceLevel?.toLowerCase())) return false;
+    }
+
+    // 7. Work Type Filter (remote, hybrid, onsite)
+    if (workType && workType !== 'all') {
+      const types = workType.toLowerCase().split(',').map((t) => t.trim());
+      const jobWorkType = (job.workType || job.workMode || '').toLowerCase();
+      if (!types.includes(jobWorkType)) return false;
+    }
+
+    // 8. Skill Filter
+    if (skill && skill.trim().length > 0) {
+      const skills = skill.toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+      const jobSkills = (job.requiredSkills || job.skillsRequired || []).map((s) => s.toLowerCase());
+      const hasSkill = skills.some(
+        (s) => jobSkills.some((js) => js.includes(s)) || (job.description || '').toLowerCase().includes(s)
+      );
+      if (!hasSkill) return false;
+    }
+
+    // 9. Date Posted Filter (24h, week, month)
+    if (datePosted && datePosted !== 'all') {
+      const jobTime = new Date(job.createdAt || job.postedAt || 0).getTime();
+      const now = Date.now();
+      if (datePosted === '24h' && now - jobTime > 24 * 3600 * 1000) return false;
+      if (datePosted === 'week' && now - jobTime > 7 * 24 * 3600 * 1000) return false;
+      if (datePosted === 'month' && now - jobTime > 30 * 24 * 3600 * 1000) return false;
+    }
+
+    // 10. Hide Expired Listings
+    if (hideExpired && job.deadline) {
+      if (new Date(job.deadline).getTime() < Date.now()) return false;
     }
 
     return true;

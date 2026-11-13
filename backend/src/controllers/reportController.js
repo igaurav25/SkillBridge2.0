@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Report = require('../models/Report');
 const Job = require('../models/Job');
 
@@ -25,8 +26,8 @@ const createReport = async (req, res, next) => {
       status: 'Pending',
     });
 
-    // If reporting a job, flag it
-    if (targetType === 'Job') {
+    // If reporting a job, flag it in DB if it is a persistent database job
+    if (targetType === 'Job' && mongoose.Types.ObjectId.isValid(targetId)) {
       await Job.findByIdAndUpdate(targetId, {
         isReported: true,
         $inc: { reportedCount: 1 },

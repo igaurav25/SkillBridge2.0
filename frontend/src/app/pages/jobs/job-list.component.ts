@@ -4,19 +4,22 @@ import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { JobService } from '../../services/job.service';
 import { AuthService } from '../../services/auth.service';
+import { ProfileService } from '../../services/profile.service';
 import { JobCardComponent } from '../../components/job-card/job-card.component';
+import { ReportModalComponent } from '../../components/report-modal/report-modal.component';
 import { Job } from '../../models/job.model';
 import { getDirectApplyUrl } from '../../utils/direct-apply.util';
 
 @Component({
   selector: 'app-job-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, JobCardComponent],
+  imports: [CommonModule, RouterModule, FormsModule, JobCardComponent, ReportModalComponent],
   templateUrl: './job-list.component.html',
   styleUrls: ['./job-list.component.css'],
 })
 export class JobListComponent implements OnInit, OnDestroy {
   private jobService = inject(JobService);
+  private profileService = inject(ProfileService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   authService = inject(AuthService);
@@ -65,7 +68,29 @@ export class JobListComponent implements OnInit, OnDestroy {
   availablePlatforms: any[] = [];
   streamStats: Record<string, number> = {};
 
-  // Search and Criteria Filters
+  // Candidate Profile Skills (for real-time client-side match calculation)
+  candidateSkills: string[] = [];
+
+  // Date Posted Filter
+  selectedDatePosted = 'all';
+  datePostedOptions = [
+    { id: 'all', label: 'Any time' },
+    { id: '24h', label: 'Past 24 hours' },
+    { id: 'week', label: 'Past week' },
+    { id: 'month', label: 'Past month' },
+  ];
+
+  // Expired Listings Handling
+  hideExpired = true;
+
+  // Skills Multi-Select
+  selectedSkills: string[] = [];
+  popularSkills = ['React', 'Node.js', 'Python', 'TypeScript', 'Java', 'SQL', 'AWS', 'Docker', 'AI/ML', 'Figma'];
+
+  // Scam / Content Reporting Modal
+  isReportModalOpen = false;
+  reportingJob: Job | null = null;
+  pageSize = 12;
   searchTerm = '';
   location = '';
   minSalary: number | null = null;
@@ -105,9 +130,30 @@ export class JobListComponent implements OnInit, OnDestroy {
       if (params['mode']) this.activeMode = params['mode'] as any;
       if (params['minSalary']) this.minSalary = Number(params['minSalary']);
       if (params['maxSalary']) this.maxSalary = Number(params['maxSalary']);
+      if (params['datePosted']) this.selectedDatePosted = params['datePosted'];
+      if (params['sort']) this.sortBy = params['sort'];
+      if (params['skill']) {
+        this.selectedSkills = String(params['skill']).split(',').map((s) => s.trim()).filter(Boolean);
+      }
+      if (params['hideExpired'] !== undefined) {
+        this.hideExpired = params['hideExpired'] === 'true';
+      }
 
       this.fetchJobs(1, false);
     });
+
+    if (this.authService.isStudent()) {
+      this.profileService.getMyProfile().subscribe({
+        next: (res) => {
+          if (res.data?.skills) {
+            this.candidateSkills = res.data.skills
+              .map((s: any) => (typeof s === 'string' ? s : s.name))
+              .filter(Boolean);
+          }
+        },
+        error: () => {},
+      });
+    }
 
     // Preload platforms directory for quick modal access
     this.loadPlatformsDirectory();
@@ -403,10 +449,14 @@ export class JobListComponent implements OnInit, OnDestroy {
           location: this.location,
           minSalary: this.minSalary || 0,
           maxSalary: this.maxSalary || 0,
+          workType: this.selectedWorkTypes.join(','),
           jobType: this.selectedJobTypes.join(','),
           experienceLevel: this.selectedExpLevels.join(','),
+          datePosted: this.selectedDatePosted,
+          skill: this.selectedSkills.join(','),
+          hideExpired: this.hideExpired,
           page,
-          limit: 12,
+          limit: this.pageSize,
         })
         .subscribe({
           next: (res: any) => {
@@ -418,7 +468,7 @@ export class JobListComponent implements OnInit, OnDestroy {
             }
 
             this.total = res.total || this.jobs.length;
-            this.totalPages = res.pages || Math.ceil(this.total / 12) || 1;
+            this.totalPages = res.pages || Math.ceil(this.total / this.pageSize) || 1;
             this.hasMore = res.hasMore ?? (this.jobs.length < this.total);
 
             if (res.availablePlatforms) {
@@ -443,10 +493,13 @@ export class JobListComponent implements OnInit, OnDestroy {
         workType: this.selectedWorkTypes.length ? this.selectedWorkTypes.join(',') : undefined,
         jobType: this.selectedJobTypes.length ? this.selectedJobTypes.join(',') : undefined,
         experienceLevel: this.selectedExpLevels.length ? this.selectedExpLevels.join(',') : undefined,
+        skill: this.selectedSkills.length ? this.selectedSkills.join(',') : undefined,
         minSalary: this.minSalary || undefined,
+        datePosted: this.selectedDatePosted !== 'all' ? this.selectedDatePosted : undefined,
+        hideExpired: this.hideExpired ? 'true' : undefined,
         sort: this.sortBy,
         page: this.currentPage,
-        limit: 12,
+        limit: this.pageSize,
       };
 
       this.jobService.getJobs(filters).subscribe({
@@ -497,6 +550,61 @@ export class JobListComponent implements OnInit, OnDestroy {
     return list.includes(item);
   }
 
+  get pageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxButtons = 5;
+    let start = Math.max(1, this.currentPage - 2);
+    let end = Math.min(this.totalPages, start + maxButtons - 1);
+    if (end - start + 1 < maxButtons) {
+      start = Math.max(1, end - maxButtons + 1);
+    }
+    for (let p = start; p <= end; p++) {
+      pages.push(p);
+    }
+    return pages;
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.fetchJobs(page, false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  toggleSkill(skill: string) {
+    const idx = this.selectedSkills.indexOf(skill);
+    if (idx > -1) {
+      this.selectedSkills.splice(idx, 1);
+    } else {
+      this.selectedSkills.push(skill);
+    }
+    this.currentPage = 1;
+    this.fetchJobs(1, false);
+  }
+
+  setDatePosted(dateId: string) {
+    this.selectedDatePosted = dateId;
+    this.currentPage = 1;
+    this.fetchJobs(1, false);
+  }
+
+  toggleHideExpired() {
+    this.hideExpired = !this.hideExpired;
+    this.currentPage = 1;
+    this.fetchJobs(1, false);
+  }
+
+  openReportModal(job: Job) {
+    this.reportingJob = job;
+    this.isReportModalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeReportModal() {
+    this.isReportModalOpen = false;
+    this.reportingJob = null;
+    document.body.style.overflow = '';
+  }
+
   clearFilters() {
     this.selectedStream = 'all';
     this.selectedCourse = 'all';
@@ -507,6 +615,10 @@ export class JobListComponent implements OnInit, OnDestroy {
     this.selectedWorkTypes = [];
     this.selectedJobTypes = [];
     this.selectedExpLevels = [];
+    this.selectedSkills = [];
+    this.selectedDatePosted = 'all';
+    this.hideExpired = true;
+    this.sortBy = 'recent';
     this.minSalary = null;
     this.maxSalary = null;
     this.currentPage = 1;

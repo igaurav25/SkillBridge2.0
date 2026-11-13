@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ApplicationService } from '../../services/application.service';
 import { ToastService } from '../../services/toast.service';
 import { Application, ApplicationStatus } from '../../models/application.model';
@@ -8,7 +9,7 @@ import { Application, ApplicationStatus } from '../../models/application.model';
 @Component({
   selector: 'app-applications',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './applications.component.html',
   styleUrls: ['./applications.component.css'],
 })
@@ -20,6 +21,8 @@ export class ApplicationsComponent implements OnInit {
   filteredApplications: Application[] = [];
   selectedApplication: Application | null = null;
   activeStatusTab: string = 'All';
+  activeView: 'board' | 'list' = 'board';
+  searchQuery: string = '';
   isLoading = true;
 
   stats = {
@@ -32,6 +35,15 @@ export class ApplicationsComponent implements OnInit {
     rejected: 0,
     withdrawn: 0,
   };
+
+  kanbanColumns = [
+    { id: 'Applied', label: 'Applied', icon: '📨', countKey: 'applied' as const },
+    { id: 'Under Review', label: 'Under Review', icon: '👀', countKey: 'underReview' as const },
+    { id: 'Shortlisted', label: 'Shortlisted', icon: '⭐', countKey: 'shortlisted' as const },
+    { id: 'Interview', label: 'Interview', icon: '📅', countKey: 'interview' as const },
+    { id: 'Selected', label: 'Selected / Offer', icon: '🎉', countKey: 'selected' as const },
+    { id: 'Rejected', label: 'Archived', icon: '📁', countKey: 'rejected' as const },
+  ];
 
   statusSteps: ApplicationStatus[] = [
     'Applied',
@@ -74,6 +86,29 @@ export class ApplicationsComponent implements OnInit {
 
   selectApplication(app: Application) {
     this.selectedApplication = app;
+  }
+
+  viewApplicationDetails(app: Application) {
+    this.selectedApplication = app;
+    this.activeView = 'list';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  getAppsForColumn(columnId: string): Application[] {
+    if (columnId === 'Rejected') {
+      return this.applications.filter((a) => a.status === 'Rejected' || a.status === 'Withdrawn');
+    }
+    return this.applications.filter((a) => a.status === columnId);
+  }
+
+  get displayedListApplications(): Application[] {
+    if (!this.searchQuery.trim()) return this.filteredApplications;
+    const q = this.searchQuery.toLowerCase().trim();
+    return this.filteredApplications.filter(
+      (a) =>
+        (a.job?.title || '').toLowerCase().includes(q) ||
+        (a.job?.companyName || '').toLowerCase().includes(q)
+    );
   }
 
   withdraw(app: Application) {

@@ -378,7 +378,7 @@
         <div class="filter-group mb-5">
           <label class="filter-title text-xs font-bold text-muted uppercase mb-2 block">Experience Level</label>
           <div class="flex flex-col gap-2">
-            <label *ngFor="let exp of expLevels" class="checkbox-label text-sm flex items-center gap-2">
+            <label *ngFor="let exp of expLevels" class="checkbox-label text-sm flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 [checked]="isFilterSelected(selectedExpLevels, exp)"
@@ -387,6 +387,51 @@
               <span>{{ exp | titlecase }}</span>
             </label>
           </div>
+        </div>
+
+        <!-- Date Posted Filter -->
+        <div class="filter-group mb-5">
+          <label class="filter-title text-xs font-bold text-muted uppercase mb-2 block">Date Posted</label>
+          <div class="flex flex-col gap-2">
+            <label *ngFor="let dp of datePostedOptions" class="checkbox-label text-sm flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="datePostedFilter"
+                [value]="dp.id"
+                [checked]="selectedDatePosted === dp.id"
+                (change)="setDatePosted(dp.id)"
+              />
+              <span>{{ dp.label }}</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Skills Filter -->
+        <div class="filter-group mb-5">
+          <label class="filter-title text-xs font-bold text-muted uppercase mb-2 block">Skills & Tech Stack</label>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              *ngFor="let s of popularSkills"
+              type="button"
+              class="skill-filter-chip text-xs"
+              [class.active]="selectedSkills.includes(s)"
+              (click)="toggleSkill(s)"
+            >
+              {{ s }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Expired Listings Toggle -->
+        <div class="filter-group mb-5 pt-3 border-top">
+          <label class="checkbox-label text-sm flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              [checked]="hideExpired"
+              (change)="toggleHideExpired()"
+            />
+            <span class="font-semibold text-xs">Hide Expired Listings</span>
+          </label>
         </div>
 
         <!-- Real-Time Guarantee Note -->
@@ -410,11 +455,18 @@
             </span>
           </div>
 
-          <div class="sort-controls flex items-center gap-2">
-            <span class="text-xs text-muted">Order:</span>
-            <span class="badge badge-emerald text-xs font-bold">
-              ↓ Newest First (Chronological)
-            </span>
+          <div class="sort-controls flex items-center gap-2 flex-wrap">
+            <label for="sortBySelect" class="text-xs text-muted">Sort By:</label>
+            <select
+              id="sortBySelect"
+              class="select-control text-xs py-1 px-2.5 rounded bg-secondary"
+              [(ngModel)]="sortBy"
+              (change)="fetchJobs(1, false)"
+            >
+              <option value="recent">↓ Newest First</option>
+              <option value="salary">💰 Highest Pay</option>
+              <option value="popular">🔥 Most Popular</option>
+            </select>
           </div>
         </div>
 
@@ -428,48 +480,84 @@
         <!-- Empty State -->
         <div *ngIf="!isLoading && jobs.length === 0" class="empty-state sb-card text-center p-8">
           <div class="empty-state-icon text-4xl mb-3">🔍</div>
-          <h3 class="text-lg font-bold mb-2">No matching opportunities found in this stream</h3>
+          <h3 class="text-lg font-bold mb-2">No matching opportunities found</h3>
           <p class="text-sm text-secondary mb-4">
-            Try switching to "All Streams", broadening your search keywords, or selecting "All Platforms".
+            Try resetting your filters, clearing the search keyword, or selecting "All Streams".
           </p>
           <button class="btn btn-outline btn-sm" (click)="clearFilters()">Reset All Filters</button>
         </div>
 
-        <!-- Jobs List with Infinite Scroll (Top = Newest, Bottom = Older) -->
+        <!-- Jobs List -->
         <div *ngIf="jobs.length > 0" class="flex flex-col gap-4">
           <app-job-card
             *ngFor="let job of jobs"
             [job]="job"
+            [candidateSkills]="candidateSkills"
             (viewDetails)="openJobDetails($event)"
+            (reportJob)="openReportModal($event)"
           ></app-job-card>
         </div>
 
+        <!-- Numbered Pagination Bar -->
+        <nav *ngIf="totalPages > 1" class="pagination-nav flex items-center justify-between flex-wrap gap-4 py-4 mt-6 border-top" aria-label="Job listings pagination">
+          <div class="text-xs text-muted">
+            Page {{ currentPage }} of {{ totalPages }} ({{ total }} listings)
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              class="btn btn-outline btn-xs"
+              [disabled]="currentPage <= 1"
+              (click)="goToPage(currentPage - 1)"
+              aria-label="Previous Page"
+            >
+              ← Prev
+            </button>
+
+            <button
+              *ngFor="let p of pageNumbers"
+              type="button"
+              class="btn btn-xs page-number-btn"
+              [class.btn-primary]="p === currentPage"
+              [class.btn-outline]="p !== currentPage"
+              (click)="goToPage(p)"
+            >
+              {{ p }}
+            </button>
+
+            <button
+              type="button"
+              class="btn btn-outline btn-xs"
+              [disabled]="currentPage >= totalPages"
+              (click)="goToPage(currentPage + 1)"
+              aria-label="Next Page"
+            >
+              Next →
+            </button>
+          </div>
+        </nav>
+
         <!-- Bottom Infinite Scroll / Load More Bar -->
-        <div *ngIf="jobs.length > 0" class="load-more-section text-center py-6 mt-4 border-top">
-          <!-- Loading indicator while appending older jobs -->
-          <div *ngIf="isLoadingMore" class="flex items-center justify-center gap-2 text-sm text-secondary mb-3">
+        <div *ngIf="jobs.length > 0 && hasMore" class="load-more-section text-center py-4 mt-2">
+          <div *ngIf="isLoadingMore" class="flex items-center justify-center gap-2 text-sm text-secondary mb-2">
             <div class="spinner"></div>
             <span>Fetching older opportunities chronologically...</span>
           </div>
 
-          <!-- Load More Button -->
-          <div *ngIf="hasMore && !isLoadingMore">
+          <div *ngIf="!isLoadingMore">
             <button
               type="button"
-              class="btn btn-primary btn-sm px-6 font-bold"
+              class="btn btn-ghost btn-xs text-muted"
               (click)="loadMoreOlderJobs()"
             >
-              Load More Older Opportunities ↓ (Page {{ currentPage + 1 }} of {{ totalPages }})
+              Load next chunk (+12) ↓
             </button>
-            <p class="text-xs text-muted mt-2">
-              Or keep scrolling down to automatically load previous job postings.
-            </p>
           </div>
+        </div>
 
-          <!-- End of List -->
-          <div *ngIf="!hasMore && !isLoadingMore" class="text-xs text-muted py-2">
-            ✓ You have reached the end of all active {{ total }} opportunities in this category.
-          </div>
+        <!-- End of List Indicator -->
+        <div *ngIf="jobs.length > 0 && !hasMore && !isLoadingMore" class="text-xs text-muted text-center py-4">
+          ✓ You have reached the end of all active {{ total }} opportunities in this category.
         </div>
       </main>
     </div>
@@ -686,4 +774,13 @@
       </div>
     </div>
   </div>
+
+  <!-- Scam & Content Reporting Modal -->
+  <app-report-modal
+    *ngIf="isReportModalOpen && reportingJob"
+    targetType="Job"
+    [targetId]="reportingJob._id"
+    [targetTitle]="reportingJob.title + ' at ' + (reportingJob.companyName || 'Company')"
+    (closed)="closeReportModal()"
+  ></app-report-modal>
 </div>

@@ -48,6 +48,15 @@ export class JobDetailsComponent implements OnInit {
     return getDirectApplyUrl(this.job);
   }
 
+  get isExpired(): boolean {
+    if (!this.job) return false;
+    if (this.job.status === 'closed') return true;
+    if (this.job.deadline) {
+      return new Date(this.job.deadline).getTime() < Date.now();
+    }
+    return false;
+  }
+
   ngOnInit() {
     const jobId = this.route.snapshot.paramMap.get('id');
     if (jobId) {

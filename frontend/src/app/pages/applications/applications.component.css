@@ -96,3 +96,54 @@
 .text-cyan {
   color: var(--accent-cyan);
 }
+
+/* Kanban Board Styling */
+.kanban-board-wrapper {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 1rem;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.kanban-column {
+  min-width: 240px;
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem;
+  border: 1px solid var(--border-subtle);
+}
+
+.kanban-col-header {
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+}
+
+.kanban-card {
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.kanban-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-500);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+}
+
+.kanban-empty-col {
+  background: var(--bg-primary);
+  border: 1px dashed var(--border-subtle);
+  color: var(--text-muted);
+}
+
+.interview-pill-card {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-sm);
+}

@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-4`
+**Current Active Branch:** `redesign/phase-5`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -12,7 +12,7 @@
 - [x] **Phase 2**: Cinematic landing page + 3D hero (`redesign/phase-2`) — *Completed & Verified*
 - [x] **Phase 3**: Student experience (`redesign/phase-3`) — *Completed & Verified*
 - [x] **Phase 4**: AI modules (`redesign/phase-4`) — *Completed & Verified*
-- [ ] **Phase 5**: Job marketplace (`redesign/phase-5`)
+- [x] **Phase 5**: Job marketplace (`redesign/phase-5`) — *Completed & Verified*
 - [ ] **Phase 6**: Recruiter command center (`redesign/phase-6`)
 - [ ] **Phase 7**: Admin control center (`redesign/phase-7`)
 - [ ] **Phase 8**: Mobile: all phones + Android app (`redesign/phase-8`)
@@ -86,6 +86,52 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `$env:AUDIT_PHASE='phase-3'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **98–100** across audited routes, Best Practices **100**, CLS = **0** on landing and career-explorer.
+
+### Phase 5 — Job Marketplace & Application Tracker (`redesign/phase-5`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 6).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-5.json`, `tests/reports/lighthouse-phase-5.json`, `tests/screenshots/phase-5/`.
+- **Key Deliverables:**
+  - **Job Explorer & Multi-Criteria Filtering (`/jobs`)**:
+    - Real-time search by keywords, job titles, and locations with live polling watcher.
+    - Multi-criteria filter sidebar: Educational streams (B.Tech, BBA, B.Com, Govt, Internships, etc.), courses/degrees dropdown, work mode (`remote`, `hybrid`, `onsite`), opportunity types, experience levels, date posted (`any time`, `past 24h`, `past week`, `past month`), popular skill tags (`React`, `Node.js`, `Python`, `TypeScript`, `Java`, `SQL`, `AWS`, `Docker`, `AI/ML`, `Figma`), and "Hide Expired Listings" toggle.
+    - Sorting controls: Newest First (chronological ordering enforced), Highest Pay, and Most Popular.
+    - Numbered pagination controls (Page 1, 2, 3...) with previous / next navigation and smooth scroll-to-top on page change.
+    - 350+ official platforms directory explorer modal with category filtering and instant portal links.
+  - **Job Card Component (`app-job-card`)**:
+    - Real-time client-side skill match evaluation against candidate's profile skills (`⚡ X% Match`).
+    - Matched skills highlighted in emerald green pills with checkmarks (`✓`).
+    - Truthful verified employer checkmark (`✓ Verified`) shown only when `company.isVerified === true`.
+    - Truthful source platform labeling (`Source: LinkedIn Feeds`, `Source: Direct Recruiter`, etc.).
+    - Expired listing state (`⚠️ CLOSED / EXPIRED`) disabling direct apply when past deadline or closed.
+    - 1-click scam / fraudulent listing report button (`🚩 Report`) opening `ReportModalComponent`.
+  - **Job Details View (`/jobs/:id`)**:
+    - Full position overview, key responsibilities, requirements, and required technical stack.
+    - Comprehensive verified employer info card (industry, headquarters, company size, website link).
+    - Expired posting banner alert notifying candidates when applications are closed.
+    - Direct Apply link for external jobs + internal application modal with saved resume selector & AI cover letter generator (`✨ Generate with AI`).
+    - Integrated fraud/scam report modal (`ReportModalComponent`) with design-token-safe z-index (`var(--z-modal)`).
+  - **Application Tracker (`/applications`)**:
+    - **Dual View Support**: 1-click toggle between **📊 Kanban Board** and **📋 Detailed List** views.
+    - Kanban Board: Visual progression columns (`Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Archived`) with count badges, scheduled interview highlights, and responsive horizontal scroll.
+    - List View: Master-detail view with application search, visual milestone stepper, technical interview meeting details (Google Meet/Zoom), complete status transition timeline history, and attached cover letter review.
+    - Application withdrawal action with confirmation prompt.
+  - **Saved Jobs & Collections (`/saved-jobs`)**:
+    - Category tabs (`All`, `Frontend`, `Backend`, `Full Stack`, `AI`, `Internship`, `High Priority`, `General`).
+    - Live search within saved bookmarks.
+    - Inline note editing (`✏️ Add/Edit Note`) synced to backend via `PUT /api/saved-jobs/:id`.
+    - Direct apply button and view details navigation.
+  - **Backend Hardening & Models**:
+    - Enhanced `backend/src/models/Report.js` to accept both MongoDB ObjectId and external string IDs (`targetId: { type: String, required: true }`).
+    - Hardened `backend/src/controllers/reportController.js` to guard MongoDB queries using `mongoose.Types.ObjectId.isValid`.
+    - Added `workType`, `datePosted`, `skill`, and `hideExpired` filtering to `jobController.getJobs`, `getLivePlatformJobs`, and `searchJobsByCriteria`.
+    - Added `updateSavedJob` endpoint integration in `JobService`.
+    - Added comprehensive Phase 5 regression tests in `backend/tests/regression.test.js`.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.61 kB** raw (**143.36 kB** transfer), `main`: **86.04 kB** raw / **18.60 kB** transfer + 40 lazy chunks.
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `$env:AUDIT_PHASE='phase-5'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and **0.0124** on `/jobs`.
   - Dual-theme (`[data-theme="light"]`) spot-checks on `/student/dashboard`, `/profile`, `/resume-builder`, `/notifications`, and `/settings` rendered with 0 layout shift or clipped elements.
 
 ### Phase 4 — AI Modules (`redesign/phase-4`)
@@ -131,3 +177,49 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `$env:AUDIT_PHASE='phase-4'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **98–100** across audited routes, Best Practices **100**, CLS = **0** on landing and career-explorer.
+
+### Phase 5 — Job Marketplace & Application Tracker (`redesign/phase-5`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 6).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-5.json`, `tests/reports/lighthouse-phase-5.json`, `tests/screenshots/phase-5/`.
+- **Key Deliverables:**
+  - **Job Explorer & Multi-Criteria Filtering (`/jobs`)**:
+    - Real-time search by keywords, job titles, and locations with live polling watcher.
+    - Multi-criteria filter sidebar: Educational streams (B.Tech, BBA, B.Com, Govt, Internships, etc.), courses/degrees dropdown, work mode (`remote`, `hybrid`, `onsite`), opportunity types, experience levels, date posted (`any time`, `past 24h`, `past week`, `past month`), popular skill tags (`React`, `Node.js`, `Python`, `TypeScript`, `Java`, `SQL`, `AWS`, `Docker`, `AI/ML`, `Figma`), and "Hide Expired Listings" toggle.
+    - Sorting controls: Newest First (chronological ordering enforced), Highest Pay, and Most Popular.
+    - Numbered pagination controls (Page 1, 2, 3...) with previous / next navigation and smooth scroll-to-top on page change.
+    - 350+ official platforms directory explorer modal with category filtering and instant portal links.
+  - **Job Card Component (`app-job-card`)**:
+    - Real-time client-side skill match evaluation against candidate's profile skills (`⚡ X% Match`).
+    - Matched skills highlighted in emerald green pills with checkmarks (`✓`).
+    - Truthful verified employer checkmark (`✓ Verified`) shown only when `company.isVerified === true`.
+    - Truthful source platform labeling (`Source: LinkedIn Feeds`, `Source: Direct Recruiter`, etc.).
+    - Expired listing state (`⚠️ CLOSED / EXPIRED`) disabling direct apply when past deadline or closed.
+    - 1-click scam / fraudulent listing report button (`🚩 Report`) opening `ReportModalComponent`.
+  - **Job Details View (`/jobs/:id`)**:
+    - Full position overview, key responsibilities, requirements, and required technical stack.
+    - Comprehensive verified employer info card (industry, headquarters, company size, website link).
+    - Expired posting banner alert notifying candidates when applications are closed.
+    - Direct Apply link for external jobs + internal application modal with saved resume selector & AI cover letter generator (`✨ Generate with AI`).
+    - Integrated fraud/scam report modal (`ReportModalComponent`) with design-token-safe z-index (`var(--z-modal)`).
+  - **Application Tracker (`/applications`)**:
+    - **Dual View Support**: 1-click toggle between **📊 Kanban Board** and **📋 Detailed List** views.
+    - Kanban Board: Visual progression columns (`Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Archived`) with count badges, scheduled interview highlights, and responsive horizontal scroll.
+    - List View: Master-detail view with application search, visual milestone stepper, technical interview meeting details (Google Meet/Zoom), complete status transition timeline history, and attached cover letter review.
+    - Application withdrawal action with confirmation prompt.
+  - **Saved Jobs & Collections (`/saved-jobs`)**:
+    - Category tabs (`All`, `Frontend`, `Backend`, `Full Stack`, `AI`, `Internship`, `High Priority`, `General`).
+    - Live search within saved bookmarks.
+    - Inline note editing (`✏️ Add/Edit Note`) synced to backend via `PUT /api/saved-jobs/:id`.
+    - Direct apply button and view details navigation.
+  - **Backend Hardening & Models**:
+    - Enhanced `backend/src/models/Report.js` to accept both MongoDB ObjectId and external string IDs (`targetId: { type: String, required: true }`).
+    - Hardened `backend/src/controllers/reportController.js` to guard MongoDB queries using `mongoose.Types.ObjectId.isValid`.
+    - Added `workType`, `datePosted`, `skill`, and `hideExpired` filtering to `jobController.getJobs`, `getLivePlatformJobs`, and `searchJobsByCriteria`.
+    - Added `updateSavedJob` endpoint integration in `JobService`.
+    - Added comprehensive Phase 5 regression tests in `backend/tests/regression.test.js`.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **537.61 kB** raw (**143.36 kB** transfer), `main`: **86.04 kB** raw / **18.60 kB** transfer + 40 lazy chunks.
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures.
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `$env:AUDIT_PHASE='phase-5'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and **0.0124** on `/jobs`.
