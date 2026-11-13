@@ -152,3 +152,109 @@ exports.getStudentCareerAnalytics = async (req, res, next) => {
   }
 };
 
+/**
+ * @desc Get comprehensive recruiter command center analytics
+ * @route GET /api/analytics/recruiter
+ * @access Private (Recruiter / Admin)
+ */
+exports.getRecruiterAnalytics = async (req, res, next) => {
+  try {
+    const recruiterId = req.user.role === 'admin' && req.query.recruiterId ? req.query.recruiterId : req.user.id;
+    const query = req.user.role === 'admin' && !req.query.recruiterId ? {} : { recruiter: recruiterId };
+
+    // 1. Fetch Recruiter Jobs
+    const jobs = await Job.find(query).sort('-createdAt');
+    const totalJobs = jobs.length;
+    const activeJobs = jobs.filter(j => j.status === 'active').length;
+    const closedJobs = jobs.filter(j => j.status === 'closed').length;
+    const totalViews = jobs.reduce((sum, j) => sum + (j.viewsCount || 0), 0);
+
+    // 2. Fetch Applications
+    const applications = await Application.find(query);
+    const totalApplications = applications.length;
+
+    const funnel = {
+      views: totalViews,
+      applications: totalApplications,
+      underReview: applications.filter(a => a.status === 'Under Review').length,
+      shortlisted: applications.filter(a => a.status === 'Shortlisted').length,
+      interview: applications.filter(a => a.status === 'Interview').length,
+      selected: applications.filter(a => a.status === 'Selected').length,
+      rejected: applications.filter(a => a.status === 'Rejected').length,
+    };
+
+    // 3. Conversion Rates
+    const viewToApplyRate = totalViews > 0
+      ? Number(((totalApplications / totalViews) * 100).toFixed(1))
+      : 0;
+    const applyToShortlistRate = totalApplications > 0
+      ? Number((((funnel.shortlisted + funnel.interview + funnel.selected) / totalApplications) * 100).toFixed(1))
+      : 0;
+    const interviewToHireRate = (funnel.interview + funnel.selected) > 0
+      ? Number(((funnel.selected / (funnel.interview + funnel.selected)) * 100).toFixed(1))
+      : 0;
+
+    // 4. Job performance table
+    const jobPerformance = jobs.map(j => {
+      const jobApps = applications.filter(a => a.job?.toString() === j._id.toString());
+      return {
+        id: j._id,
+        title: j.title,
+        status: j.status,
+        views: j.viewsCount || 0,
+        applications: jobApps.length,
+        shortlisted: jobApps.filter(a => a.status === 'Shortlisted').length,
+        hired: jobApps.filter(a => a.status === 'Selected').length,
+        conversionRate: (j.viewsCount || 0) > 0
+          ? Number(((jobApps.length / j.viewsCount) * 100).toFixed(1))
+          : 0,
+        createdAt: j.createdAt,
+      };
+    });
+
+    // 5. Skill Demand breakdown
+    const skillCounts = {};
+    jobs.forEach(j => {
+      const skills = (j.skillsRequired && j.skillsRequired.length > 0) ? j.skillsRequired : (j.requiredSkills || []);
+      skills.forEach(s => {
+        if (s) {
+          const norm = s.trim();
+          skillCounts[norm] = (skillCounts[norm] || 0) + 1;
+        }
+      });
+    });
+
+    const topSkillsInDemand = Object.entries(skillCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        summary: {
+          totalJobs,
+          activeJobs,
+          closedJobs,
+          totalViews,
+          totalApplications,
+          shortlistedCandidates: funnel.shortlisted,
+          scheduledInterviews: funnel.interview,
+          totalHires: funnel.selected,
+        },
+        funnel,
+        conversionRates: {
+          viewToApplyRate,
+          applyToShortlistRate,
+          interviewToHireRate,
+        },
+        jobPerformance,
+        topSkillsInDemand,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+

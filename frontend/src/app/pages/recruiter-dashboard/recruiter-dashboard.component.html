@@ -4,16 +4,18 @@
     <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <span class="badge badge-accent text-xs font-bold">RECRUITER WORKSPACE</span>
+          <span class="badge badge-accent text-xs font-bold">RECRUITER COMMAND CENTER</span>
           <span *ngIf="myCompany" class="text-xs font-semibold text-secondary">• {{ myCompany.name }}</span>
         </div>
         <h1 class="text-3xl font-bold">Talent & Hiring Command Center</h1>
-        <p class="text-sm text-secondary">Manage open tech requisitions, review qualified applicants, and source
-          developer candidates.</p>
+        <p class="text-sm text-secondary">Manage requisitions, track pipeline stages with Kanban, schedule candidate interviews, and inspect ATS analytics.</p>
       </div>
 
-      <div class="flex items-center gap-3">
-        <button class="btn btn-primary" (click)="openCreateJobModal()">
+      <div class="flex items-center gap-3 flex-wrap">
+        <button type="button" class="btn btn-outline" (click)="openScheduleModal()">
+          📅 Schedule Interview
+        </button>
+        <button type="button" class="btn btn-primary" (click)="openCreateJobModal()">
           + Post New Position
         </button>
       </div>
@@ -45,32 +47,78 @@
 
     <!-- Navigation Tabs -->
     <div class="recruiter-nav-tabs mb-6 flex items-center gap-2 flex-wrap border-b border-border pb-2">
-      <button class="nav-tab-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">
-        📊 Dashboard Overview
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">
+        📊 Overview & Analytics
       </button>
-      <button class="nav-tab-btn" [class.active]="activeTab === 'jobs'" (click)="activeTab = 'jobs'">
-        💼 Job Postings ({{ postedJobs.length }})
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'jobs'" (click)="activeTab = 'jobs'">
+        💼 Job Openings & Templates ({{ postedJobs.length }})
       </button>
-      <button class="nav-tab-btn" [class.active]="activeTab === 'applications'" (click)="activeTab = 'applications'">
-        📑 Applicant Pipeline ({{ applications.length }})
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'pipeline'" (click)="activeTab = 'pipeline'">
+        📑 Kanban & Pipeline ({{ applications.length }})
       </button>
-      <button class="nav-tab-btn" [class.active]="activeTab === 'candidates'" (click)="activeTab = 'candidates'">
-        🔍 Candidate Discovery
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'candidates'" (click)="activeTab = 'candidates'">
+        🔍 Candidate Discovery ({{ candidates.length }})
       </button>
-      <button class="nav-tab-btn" [class.active]="activeTab === 'company'" (click)="activeTab = 'company'">
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'interviews'" (click)="activeTab = 'interviews'">
+        📅 Interview Calendar ({{ interviews.length }})
+      </button>
+      <button type="button" class="nav-tab-btn" [class.active]="activeTab === 'company'" (click)="activeTab = 'company'">
         🏢 Company Profile
       </button>
     </div>
 
-    <!-- TAB 1: OVERVIEW -->
+    <!-- TAB 1: OVERVIEW & ANALYTICS -->
     <div *ngIf="activeTab === 'overview'" class="flex flex-col gap-6">
+      <!-- Funnel & Conversion Rates Card -->
+      <div class="sb-card p-6" *ngIf="analyticsData">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h3 class="font-bold text-lg">Recruitment Funnel & Conversion Metrics</h3>
+            <p class="text-xs text-secondary">Real-time candidate conversion rates across your active listings.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="badge badge-primary text-xs">View-to-Apply: {{ analyticsData.conversionRates.viewToApplyRate }}%</span>
+            <span class="badge badge-cyan text-xs">Apply-to-Shortlist: {{ analyticsData.conversionRates.applyToShortlistRate }}%</span>
+            <span class="badge badge-emerald text-xs">Interview-to-Offer: {{ analyticsData.conversionRates.interviewToHireRate }}%</span>
+          </div>
+        </div>
+
+        <!-- Funnel Stages Graphic -->
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-3 pt-2">
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Views</span>
+            <span class="text-xl font-extrabold text-primary">{{ analyticsData.funnel.views }}</span>
+          </div>
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Applications</span>
+            <span class="text-xl font-extrabold text-primary">{{ analyticsData.funnel.applications }}</span>
+          </div>
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Under Review</span>
+            <span class="text-xl font-extrabold text-amber">{{ analyticsData.funnel.underReview }}</span>
+          </div>
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Shortlisted</span>
+            <span class="text-xl font-extrabold text-violet">{{ analyticsData.funnel.shortlisted }}</span>
+          </div>
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Interviews</span>
+            <span class="text-xl font-extrabold text-cyan">{{ analyticsData.funnel.interview }}</span>
+          </div>
+          <div class="funnel-step p-3 rounded-md bg-secondary text-center">
+            <span class="text-xs text-muted block uppercase">Selected / Hires</span>
+            <span class="text-xl font-extrabold text-emerald">{{ analyticsData.funnel.selected }}</span>
+          </div>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Quick Summary & Recent Applicants -->
+        <!-- Recent Applicants Table -->
         <div class="lg:col-span-2 sb-card p-6">
           <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
             <h3 class="font-bold text-lg">Recent Candidate Submissions</h3>
-            <button type="button" class="btn btn-outline btn-sm" (click)="activeTab = 'applications'">
-              View All Pipeline →
+            <button type="button" class="btn btn-outline btn-sm" (click)="activeTab = 'pipeline'">
+              View Full Kanban Pipeline →
             </button>
           </div>
 
@@ -84,7 +132,7 @@
                 <tr>
                   <th>Candidate</th>
                   <th>Position</th>
-                  <th>Applied Date</th>
+                  <th>Match Score</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -92,21 +140,29 @@
               <tbody>
                 <tr *ngFor="let app of applications.slice(0, 5)">
                   <td>
-                    <div class="font-bold text-sm">{{ $any(app).candidate?.name || app.user?.name || 'Applicant' }}
-                    </div>
-                    <div class="text-xs text-secondary">{{ $any(app).candidate?.email || app.user?.email }}</div>
+                    <div class="font-bold text-sm">{{ app.candidate?.name || app.user?.name || 'Applicant' }}</div>
+                    <div class="text-xs text-secondary">{{ app.candidate?.email || app.user?.email }}</div>
                   </td>
                   <td class="text-xs font-semibold">{{ app.job?.title }}</td>
-                  <td class="text-xs text-secondary">{{ app.createdAt | date:'mediumDate' }}</td>
                   <td>
-                    <span class="badge text-xs" [ngClass]="'badge-' + app.status">
+                    <span class="badge" [ngClass]="(app.matchScore || 0) >= 80 ? 'badge-emerald' : ((app.matchScore || 0) >= 60 ? 'badge-cyan' : 'badge-amber')">
+                      {{ app.matchScore || 70 }}% ATS Match
+                    </span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="'status-' + (app.status || 'applied').toLowerCase().replace(' ', '-')">
                       {{ app.status }}
                     </span>
                   </td>
                   <td>
-                    <button class="btn btn-outline btn-xs" (click)="openApplicantReview(app)">
-                      Review
-                    </button>
+                    <div class="flex items-center gap-2">
+                      <button type="button" class="btn btn-outline btn-sm" (click)="openApplicantReview(app)">
+                        Review
+                      </button>
+                      <button type="button" class="btn btn-primary btn-sm" (click)="openScheduleModal(app)">
+                        Schedule
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -114,216 +170,336 @@
           </div>
         </div>
 
-        <!-- Hiring Pipeline Funnel Breakdown -->
-        <div class="sb-card p-6 flex flex-col justify-between">
-          <div>
-            <h3 class="font-bold text-lg mb-4">Pipeline Distribution</h3>
-            <div class="flex flex-col gap-3">
-              <div>
-                <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span>Applied (Initial)</span>
-                  <span>{{ applications.length }}</span>
-                </div>
-                <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-primary h-2 rounded-full" [style.width.%]="applications.length ? 100 : 0"></div>
-                </div>
-              </div>
+        <!-- Next Upcoming Interview & Skill Demand -->
+        <div class="flex flex-col gap-6">
+          <!-- Upcoming Interview Widget -->
+          <div class="sb-card p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="font-bold text-base">Next Upcoming Interview</h4>
+              <button type="button" class="btn btn-link text-xs" (click)="activeTab = 'interviews'">View Calendar →</button>
+            </div>
 
-              <div>
-                <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span>Shortlisted</span>
-                  <span>{{ shortlistedCount }}</span>
-                </div>
-                <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-accent h-2 rounded-full"
-                    [style.width.%]="applications.length ? (shortlistedCount / applications.length * 100) : 0"></div>
-                </div>
-              </div>
+            <div *ngIf="interviews.length === 0" class="text-xs text-secondary py-4 text-center">
+              No interviews scheduled for this month.
+              <button type="button" class="btn btn-outline btn-sm mt-3 w-full" (click)="openScheduleModal()">
+                + Schedule Interview
+              </button>
+            </div>
 
-              <div>
-                <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span>In Technical / HR Interview</span>
-                  <span>{{ interviewCount }}</span>
-                </div>
-                <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-warning h-2 rounded-full"
-                    [style.width.%]="applications.length ? (interviewCount / applications.length * 100) : 0"></div>
-                </div>
+            <div *ngIf="interviews.length > 0" class="p-3 bg-secondary rounded-md border border-border">
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="badge badge-cyan text-xs">{{ interviews[0].round }} Round</span>
+                <span class="text-xs text-muted">{{ interviews[0].duration }} min</span>
               </div>
-
-              <div>
-                <div class="flex justify-between text-xs font-semibold mb-1">
-                  <span>Selected / Offers</span>
-                  <span>{{ hiredCount }}</span>
-                </div>
-                <div class="w-full bg-border rounded-full h-2">
-                  <div class="bg-success h-2 rounded-full"
-                    [style.width.%]="applications.length ? (hiredCount / applications.length * 100) : 0"></div>
-                </div>
+              <h5 class="font-bold text-sm text-primary mb-1">{{ interviews[0].title }}</h5>
+              <div class="text-xs text-secondary mb-1">
+                Candidate: <strong class="text-primary">{{ interviews[0].candidate?.name || 'Candidate' }}</strong>
+              </div>
+              <div class="text-xs text-secondary mb-3">
+                📅 {{ interviews[0].scheduledAt | date:'mediumDate' }} at {{ interviews[0].scheduledAt | date:'shortTime' }}
+              </div>
+              <div class="flex items-center gap-2">
+                <a *ngIf="interviews[0].meetingLink" [href]="interviews[0].meetingLink" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm flex-1 text-center">
+                  Join Meeting ↗
+                </a>
+                <button type="button" class="btn btn-outline btn-sm" (click)="openRescheduleModal(interviews[0])">
+                  Reschedule
+                </button>
               </div>
             </div>
           </div>
 
-          <div class="mt-6 pt-4 border-t border-border">
-            <button class="btn btn-outline btn-sm w-full" (click)="activeTab = 'candidates'">
-              Discover Ready Candidates ↗
+          <!-- Top Skills in Demand -->
+          <div class="sb-card p-6" *ngIf="analyticsData?.topSkillsInDemand?.length">
+            <h4 class="font-bold text-base mb-3">Most In-Demand Skills (Your Jobs)</h4>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let s of analyticsData?.topSkillsInDemand" class="badge badge-neutral text-xs">
+                {{ s.name }} ({{ s.count }})
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: JOB OPENINGS & TEMPLATES -->
+    <div *ngIf="activeTab === 'jobs'" class="flex flex-col gap-6">
+      <!-- Quick Job Templates Carousel/Grid -->
+      <div class="sb-card p-6">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <div>
+            <h3 class="font-bold text-lg">Quick Job Description Templates</h3>
+            <p class="text-xs text-secondary">Pre-configured with industry skills, requirements, and realistic compensation.</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" (click)="openCreateJobModal()">
+            + Custom Position
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
+          <div *ngFor="let t of JOB_TEMPLATES" class="p-4 rounded-md bg-secondary border border-border flex flex-col justify-between hover:border-primary transition">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold text-accent uppercase">{{ t.experienceLevel }}</span>
+                <span class="badge badge-neutral text-xs">{{ t.workMode }}</span>
+              </div>
+              <h4 class="font-bold text-sm text-primary mb-2">{{ t.name }}</h4>
+              <p class="text-xs text-secondary line-clamp-2 mb-3">{{ t.description }}</p>
+              <div class="text-xs text-muted mb-3 font-mono">
+                ${{ (t.minSalary / 1000) }}k - ${{ (t.maxSalary / 1000) }}k / yr
+              </div>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm w-full" (click)="applyJobTemplate(t); openCreateJobModal();">
+              Use Template →
             </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- TAB 2: POSTED JOBS -->
-    <div *ngIf="activeTab === 'jobs'" class="flex flex-col gap-6">
-      <div class="flex items-center justify-between flex-wrap gap-3">
-        <h3 class="font-bold text-lg">Active & Archived Listings</h3>
-        <button class="btn btn-primary btn-sm" (click)="openCreateJobModal()">
-          + Post New Position
-        </button>
-      </div>
-
-      <div *ngIf="showInlinePostJob" class="sb-card p-6">
-        <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
-          <h3 class="font-bold text-lg">Post New Position</h3>
-          <button type="button" class="btn btn-sm btn-outline" aria-label="Close post job form"
-            (click)="showInlinePostJob = false">✕</button>
-        </div>
-        <ng-container *ngTemplateOutlet="jobFormContent"></ng-container>
-      </div>
-
-      <div *ngIf="postedJobs.length === 0" class="sb-card p-12 text-center">
-        <div class="text-4xl mb-3">💼</div>
-        <h3 class="font-bold text-lg mb-1">No Jobs Posted Yet</h3>
-        <p class="text-sm text-secondary mb-4">Start hiring top student talent and engineering interns right away.</p>
-        <button class="btn btn-primary" (click)="openCreateJobModal()">Post First Job</button>
-      </div>
-
-      <div *ngIf="postedJobs.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let job of postedJobs" class="sb-card p-6 flex flex-col justify-between">
-          <div>
-            <div class="flex items-start justify-between gap-3 mb-2">
-              <span class="badge text-xs" [class.badge-success]="job.status === 'active'"
-                [class.badge-secondary]="job.status !== 'active'">
-                {{ job.status | uppercase }}
-              </span>
-              <span class="text-xs text-secondary">{{ job.createdAt | date:'mediumDate' }}</span>
-            </div>
-
-            <h3 class="font-bold text-lg text-primary mb-1">{{ job.title }}</h3>
-            <div class="text-xs text-secondary font-medium mb-3 flex items-center gap-2 flex-wrap">
-              <span>{{ ($any(job).workType || job.workMode || 'remote') | uppercase }}</span>
-              <span>•</span>
-              <span>{{ job.location }}</span>
-              <span>•</span>
-              <span>{{ ($any(job).jobType || job.type || 'full-time') | uppercase }}</span>
-            </div>
-
-            <p class="text-xs text-secondary line-clamp-3 mb-4 leading-relaxed">
-              {{ job.description }}
-            </p>
-
-            <div class="flex flex-wrap gap-1 mb-4">
-              <span *ngFor="let s of ($any(job).requiredSkills || job.skillsRequired)?.slice(0, 4)"
-                class="badge badge-secondary text-xs">
-                {{ s }}
-              </span>
-              <span *ngIf="(($any(job).requiredSkills || job.skillsRequired)?.length || 0) > 4"
-                class="badge badge-secondary text-xs">
-                +{{ (($any(job).requiredSkills || job.skillsRequired)?.length || 0) - 4 }}
-              </span>
-            </div>
-          </div>
-
-          <div class="pt-4 border-t border-border flex items-center justify-between">
-            <span class="text-xs font-bold text-primary">
-              {{ $any(job).applicantsCount ?? job.applicationsCount ?? 0 }} Applicants
-            </span>
-            <div class="flex items-center gap-2">
-              <button class="btn btn-outline btn-xs" (click)="openEditJobModal(job)">Edit</button>
-              <button class="btn btn-danger btn-xs" (click)="deleteJob(job._id)">Delete</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TAB 3: APPLICANT PIPELINE -->
-    <div *ngIf="activeTab === 'applications'" class="flex flex-col gap-6">
-      <!-- Filter Bar -->
-      <div class="sb-card p-4 flex items-center gap-4 flex-wrap">
-        <div>
-          <label for="rec-app-status-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by
-            Status</label>
-          <select id="rec-app-status-filter" class="select-control" [(ngModel)]="appStatusFilter"
-            (change)="applyAppFilters()">
-            <option value="all">All Application Statuses</option>
-            <option value="Applied">Applied</option>
-            <option value="Under Review">Under Review</option>
-            <option value="Shortlisted">Shortlisted</option>
-            <option value="Interview">Interview</option>
-            <option value="Selected">Selected</option>
-            <option value="Rejected">Rejected</option>
-          </select>
+      <!-- Posted Jobs Table -->
+      <div class="sb-card p-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-bold text-lg">Active & Published Listings ({{ postedJobs.length }})</h3>
+          <span class="text-xs text-secondary">{{ activeJobsCount }} currently accepting applications</span>
         </div>
 
-        <div>
-          <label for="rec-app-job-filter" class="text-xs font-semibold text-secondary block mb-1">Filter by
-            Position</label>
-          <select id="rec-app-job-filter" class="select-control" [(ngModel)]="appJobFilter"
-            (change)="applyAppFilters()">
-            <option value="all">All Positions</option>
-            <option *ngFor="let job of postedJobs" [value]="job._id">{{ job.title }}</option>
-          </select>
+        <div *ngIf="postedJobs.length === 0" class="text-center py-12 text-secondary text-sm">
+          No job listings found. Use a template above or click "+ Post New Position" to publish your first role.
         </div>
-      </div>
 
-      <!-- Applications Table -->
-      <div *ngIf="filteredApplications.length === 0" class="sb-card p-12 text-center">
-        <p class="text-sm text-secondary">No candidates found matching the selected filters.</p>
-      </div>
-
-      <div *ngIf="filteredApplications.length > 0" class="sb-card p-6">
-        <div class="table-container">
+        <div *ngIf="postedJobs.length > 0" class="table-container">
           <table class="sb-table">
             <thead>
               <tr>
-                <th>Applicant</th>
-                <th>Target Job</th>
-                <th>Resume</th>
-                <th>Date</th>
+                <th>Job Title & Location</th>
+                <th>Work Mode</th>
+                <th>Applicants</th>
+                <th>Views</th>
                 <th>Status</th>
-                <th>Action</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let job of postedJobs">
+                <td>
+                  <div class="font-bold text-sm text-primary">{{ job.title }}</div>
+                  <div class="text-xs text-secondary">{{ job.location }}</div>
+                </td>
+                <td class="text-xs capitalize">{{ job.workMode || job.workType || 'Remote' }}</td>
+                <td>
+                  <span class="font-bold text-sm text-primary">{{ job.applicantsCount || 0 }}</span>
+                  <span class="text-xs text-muted"> candidates</span>
+                </td>
+                <td class="text-xs text-secondary font-mono">{{ job.viewsCount || 0 }} views</td>
+                <td>
+                  <button type="button" class="btn-link text-xs font-bold" (click)="toggleJobStatus(job)">
+                    <span class="badge" [ngClass]="job.status === 'active' ? 'badge-emerald' : 'badge-neutral'">
+                      {{ job.status === 'active' ? '● Active' : '○ Closed' }}
+                    </span>
+                  </button>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="openEditJobModal(job)">
+                      Edit
+                    </button>
+                    <button type="button" class="btn btn-danger btn-sm" (click)="deleteJob(job._id)">
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: KANBAN & APPLICANT PIPELINE -->
+    <div *ngIf="activeTab === 'pipeline'" class="flex flex-col gap-6">
+      <!-- Pipeline Controls Bar -->
+      <div class="sb-card p-4">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 flex-wrap">
+          <div class="flex items-center gap-3 flex-wrap">
+            <!-- View Mode Switch -->
+            <div class="flex items-center bg-secondary rounded-md p-1 border border-border">
+              <button type="button" class="px-3 py-1 rounded text-xs font-semibold" [class.bg-primary]="pipelineViewMode === 'kanban'" [class.text-white]="pipelineViewMode === 'kanban'" (click)="pipelineViewMode = 'kanban'">
+                📋 Kanban Board
+              </button>
+              <button type="button" class="px-3 py-1 rounded text-xs font-semibold" [class.bg-primary]="pipelineViewMode === 'list'" [class.text-white]="pipelineViewMode === 'list'" (click)="pipelineViewMode = 'list'">
+                📑 Table List
+              </button>
+            </div>
+
+            <!-- Job Filter Dropdown -->
+            <select class="select-control text-xs" style="width: auto;" [(ngModel)]="appJobFilter" (change)="applyAppFilters()" aria-label="Filter applications by job posting">
+              <option value="all">All Job Postings</option>
+              <option *ngFor="let j of postedJobs" [value]="j._id">{{ j.title }}</option>
+            </select>
+
+            <!-- Search Query Input -->
+            <input type="text" class="form-control text-xs" style="max-width: 240px;" placeholder="Search candidate or tags..." [(ngModel)]="appSearchQuery" (input)="applyAppFilters()" aria-label="Search candidate name or tags">
+          </div>
+
+          <div class="text-xs text-secondary self-center">
+            Showing <strong>{{ filteredApplications.length }}</strong> of {{ applications.length }} applicants
+          </div>
+        </div>
+
+        <!-- Bulk Action Bar (when candidates are selected) -->
+        <div *ngIf="selectedAppIds.size > 0" class="mt-4 p-3 bg-secondary rounded-md border border-primary flex items-center justify-between gap-4 flex-wrap animate-fadeIn">
+          <div class="flex items-center gap-2">
+            <span class="badge badge-primary text-xs font-bold">{{ selectedAppIds.size }} Candidates Selected</span>
+            <button type="button" class="btn btn-link text-xs text-muted" (click)="selectedAppIds.clear()">Deselect All</button>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Bulk Move Stage -->
+            <select class="select-control text-xs" style="width: auto;" [(ngModel)]="bulkActionStatus" aria-label="Select bulk status to apply">
+              <option value="">Move selected to...</option>
+              <option *ngFor="let s of KANBAN_STAGES" [value]="s.id">{{ s.label }}</option>
+            </select>
+            <button type="button" class="btn btn-outline btn-sm" [disabled]="!bulkActionStatus" (click)="applyBulkStatus()">
+              Update Stage
+            </button>
+
+            <!-- Bulk Tag -->
+            <input type="text" class="form-control text-xs" style="max-width: 140px;" placeholder="Tag name..." [(ngModel)]="bulkActionTag" aria-label="Tag name for bulk application">
+            <button type="button" class="btn btn-outline btn-sm" [disabled]="!bulkActionTag.trim()" (click)="applyBulkTag()">
+              + Apply Tag
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE VIEW 1: KANBAN BOARD -->
+      <div *ngIf="pipelineViewMode === 'kanban'" class="kanban-board-container overflow-x-auto pb-4">
+        <div class="kanban-grid flex gap-4" style="min-width: 1100px;">
+          <!-- 6 Stage Columns -->
+          <div *ngFor="let stage of KANBAN_STAGES" class="kanban-column flex-1 flex flex-col bg-secondary rounded-lg border border-border p-3 min-w-[240px]" (dragover)="onDragOver($event)" (drop)="onDrop($event, stage.id)">
+            <!-- Stage Header -->
+            <div class="flex items-center justify-between pb-3 mb-2 border-b border-border">
+              <div class="flex items-center gap-2">
+                <span class="stage-dot" [style.backgroundColor]="stage.color"></span>
+                <span class="font-bold text-sm text-primary">{{ stage.label }}</span>
+              </div>
+              <span class="badge badge-neutral text-xs">{{ getStageApps(stage.id).length }}</span>
+            </div>
+
+            <!-- Draggable Cards List -->
+            <div class="kanban-cards flex flex-col gap-3 flex-1 min-h-[300px]">
+              <div *ngIf="getStageApps(stage.id).length === 0" class="text-xs text-muted text-center py-8 border border-dashed border-border rounded-md">
+                Drop candidates here
+              </div>
+
+              <div *ngFor="let app of getStageApps(stage.id)" class="kanban-card p-3 rounded-md bg-primary border border-border hover:border-primary transition cursor-grab" [class.border-primary]="isAppSelected(app._id)" [draggable]="true" (dragstart)="onDragStart($event, app)">
+                <!-- Top Row: Checkbox, Name, ATS Badge -->
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <input type="checkbox" [checked]="isAppSelected(app._id)" (change)="toggleSelectApp(app._id)" aria-label="Select applicant for bulk actions">
+                    <div class="truncate">
+                      <div class="font-bold text-sm text-primary truncate">{{ app.candidate?.name || app.user?.name || 'Applicant' }}</div>
+                      <div class="text-xs text-secondary truncate">{{ app.job?.title }}</div>
+                    </div>
+                  </div>
+                  <span class="badge text-xs shrink-0" [ngClass]="(app.matchScore || 0) >= 80 ? 'badge-emerald' : ((app.matchScore || 0) >= 60 ? 'badge-cyan' : 'badge-amber')">
+                    {{ app.matchScore || 70 }}%
+                  </span>
+                </div>
+
+                <!-- Tags list -->
+                <div *ngIf="app.tags && app.tags.length > 0" class="flex flex-wrap gap-1 mb-2">
+                  <span *ngFor="let t of app.tags" class="badge badge-accent text-[10px] py-0">
+                    {{ t }}
+                    <button type="button" class="ml-1 text-[9px] hover:text-white" (click)="removeTagFromApp(app, t)">×</button>
+                  </span>
+                </div>
+
+                <!-- Interview Date Info if scheduled -->
+                <div *ngIf="app.interviewDetails?.scheduledDate" class="text-xs text-cyan bg-cyan/10 p-1.5 rounded mb-2 flex items-center gap-1">
+                  📅 {{ app.interviewDetails?.scheduledDate | date:'shortDate' }}
+                  <span class="text-muted">({{ app.interviewDetails?.mode || 'Meet' }})</span>
+                </div>
+
+                <!-- Card Footer: Accessible Stage Changer & Review -->
+                <div class="pt-2 border-t border-border flex items-center justify-between gap-1 flex-wrap">
+                  <!-- Keyboard accessible stage selector -->
+                  <select class="select-control text-[11px] py-1 px-1.5" style="width: auto; max-width: 110px;" [ngModel]="app.status" (change)="moveAppStage(app, $any($event.target).value)" aria-label="Change candidate stage">
+                    <option *ngFor="let s of KANBAN_STAGES" [value]="s.id">{{ s.label }}</option>
+                  </select>
+
+                  <div class="flex items-center gap-1">
+                    <button type="button" class="btn btn-outline btn-sm text-xs py-0.5 px-2" (click)="openScheduleModal(app)" title="Schedule Interview">
+                      📅
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm text-xs py-0.5 px-2" (click)="openApplicantReview(app)">
+                      Review
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE VIEW 2: TABLE LIST -->
+      <div *ngIf="pipelineViewMode === 'list'" class="sb-card p-6">
+        <div *ngIf="filteredApplications.length === 0" class="text-center py-12 text-secondary text-sm">
+          No applicants match your current filters.
+        </div>
+
+        <div *ngIf="filteredApplications.length > 0" class="table-container">
+          <table class="sb-table">
+            <thead>
+              <tr>
+                <th style="width: 40px;">
+                  <input type="checkbox" [checked]="selectedAppIds.size === filteredApplications.length && filteredApplications.length > 0" (change)="toggleSelectAll()" aria-label="Select all applicants">
+                </th>
+                <th>Candidate</th>
+                <th>Position</th>
+                <th>Applied Date</th>
+                <th>Match</th>
+                <th>Stage</th>
+                <th>Tags</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let app of filteredApplications">
                 <td>
-                  <div class="font-bold text-sm">{{ $any(app).candidate?.name || app.user?.name || 'Candidate' }}</div>
-                  <div class="text-xs text-secondary">{{ $any(app).candidate?.email || app.user?.email }}</div>
+                  <input type="checkbox" [checked]="isAppSelected(app._id)" (change)="toggleSelectApp(app._id)" aria-label="Select applicant">
                 </td>
-                <td class="text-xs font-medium">{{ app.job?.title }}</td>
                 <td>
-                  <span *ngIf="($any(app).resume || app.resumeSnapshot)?.title" class="badge badge-primary text-xs">
-                    📄 {{ ($any(app).resume || app.resumeSnapshot)?.title }}
-                  </span>
-                  <a *ngIf="$any(app).resume?.fileUrl || app.resumeUrl"
-                    [href]="$any(app).resume?.fileUrl || app.resumeUrl" target="_blank"
-                    class="text-xs text-primary underline">
-                    View PDF ↗
-                  </a>
-                  <span *ngIf="!$any(app).resume && !app.resumeSnapshot && !app.resumeUrl" class="text-xs text-muted">No
-                    resume attached</span>
+                  <div class="font-bold text-sm text-primary">{{ app.candidate?.name || app.user?.name || 'Applicant' }}</div>
+                  <div class="text-xs text-secondary">{{ app.candidate?.email || app.user?.email }}</div>
                 </td>
+                <td class="text-xs font-semibold">{{ app.job?.title }}</td>
                 <td class="text-xs text-secondary">{{ app.createdAt | date:'mediumDate' }}</td>
                 <td>
-                  <span class="badge text-xs" [ngClass]="'badge-' + app.status">
-                    {{ app.status }}
+                  <span class="badge" [ngClass]="(app.matchScore || 0) >= 80 ? 'badge-emerald' : ((app.matchScore || 0) >= 60 ? 'badge-cyan' : 'badge-amber')">
+                    {{ app.matchScore || 70 }}%
                   </span>
                 </td>
                 <td>
-                  <button class="btn btn-primary btn-xs" (click)="openApplicantReview(app)">
-                    Review & Advance
-                  </button>
+                  <select class="select-control text-xs py-1" style="width: auto;" [ngModel]="app.status" (change)="moveAppStage(app, $any($event.target).value)" aria-label="Change candidate stage">
+                    <option *ngFor="let s of KANBAN_STAGES" [value]="s.id">{{ s.label }}</option>
+                  </select>
+                </td>
+                <td>
+                  <div class="flex flex-wrap gap-1 max-w-[180px]">
+                    <span *ngFor="let t of app.tags" class="badge badge-accent text-[10px]">{{ t }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <button type="button" class="btn btn-outline btn-sm" (click)="openScheduleModal(app)">
+                      Schedule
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" (click)="openApplicantReview(app)">
+                      Review
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -334,320 +510,532 @@
 
     <!-- TAB 4: CANDIDATE DISCOVERY -->
     <div *ngIf="activeTab === 'candidates'" class="flex flex-col gap-6">
-      <!-- Search Filter Bar -->
       <div class="sb-card p-6">
-        <h3 class="font-bold text-lg mb-2">Search Developer Talent</h3>
-        <p class="text-xs text-secondary mb-4">Discover students, software engineers, and interns with verified tech
-          skills.</p>
+        <h3 class="font-bold text-lg mb-1">Search & Source Verified Candidates</h3>
+        <p class="text-xs text-secondary mb-4">Discover developers across the platform with verifiable skill scores and ATS readiness.</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-secondary block mb-1">Target Skill</label>
-            <input type="text" class="form-control" placeholder="e.g. Angular, Node.js, Python"
-              [(ngModel)]="candidateSkill" (keyup.enter)="searchCandidates()" />
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-secondary block mb-1">Preferred Role</label>
-            <input type="text" class="form-control" placeholder="e.g. Frontend, Backend, AI" [(ngModel)]="candidateRole"
-              (keyup.enter)="searchCandidates()" />
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-secondary block mb-1">Location</label>
-            <input type="text" class="form-control" placeholder="e.g. Remote, New York, Bengaluru"
-              [(ngModel)]="candidateLocation" (keyup.enter)="searchCandidates()" />
-          </div>
-          <div class="flex items-end">
-            <button class="btn btn-primary w-full" (click)="searchCandidates()">
-              Search Candidates
-            </button>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <input type="text" class="form-control" placeholder="Skill (e.g. Angular, Python, Three.js)..." [(ngModel)]="candidateSkill">
+          <input type="text" class="form-control" placeholder="Target Role (e.g. Frontend, ML)..." [(ngModel)]="candidateRole">
+          <input type="text" class="form-control" placeholder="Location..." [(ngModel)]="candidateLocation">
+          <button type="button" class="btn btn-primary" (click)="searchCandidates()">
+            {{ isSearchingCandidates ? 'Searching...' : '🔍 Search Talent' }}
+          </button>
         </div>
       </div>
 
-      <!-- Candidate Grid -->
-      <div *ngIf="isSearchingCandidates" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div *ngFor="let i of [1,2,3]" class="sb-card p-6 skeleton h-60"></div>
-      </div>
-
-      <div *ngIf="!isSearchingCandidates && candidates.length === 0" class="sb-card p-12 text-center">
-        <p class="text-sm text-secondary">No candidates found matching the search criteria.</p>
-      </div>
-
-      <div *ngIf="!isSearchingCandidates && candidates.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let cand of candidates" class="sb-card p-6 flex flex-col justify-between">
+      <!-- Candidate Results Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let cand of candidates" class="sb-card p-6 flex flex-col justify-between hover:border-primary transition">
           <div>
-            <div class="flex items-center gap-4 mb-3">
+            <div class="flex items-center gap-3 mb-4">
               <div class="candidate-avatar">
-                {{ cand.name?.charAt(0) || 'D' }}
+                {{ (cand.user?.name || 'D').substring(0, 1).toUpperCase() }}
               </div>
-              <div>
-                <h4 class="font-bold text-base">{{ cand.name }}</h4>
-                <div class="text-xs text-primary font-semibold">{{ cand.profile?.preferredRole || 'Developer' }}</div>
-                <div class="text-xs text-secondary">📍 {{ cand.profile?.location || 'Remote' }}</div>
+              <div class="min-w-0">
+                <h4 class="font-bold text-base text-primary truncate">{{ cand.user?.name || 'Developer Candidate' }}</h4>
+                <div class="text-xs text-secondary truncate">{{ cand.headline || 'Software Engineer' }}</div>
+                <div class="text-xs text-muted">{{ cand.location || 'Remote' }}</div>
               </div>
             </div>
 
-            <p class="text-xs text-secondary line-clamp-2 mb-3 leading-relaxed">
-              {{ cand.profile?.about || 'Passionate software developer focused on building scalable, performant
-              applications.' }}
-            </p>
-
-            <!-- Skills -->
-            <div class="flex flex-wrap gap-1 mb-4">
-              <span *ngFor="let sk of cand.profile?.skills?.slice(0, 5)" class="badge badge-secondary text-xs">
-                {{ sk.name }}
+            <!-- Skills pills -->
+            <div class="flex flex-wrap gap-1.5 mb-4">
+              <span *ngFor="let s of (cand.skills || []).slice(0, 5)" class="badge badge-neutral text-xs">
+                {{ s.name || s }}
+              </span>
+              <span *ngIf="(cand.skills || []).length > 5" class="badge badge-neutral text-xs">
+                +{{ cand.skills.length - 5 }} more
               </span>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-border flex items-center justify-between">
+          <div class="pt-3 border-t border-border flex items-center justify-between gap-2">
             <span class="text-xs text-secondary">
-              {{ cand.profile?.education?.[0]?.college || 'Computer Science' }}
+              Profile: <strong>{{ cand.profileCompletion || 85 }}%</strong>
             </span>
-            <a *ngIf="cand.profile?.socialLinks?.github" [href]="cand.profile.socialLinks.github" target="_blank"
-              class="btn btn-outline btn-xs">
-              GitHub ↗
-            </a>
+            <button type="button" class="btn btn-primary btn-sm" (click)="openCandidateProfile(cand)">
+              Inspect ATS Match →
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 5: COMPANY PROFILE -->
-    <div *ngIf="activeTab === 'company'" class="max-w-2xl mx-auto">
-      <div class="sb-card p-8">
-        <h3 class="font-bold text-xl mb-1">Company Profile & Employer Branding</h3>
-        <p class="text-xs text-secondary mb-6">Manage how students and job seekers view your organization.</p>
-
-        <form [formGroup]="companyForm" (ngSubmit)="saveCompany()" class="flex flex-col gap-4">
-          <div>
-            <label class="form-label">Company Name *</label>
-            <input type="text" class="form-control" formControlName="name" placeholder="e.g. Acme Innovations" />
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="form-label">Industry *</label>
-              <select class="select-control" formControlName="industry">
-                <option value="Technology & AI">Technology & AI</option>
-                <option value="Financial Technology">Financial Technology</option>
-                <option value="E-Commerce & Logistics">E-Commerce & Logistics</option>
-                <option value="Healthcare & Biotech">Healthcare & Biotech</option>
-                <option value="Enterprise SaaS">Enterprise SaaS</option>
-                <option value="EdTech">EdTech</option>
-              </select>
-            </div>
-            <div>
-              <label class="form-label">Headquarters / Location *</label>
-              <input type="text" class="form-control" formControlName="location"
-                placeholder="e.g. San Francisco, CA / Remote" />
+    <!-- TAB 5: INTERVIEW CALENDAR & SCHEDULER -->
+    <div *ngIf="activeTab === 'interviews'" class="flex flex-col gap-6">
+      <div class="sb-card p-6">
+        <!-- Calendar Header Navigation -->
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+          <div class="flex items-center gap-3">
+            <h3 class="font-bold text-xl">{{ getMonthName(calendarMonth) }} {{ calendarYear }}</h3>
+            <div class="flex items-center gap-1">
+              <button type="button" class="btn btn-outline btn-sm px-2" (click)="prevMonth()">◀</button>
+              <button type="button" class="btn btn-outline btn-sm px-2" (click)="nextMonth()">▶</button>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="form-label">Company Size</label>
-              <select class="select-control" formControlName="companySize">
-                <option value="1-10 employees">1-10 employees</option>
-                <option value="11-50 employees">11-50 employees</option>
-                <option value="51-200 employees">51-200 employees</option>
-                <option value="201-500 employees">201-500 employees</option>
-                <option value="500+ employees">500+ employees</option>
-              </select>
-            </div>
-            <div>
-              <label class="form-label">Official Website URL</label>
-              <input type="text" class="form-control" formControlName="website" placeholder="https://company.com" />
-            </div>
-          </div>
+          <button type="button" class="btn btn-primary" (click)="openScheduleModal()">
+            + Schedule New Interview
+          </button>
+        </div>
 
-          <div>
-            <label class="form-label">Company Description</label>
-            <textarea class="form-control" rows="4" formControlName="description"
-              placeholder="Describe your mission, tech stack, and engineering culture..."></textarea>
-          </div>
+        <!-- 7-Column Calendar Grid -->
+        <div class="calendar-grid">
+          <!-- Day of Week Headers -->
+          <div class="calendar-day-header">Sun</div>
+          <div class="calendar-day-header">Mon</div>
+          <div class="calendar-day-header">Tue</div>
+          <div class="calendar-day-header">Wed</div>
+          <div class="calendar-day-header">Thu</div>
+          <div class="calendar-day-header">Fri</div>
+          <div class="calendar-day-header">Sat</div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="form-label">LinkedIn Page</label>
-              <input type="text" class="form-control" formControlName="linkedin"
-                placeholder="https://linkedin.com/company/..." />
+          <!-- Calendar Day Cells -->
+          <div *ngFor="let day of calendarDays" class="calendar-cell p-2 rounded border border-border min-h-[90px] flex flex-col justify-between transition cursor-pointer" [class.bg-secondary]="day.isCurrentMonth" [class.opacity-40]="!day.isCurrentMonth" [class.border-primary]="day.isToday" [class.bg-primary]="selectedCalendarDay === day" (click)="selectCalendarDay(day)">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold" [class.text-cyan]="day.isToday">{{ day.dayNumber }}</span>
+              <span *ngIf="day.hasInterviews" class="badge badge-cyan text-[10px] py-0 px-1 font-bold">
+                {{ day.interviews.length }}
+              </span>
             </div>
-            <div>
-              <label class="form-label">Twitter / X</label>
-              <input type="text" class="form-control" formControlName="twitter" placeholder="https://twitter.com/..." />
-            </div>
-          </div>
 
-          <div class="pt-4 flex justify-end">
-            <button type="submit" class="btn btn-primary" [disabled]="isSavingCompany">
-              {{ isSavingCompany ? 'Saving...' : 'Save Profile Changes' }}
-            </button>
+            <!-- Mini interview indicators -->
+            <div class="flex flex-col gap-1 mt-1">
+              <div *ngFor="let it of day.interviews.slice(0, 2)" class="text-[10px] truncate bg-primary/40 px-1 rounded text-cyan border border-cyan/20">
+                {{ it.title }}
+              </div>
+            </div>
           </div>
-        </form>
+        </div>
+      </div>
+
+      <!-- Scheduled Interviews Agenda List -->
+      <div class="sb-card p-6">
+        <h4 class="font-bold text-base mb-4">Interviews Agenda ({{ interviews.length }} scheduled)</h4>
+
+        <div *ngIf="interviews.length === 0" class="text-center py-8 text-secondary text-sm">
+          No interviews scheduled for this month.
+        </div>
+
+        <div *ngIf="interviews.length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let it of interviews" class="p-4 rounded-md bg-secondary border border-border flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="badge badge-cyan text-xs">{{ it.round }}</span>
+                <span class="badge" [ngClass]="it.status === 'Scheduled' ? 'badge-emerald' : 'badge-neutral'">{{ it.status }}</span>
+              </div>
+              <h5 class="font-bold text-sm text-primary mb-1">{{ it.title }}</h5>
+              <div class="text-xs text-secondary mb-1">
+                Candidate: <strong class="text-primary">{{ it.candidate?.name || 'Candidate' }}</strong> ({{ it.candidate?.email }})
+              </div>
+              <div class="text-xs text-secondary mb-2">
+                Position: <strong class="text-primary">{{ it.job?.title || 'Open Role' }}</strong>
+              </div>
+              <div class="text-xs text-cyan mb-3 font-semibold">
+                📅 {{ it.scheduledAt | date:'mediumDate' }} at {{ it.scheduledAt | date:'shortTime' }} ({{ it.duration }} mins • {{ it.mode }})
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-border flex items-center justify-between gap-2 flex-wrap">
+              <a *ngIf="it.meetingLink" [href]="it.meetingLink" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm flex-1 text-center">
+                Join {{ it.mode }} ↗
+              </a>
+              <button type="button" class="btn btn-outline btn-sm" (click)="openRescheduleModal(it)">
+                Reschedule
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" (click)="cancelInterview(it)">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: COMPANY PROFILE -->
+    <div *ngIf="activeTab === 'company'" class="sb-card p-6 max-w-2xl mx-auto">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="font-bold text-lg">Company Identity & Culture</h3>
+          <p class="text-xs text-secondary">Showcase your engineering culture, company size, and verification badge.</p>
+        </div>
+        <span *ngIf="myCompany?.isVerified" class="badge badge-emerald text-xs">✓ Verified Employer</span>
+      </div>
+
+      <form [formGroup]="companyForm" (ngSubmit)="saveCompany()" class="flex flex-col gap-4">
+        <div class="form-group">
+          <label class="form-label">Company Name *</label>
+          <input type="text" class="form-control" formControlName="name">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">Industry *</label>
+            <input type="text" class="form-control" formControlName="industry">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Headquarters / Location *</label>
+            <input type="text" class="form-control" formControlName="location">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">Company Size *</label>
+            <select class="select-control" formControlName="companySize" aria-label="Company Size">
+              <option value="1-10 employees">1-10 employees</option>
+              <option value="11-50 employees">11-50 employees</option>
+              <option value="51-200 employees">51-200 employees</option>
+              <option value="201-500 employees">201-500 employees</option>
+              <option value="500+ employees">500+ employees</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Official Website</label>
+            <input type="url" class="form-control" placeholder="https://..." formControlName="website">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">About Company & Engineering Culture</label>
+          <textarea class="form-control" rows="4" formControlName="description"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="form-group">
+            <label class="form-label">LinkedIn Page</label>
+            <input type="url" class="form-control" placeholder="https://linkedin.com/company/..." formControlName="linkedin">
+          </div>
+          <div class="form-group">
+            <label class="form-label">X / Twitter</label>
+            <input type="text" class="form-control" placeholder="@company" formControlName="twitter">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-2" [disabled]="isSavingCompany">
+          {{ isSavingCompany ? 'Saving Profile...' : 'Save Company Details' }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Post / Edit Job Position -->
+  <div *ngIf="showJobModal" class="modal-backdrop" (click)="showJobModal = false">
+    <div class="modal-card max-w-2xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-border">
+        <h3 class="font-bold text-lg text-primary">{{ isEditingJob ? 'Edit Position' : 'Post New Tech Position' }}</h3>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="showJobModal = false">✕</button>
+      </div>
+
+      <form [formGroup]="jobForm" (ngSubmit)="saveJob()" class="flex flex-col gap-4">
+        <div class="form-group">
+          <label class="form-label">Position Title *</label>
+          <input type="text" class="form-control" placeholder="e.g. Senior Frontend Engineer" formControlName="title">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="form-group">
+            <label class="form-label">Job Type *</label>
+            <select class="select-control" formControlName="type" aria-label="Job Type">
+              <option value="full-time">Full-time</option>
+              <option value="part-time">Part-time</option>
+              <option value="contract">Contract</option>
+              <option value="internship">Internship</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Work Mode *</label>
+            <select class="select-control" formControlName="workMode" aria-label="Work Mode">
+              <option value="remote">Remote</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="onsite">On-site</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Experience *</label>
+            <select class="select-control" formControlName="experienceLevel" aria-label="Experience Level">
+              <option value="entry">Entry Level</option>
+              <option value="mid">Mid Level</option>
+              <option value="senior">Senior</option>
+              <option value="lead">Lead / Principal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div class="form-group">
+            <label class="form-label">Location *</label>
+            <input type="text" class="form-control" placeholder="e.g. Remote, San Francisco" formControlName="location">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Min Salary (USD) *</label>
+            <input type="number" class="form-control" formControlName="minSalary">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Salary (USD) *</label>
+            <input type="number" class="form-control" formControlName="maxSalary">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Required Skills (comma separated) *</label>
+          <input type="text" class="form-control" placeholder="e.g. TypeScript, Angular, Node.js, Three.js" formControlName="skillsRequired">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-control" rows="3" formControlName="description"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Key Responsibilities (one per line)</label>
+          <textarea class="form-control" rows="3" formControlName="responsibilities"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Requirements (one per line)</label>
+          <textarea class="form-control" rows="3" formControlName="requirements"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-border">
+          <button type="button" class="btn btn-outline" (click)="showJobModal = false">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ isEditingJob ? 'Save Changes' : 'Publish Position' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Schedule / Reschedule Interview -->
+  <div *ngIf="showScheduleModal" class="modal-backdrop" (click)="showScheduleModal = false">
+    <div class="modal-card max-w-lg" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-border">
+        <h3 class="font-bold text-lg text-primary">{{ isRescheduling ? 'Reschedule Candidate Interview' : 'Schedule Candidate Interview' }}</h3>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="showScheduleModal = false">✕</button>
+      </div>
+
+      <form [formGroup]="scheduleForm" (ngSubmit)="submitInterviewSchedule()" class="flex flex-col gap-4">
+        <div class="form-group" *ngIf="!isRescheduling">
+          <label class="form-label">Target Application *</label>
+          <select class="select-control" formControlName="applicationId" aria-label="Target Candidate Application">
+            <option value="">Select Candidate Application...</option>
+            <option *ngFor="let a of applications" [value]="a._id">
+              {{ a.candidate?.name || a.user?.name || 'Applicant' }} — {{ a.job?.title }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Interview Title *</label>
+          <input type="text" class="form-control" formControlName="title">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="form-group">
+            <label class="form-label">Interview Round *</label>
+            <select class="select-control" formControlName="round" aria-label="Interview Round">
+              <option value="Screening">Screening Call</option>
+              <option value="Technical">Technical Deep Dive</option>
+              <option value="System Design">System Design & Architecture</option>
+              <option value="Managerial">Engineering Manager</option>
+              <option value="HR / Culture Fit">Culture & Values Fit</option>
+              <option value="Final">Executive / Final</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Duration (minutes) *</label>
+            <input type="number" class="form-control" formControlName="duration">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="form-group">
+            <label class="form-label">Date *</label>
+            <input type="date" class="form-control" formControlName="scheduledDate">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Time *</label>
+            <input type="time" class="form-control" formControlName="scheduledTime">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="form-group">
+            <label class="form-label">Meeting Platform *</label>
+            <select class="select-control" formControlName="mode" aria-label="Meeting Platform">
+              <option value="Google Meet">Google Meet</option>
+              <option value="Zoom">Zoom</option>
+              <option value="Microsoft Teams">Microsoft Teams</option>
+              <option value="Phone">Phone Call</option>
+              <option value="In-Person">In-Person</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meeting URL Link</label>
+            <input type="url" class="form-control" placeholder="https://meet.google.com/..." formControlName="meetingLink">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Preparation Notes / Instructions for Candidate</label>
+          <textarea class="form-control" rows="2" placeholder="e.g. Please bring a laptop with node installed..." formControlName="notes"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-border">
+          <button type="button" class="btn btn-outline" (click)="showScheduleModal = false">Cancel</button>
+          <button type="submit" class="btn btn-primary">{{ isRescheduling ? 'Confirm Reschedule' : 'Send Interview Invite' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Applicant Review, Notes & Tags -->
+  <div *ngIf="showAppModal && selectedApplication" class="modal-backdrop" (click)="showAppModal = false">
+    <div class="modal-card max-w-xl" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-border">
+        <div>
+          <h3 class="font-bold text-lg text-primary">{{ selectedApplication.candidate?.name || 'Candidate Review' }}</h3>
+          <span class="text-xs text-secondary">{{ selectedApplication.job?.title }}</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="showAppModal = false">✕</button>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <!-- ATS Score banner -->
+        <div class="p-3 bg-secondary rounded-md flex items-center justify-between">
+          <span class="text-xs font-semibold text-secondary">Automated ATS Match</span>
+          <span class="badge text-xs" [ngClass]="(selectedApplication.matchScore || 0) >= 80 ? 'badge-emerald' : 'badge-cyan'">
+            {{ selectedApplication.matchScore || 75 }}% Match Score
+          </span>
+        </div>
+
+        <!-- Stage selector -->
+        <div class="form-group">
+          <label class="form-label">Pipeline Stage</label>
+          <select class="select-control" [(ngModel)]="newStatus" aria-label="Pipeline Stage">
+            <option *ngFor="let s of KANBAN_STAGES" [value]="s.id">{{ s.label }}</option>
+          </select>
+        </div>
+
+        <!-- Tags management -->
+        <div class="form-group">
+          <label class="form-label">Candidate Tags</label>
+          <div class="flex flex-wrap gap-1 mb-2">
+            <span *ngFor="let t of selectedApplication.tags" class="badge badge-accent text-xs">
+              {{ t }}
+              <button type="button" class="ml-1 text-xs" (click)="removeTagFromApp(selectedApplication, t)">×</button>
+            </span>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" class="form-control text-xs" placeholder="Add custom tag (e.g. Top Tier, Urgent)..." [(ngModel)]="newTagInput" (keydown.enter)="addTagToApp(selectedApplication)">
+            <button type="button" class="btn btn-outline btn-sm" (click)="addTagToApp(selectedApplication)">Add</button>
+          </div>
+        </div>
+
+        <!-- Recruiter internal notes -->
+        <div class="form-group">
+          <label class="form-label">Recruiter Feedback / Notes (Sent to candidate on status change)</label>
+          <textarea class="form-control" rows="2" [(ngModel)]="recruiterNotes" placeholder="Feedback or interview comments..."></textarea>
+        </div>
+
+        <!-- Internal Audit Notes Log -->
+        <div class="form-group" *ngIf="selectedApplication.internalNotes && selectedApplication.internalNotes.length > 0">
+          <label class="form-label text-xs">Internal Hiring Team Notes Log</label>
+          <div class="flex flex-col gap-1 max-h-32 overflow-y-auto p-2 bg-secondary rounded border border-border">
+            <div *ngFor="let n of selectedApplication.internalNotes" class="text-xs text-secondary border-b border-border/40 pb-1 mb-1">
+              <strong class="text-primary">{{ n.authorName || 'Recruiter' }}:</strong> {{ n.note }}
+              <span class="text-muted block text-[10px]">{{ n.createdAt | date:'short' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <input type="text" class="form-control text-xs" placeholder="Private internal note for team..." [(ngModel)]="newInternalNote" (keydown.enter)="submitInternalNote(selectedApplication)">
+          <button type="button" class="btn btn-outline btn-sm" (click)="submitInternalNote(selectedApplication)">Post Note</button>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-border">
+          <button type="button" class="btn btn-outline" (click)="openScheduleModal(selectedApplication); showAppModal = false;">
+            📅 Schedule Interview
+          </button>
+          <button type="button" class="btn btn-primary" (click)="updateApplicationStatus()">
+            Save Status & Feedback
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<ng-template #jobFormContent>
-  <form [formGroup]="jobForm" (ngSubmit)="saveJob()" class="flex flex-col gap-4">
-    <div>
-      <label for="rec-job-title" class="form-label">Job Title *</label>
-      <input id="rec-job-title" type="text" class="form-control" formControlName="title"
-        placeholder="e.g. Junior Angular / Node.js Developer" />
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div>
-        <label for="rec-job-type" class="form-label">Position Type *</label>
-        <select id="rec-job-type" class="select-control" formControlName="type">
-          <option value="full-time">Full-time Job</option>
-          <option value="internship">Internship</option>
-          <option value="part-time">Part-time</option>
-          <option value="contract">Contract</option>
-        </select>
-      </div>
-      <div>
-        <label for="rec-job-mode" class="form-label">Work Mode *</label>
-        <select id="rec-job-mode" class="select-control" formControlName="workMode">
-          <option value="remote">Remote</option>
-          <option value="hybrid">Hybrid</option>
-          <option value="onsite">On-site</option>
-        </select>
-      </div>
-      <div>
-        <label for="rec-job-location" class="form-label">Location *</label>
-        <input id="rec-job-location" type="text" class="form-control" formControlName="location"
-          placeholder="e.g. Remote or City" />
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div>
-        <label for="rec-job-exp" class="form-label">Experience Level *</label>
-        <select id="rec-job-exp" class="select-control" formControlName="experienceLevel">
-          <option value="internship">Fresher / Internship</option>
-          <option value="entry">Entry Level (0-2 yrs)</option>
-          <option value="mid">Mid Level (2-5 yrs)</option>
-          <option value="senior">Senior (5+ yrs)</option>
-          <option value="lead">Lead / Principal</option>
-        </select>
-      </div>
-      <div>
-        <label for="rec-job-min-salary" class="form-label">Min Salary / Stipend ($)</label>
-        <input id="rec-job-min-salary" type="number" class="form-control" formControlName="minSalary" />
-      </div>
-      <div>
-        <label for="rec-job-max-salary" class="form-label">Max Salary / Stipend ($)</label>
-        <input id="rec-job-max-salary" type="number" class="form-control" formControlName="maxSalary" />
-      </div>
-    </div>
-
-    <div>
-      <label for="rec-job-skills" class="form-label">Required Skills * (comma-separated)</label>
-      <input id="rec-job-skills" type="text" class="form-control" formControlName="skillsRequired"
-        placeholder="e.g. Angular, TypeScript, Node.js, MongoDB, REST APIs" />
-    </div>
-
-    <div>
-      <label for="rec-job-desc" class="form-label">Role Overview & Description *</label>
-      <textarea id="rec-job-desc" class="form-control" rows="4" formControlName="description"
-        placeholder="Summary of this role and what the candidate will work on..."></textarea>
-    </div>
-
-    <div>
-      <label for="rec-job-resp" class="form-label">Key Responsibilities (one per line)</label>
-      <textarea id="rec-job-resp" class="form-control" rows="3" formControlName="responsibilities"
-        placeholder="Build scalable features&#10;Write unit tests&#10;Collaborate with product designers"></textarea>
-    </div>
-
-    <div>
-      <label for="rec-job-req" class="form-label">Qualifications & Requirements (one per line)</label>
-      <textarea id="rec-job-req" class="form-control" rows="3" formControlName="requirements"
-        placeholder="Proficiency in modern TypeScript&#10;Strong understanding of REST architecture"></textarea>
-    </div>
-
-    <div>
-      <label for="rec-job-deadline" class="form-label">Application Deadline</label>
-      <input id="rec-job-deadline" type="date" class="form-control" formControlName="deadline" />
-    </div>
-
-    <div class="pt-4 border-t border-border flex justify-end gap-3">
-      <button type="button" class="btn btn-outline"
-        (click)="showJobModal = false; showInlinePostJob = false">Cancel</button>
-      <button type="submit" class="btn btn-primary">{{ isEditingJob ? 'Update Position' : 'Publish Position' }}</button>
-    </div>
-  </form>
-</ng-template>
-
-<!-- MODAL: POST / EDIT JOB -->
-<div *ngIf="showJobModal" class="modal-backdrop">
-  <div class="modal-card max-w-2xl max-h-[90vh] overflow-y-auto">
-    <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
-      <h3 class="font-bold text-lg">{{ isEditingJob ? 'Edit Requisition' : 'Post New Position' }}</h3>
-      <button type="button" class="btn btn-sm btn-outline" aria-label="Close modal"
-        (click)="showJobModal = false">✕</button>
-    </div>
-
-    <ng-container *ngTemplateOutlet="jobFormContent"></ng-container>
-  </div>
-</div>
-
-<!-- MODAL: APPLICANT REVIEW & STATUS ADVANCEMENT -->
-<div *ngIf="showAppModal && selectedApplication" class="modal-backdrop">
-  <div class="modal-card max-w-xl">
-    <div class="flex items-center justify-between pb-4 border-b border-border mb-4">
-      <div>
-        <h3 class="font-bold text-lg">Candidate Review</h3>
-        <p class="text-xs text-secondary">{{ $any(selectedApplication).candidate?.name || selectedApplication.user?.name
-          }} • {{ selectedApplication.job?.title }}</p>
-      </div>
-      <button class="btn btn-sm btn-outline" (click)="showAppModal = false">✕</button>
-    </div>
-
-    <!-- Cover Letter if any -->
-    <div *ngIf="selectedApplication.coverLetter" class="mb-4 p-3 bg-surface-hover rounded-md text-xs leading-relaxed">
-      <div class="font-bold mb-1">Cover Note:</div>
-      <p>{{ selectedApplication.coverLetter }}</p>
-    </div>
-
-    <!-- Resume snapshot if any -->
-    <div *ngIf="($any(selectedApplication).resume || selectedApplication.resumeSnapshot) as attachedResume"
-      class="mb-4 p-3 border border-border rounded-md text-xs">
-      <div class="font-bold mb-1">Resume Attached: {{ attachedResume.title }}</div>
-      <p class="text-secondary">{{ attachedResume.summary }}</p>
-      <div class="flex flex-wrap gap-1 mt-2">
-        <span *ngFor="let s of attachedResume.skills?.slice(0, 8)" class="badge badge-secondary text-xs">
-          {{ s.name }}
-        </span>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-4">
-      <div>
-        <label for="rec-update-status" class="form-label">Update Status</label>
-        <select id="rec-update-status" class="select-control" [(ngModel)]="newStatus">
-          <option value="Applied">Applied</option>
-          <option value="Under Review">Under Review</option>
-          <option value="Shortlisted">Shortlisted</option>
-          <option value="Interview">Interview</option>
-          <option value="Selected">Selected (Offer)</option>
-          <option value="Rejected">Rejected</option>
-        </select>
+  <!-- DRAWER: Candidate Profile & ATS Match -->
+  <div *ngIf="showCandidateDrawer && selectedCandidate" class="sb-drawer-backdrop" (click)="closeCandidateDrawer()">
+    <div class="sb-drawer sb-drawer-right" (click)="$event.stopPropagation()">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-border">
+        <div>
+          <h3 class="font-bold text-lg text-primary">{{ selectedCandidate.user?.name || 'Candidate Profile' }}</h3>
+          <span class="text-xs text-secondary">{{ selectedCandidate.headline || 'Software Developer' }}</span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" (click)="closeCandidateDrawer()">✕</button>
       </div>
 
-      <div>
-        <label for="rec-notes" class="form-label">Recruiter Internal Feedback / Notes</label>
-        <textarea id="rec-notes" class="form-control" rows="3" [(ngModel)]="recruiterNotes"
-          placeholder="e.g. Strong Angular background, scheduled technical screen for Tuesday..."></textarea>
-      </div>
+      <div class="flex flex-col gap-4">
+        <!-- Honest ATS Breakdown -->
+        <div class="p-4 bg-secondary rounded-lg border border-border" *ngIf="candidateATSBreakdown">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-secondary uppercase">Estimated ATS Match</span>
+            <span class="badge text-xs" [ngClass]="candidateATSBreakdown.matchScore >= 80 ? 'badge-emerald' : 'badge-cyan'">
+              {{ candidateATSBreakdown.matchScore }}% Match
+            </span>
+          </div>
 
-      <div class="pt-4 border-t border-border flex justify-end gap-3">
-        <button type="button" class="btn btn-outline" (click)="showAppModal = false">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="updateApplicationStatus()">Update Candidate
-          Status</button>
+          <div *ngIf="candidateATSBreakdown.matchedSkills.length > 0" class="mb-2">
+            <span class="text-[11px] text-muted block mb-1">Matching Skills Verified:</span>
+            <div class="flex flex-wrap gap-1">
+              <span *ngFor="let s of candidateATSBreakdown.matchedSkills" class="badge badge-emerald text-[11px]">
+                ✓ {{ s }}
+              </span>
+            </div>
+          </div>
+
+          <div *ngIf="candidateATSBreakdown.missingSkills.length > 0">
+            <span class="text-[11px] text-muted block mb-1">Recommended Growth Skills:</span>
+            <div class="flex flex-wrap gap-1">
+              <span *ngFor="let s of candidateATSBreakdown.missingSkills" class="badge badge-amber text-[11px]">
+                ○ {{ s }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Candidate Details -->
+        <div>
+          <h4 class="font-bold text-sm text-primary mb-1">Bio / Summary</h4>
+          <p class="text-xs text-secondary leading-relaxed">{{ selectedCandidate.bio || 'No bio provided yet.' }}</p>
+        </div>
+
+        <!-- Experience -->
+        <div *ngIf="selectedCandidate.experience?.length">
+          <h4 class="font-bold text-sm text-primary mb-2">Work Experience</h4>
+          <div *ngFor="let exp of selectedCandidate.experience" class="p-3 bg-secondary rounded-md mb-2 border border-border">
+            <div class="font-bold text-xs text-primary">{{ exp.title }}</div>
+            <div class="text-[11px] text-secondary">{{ exp.company }} • {{ exp.startDate | date:'yyyy' }} - {{ exp.endDate ? (exp.endDate | date:'yyyy') : 'Present' }}</div>
+            <p class="text-xs text-muted mt-1">{{ exp.description }}</p>
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div *ngIf="selectedCandidate.education?.length">
+          <h4 class="font-bold text-sm text-primary mb-2">Education</h4>
+          <div *ngFor="let edu of selectedCandidate.education" class="p-3 bg-secondary rounded-md mb-2 border border-border">
+            <div class="font-bold text-xs text-primary">{{ edu.degree }} in {{ edu.fieldOfStudy }}</div>
+            <div class="text-[11px] text-secondary">{{ edu.institution }} • Class of {{ edu.graduationYear }}</div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-border">
+          <button type="button" class="btn btn-primary w-full" (click)="openScheduleModal(); closeCandidateDrawer();">
+            📅 Schedule Direct Interview
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 {
   "phase": "phase-0",
-  "timestamp": "2026-11-12T15:29:52.532Z",
+  "timestamp": "2026-11-13T14:55:18.019Z",
   "viewportsTested": [
     1920,
     1440,
@@ -13,8 +13,8 @@
     375,
     360
   ],
-  "totalRoutesChecked": 30,
-  "totalViewportChecks": 300,
+  "totalRoutesChecked": 32,
+  "totalViewportChecks": 320,
   "routesWithIssues": 0,
   "findings": [
     {
@@ -200,6 +200,24 @@
     {
       "role": "student",
       "route": "/achievements",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/notifications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/settings",
       "consoleErrors": [],
       "pageErrors": [],
       "failedApiCalls": [],

@@ -375,5 +375,121 @@ test('API Regression Suite (Auth, IDOR, Mass Assignment, C++ Search, Admin Priva
   assert.equal(myAppsRes.status, 200);
   assert.ok(myAppsJson.stats !== undefined);
   assert.equal(typeof myAppsJson.stats.total, 'number');
+
+  // 13. Phase 6: Recruiter Command Center, Interview Schedules, Tags, Bulk Actions, Analytics
+  // A. Recruiter Analytics Funnel
+  const recAnalyticsRes = await fetch(`${baseUrl}/analytics/recruiter`, {
+    headers: { Authorization: `Bearer ${recruiterAuth.token}` },
+  });
+  const recAnalyticsJson = await recAnalyticsRes.json();
+  assert.equal(recAnalyticsRes.status, 200);
+  assert.equal(recAnalyticsJson.success, true);
+  assert.ok(recAnalyticsJson.data.funnel !== undefined);
+  assert.ok(recAnalyticsJson.data.conversionRates !== undefined);
+  assert.ok(Array.isArray(recAnalyticsJson.data.jobPerformance));
+
+  // B. Bulk Status Update & Tags on Recruiter Applications
+  const recAppsRes = await fetch(`${baseUrl}/applications/recruiter/all`, {
+    headers: { Authorization: `Bearer ${recruiterAuth.token}` },
+  });
+  const recAppsJson = await recAppsRes.json();
+  assert.equal(recAppsRes.status, 200);
+
+  if (recAppsJson.data && recAppsJson.data.length > 0) {
+    const targetApp = recAppsJson.data[0];
+
+    // Tags
+    const tagsRes = await fetch(`${baseUrl}/applications/${targetApp._id}/tags`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${recruiterAuth.token}`,
+      },
+      body: JSON.stringify({ tags: ['Top Tier', 'Immediate Joiner'] }),
+    });
+    const tagsJson = await tagsRes.json();
+    assert.equal(tagsRes.status, 200);
+    assert.deepEqual(tagsJson.tags, ['Top Tier', 'Immediate Joiner']);
+
+    // Internal Note
+    const noteRes = await fetch(`${baseUrl}/applications/${targetApp._id}/internal-notes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${recruiterAuth.token}`,
+      },
+      body: JSON.stringify({ note: 'Candidate cleared preliminary screen.' }),
+    });
+    const noteJson = await noteRes.json();
+    assert.equal(noteRes.status, 201);
+    assert.ok(noteJson.data.length > 0);
+
+    // Bulk status update
+    const bulkRes = await fetch(`${baseUrl}/applications/bulk-status`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${recruiterAuth.token}`,
+      },
+      body: JSON.stringify({
+        applicationIds: [targetApp._id],
+        status: 'Under Review',
+        note: 'Moved to review via automated screening',
+      }),
+    });
+    const bulkJson = await bulkRes.json();
+    assert.equal(bulkRes.status, 200);
+    assert.equal(bulkJson.count, 1);
+
+    // C. Schedule Interview
+    const schedRes = await fetch(`${baseUrl}/interviews/schedules`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${recruiterAuth.token}`,
+      },
+      body: JSON.stringify({
+        applicationId: targetApp._id,
+        title: 'Technical Deep Dive',
+        round: 'Technical',
+        scheduledAt: new Date(Date.now() + 86400000 * 2).toISOString(),
+        duration: 45,
+        mode: 'Google Meet',
+        meetingLink: 'https://meet.google.com/sb-test-meet',
+        notes: 'Bring system design portfolio.',
+      }),
+    });
+    const schedJson = await schedRes.json();
+    assert.equal(schedRes.status, 201);
+    assert.equal(schedJson.success, true);
+    assert.equal(schedJson.data.mode, 'Google Meet');
+    assert.equal(schedJson.data.status, 'Scheduled');
+
+    // D. Fetch Scheduled Interviews
+    const getSchedsRes = await fetch(`${baseUrl}/interviews/schedules`, {
+      headers: { Authorization: `Bearer ${recruiterAuth.token}` },
+    });
+    const getSchedsJson = await getSchedsRes.json();
+    assert.equal(getSchedsRes.status, 200);
+    assert.ok(getSchedsJson.count >= 1);
+
+    // E. Reschedule Interview
+    const interviewId = schedJson.data._id;
+    const reschedRes = await fetch(`${baseUrl}/interviews/schedules/${interviewId}/reschedule`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${recruiterAuth.token}`,
+      },
+      body: JSON.stringify({
+        scheduledAt: new Date(Date.now() + 86400000 * 3).toISOString(),
+        duration: 60,
+      }),
+    });
+    const reschedJson = await reschedRes.json();
+    assert.equal(reschedRes.status, 200);
+    assert.equal(reschedJson.data.status, 'Rescheduled');
+    assert.equal(reschedJson.data.duration, 60);
+  }
 });
 

@@ -66,6 +66,15 @@ const applicationSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    tags: [{
+      type: String,
+      trim: true,
+    }],
+    internalNotes: [{
+      note: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now },
+      authorName: { type: String, default: '' },
+    }],
     interviewDetails: {
       scheduledDate: { type: Date },
       mode: { type: String, enum: ['Google Meet', 'Zoom', 'In-Person', 'Phone'], default: 'Google Meet' },

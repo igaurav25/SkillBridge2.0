@@ -1,69 +1,69 @@
 {
   "phase": "phase-0",
-  "timestamp": "2026-11-12T15:30:29.163Z",
+  "timestamp": "2026-11-13T14:56:01.833Z",
   "results": [
     {
       "url": "http://127.0.0.1:4200/",
       "scores": {
-        "performance": 76,
+        "performance": 74,
         "accessibility": 98,
         "bestPractices": 100,
         "seo": 92
       },
       "metrics": {
-        "firstContentfulPaintMs": 1564,
-        "largestContentfulPaintMs": 6949,
-        "totalBlockingTimeMs": 89,
-        "cumulativeLayoutShift": 0,
-        "speedIndexMs": 2194
+        "firstContentfulPaintMs": 906,
+        "largestContentfulPaintMs": 4769,
+        "totalBlockingTimeMs": 380,
+        "cumulativeLayoutShift": 0.0001,
+        "speedIndexMs": 1940
       }
     },
     {
       "url": "http://127.0.0.1:4200/jobs",
       "scores": {
-        "performance": 51,
-        "accessibility": 98,
+        "performance": 77,
+        "accessibility": 95,
         "bestPractices": 100,
-        "seo": 92
+        "seo": 91
       },
       "metrics": {
-        "firstContentfulPaintMs": 1467,
-        "largestContentfulPaintMs": 7544,
-        "totalBlockingTimeMs": 93,
-        "cumulativeLayoutShift": 0.8471,
-        "speedIndexMs": 1819
+        "firstContentfulPaintMs": 906,
+        "largestContentfulPaintMs": 6075,
+        "totalBlockingTimeMs": 120,
+        "cumulativeLayoutShift": 0.0124,
+        "speedIndexMs": 1295
       }
     },
     {
       "url": "http://127.0.0.1:4200/career-explorer",
       "scores": {
-        "performance": 50,
+        "performance": 77,
         "accessibility": 100,
         "bestPractices": 100,
         "seo": 91
       },
       "metrics": {
-        "firstContentfulPaintMs": 1459,
-        "largestContentfulPaintMs": 6346,
-        "totalBlockingTimeMs": 190,
-        "cumulativeLayoutShift": 0.8199,
-        "speedIndexMs": 2711
+        "firstContentfulPaintMs": 905,
+        "largestContentfulPaintMs": 5326,
+        "totalBlockingTimeMs": 197,
+        "cumulativeLayoutShift": 0.0001,
+        "speedIndexMs": 1903
       }
     },
     {
       "url": "http://127.0.0.1:4200/login",
       "scores": {
-        "performance": 76,
+        "performance": 84,
         "accessibility": 98,
         "bestPractices": 100,
         "seo": 91
       },
       "metrics": {
-        "firstContentfulPaintMs": 1478,
-        "largestContentfulPaintMs": 1478,
-        "totalBlockingTimeMs": 29,
-        "cumulativeLayoutShift": 0.8199,
-        "speedIndexMs": 1947
+        "firstContentfulPaintMs": 905,
+        "largestContentfulPaintMs": 4454,
+        "totalBlockingTimeMs": 54,
+        "cumulativeLayoutShift": 0.0525,
+        "speedIndexMs": 1210
       }
     }
   ]

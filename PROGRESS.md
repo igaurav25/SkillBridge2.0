@@ -1,6 +1,6 @@
 # SkillBridge Redesign & Upgrade — Progress Tracker
 
-**Current Active Branch:** `redesign/phase-5`
+**Current Active Branch:** `redesign/phase-6`
 **Baseline Branch:** `feature/skillbridge-2-upgrade` (`135d4db`)
 
 ---
@@ -13,7 +13,7 @@
 - [x] **Phase 3**: Student experience (`redesign/phase-3`) — *Completed & Verified*
 - [x] **Phase 4**: AI modules (`redesign/phase-4`) — *Completed & Verified*
 - [x] **Phase 5**: Job marketplace (`redesign/phase-5`) — *Completed & Verified*
-- [ ] **Phase 6**: Recruiter command center (`redesign/phase-6`)
+- [x] **Phase 6**: Recruiter command center (`redesign/phase-6`) — *Completed & Verified*
 - [ ] **Phase 7**: Admin control center (`redesign/phase-7`)
 - [ ] **Phase 8**: Mobile: all phones + Android app (`redesign/phase-8`)
 - [ ] **Phase 9**: Performance and release (`redesign/phase-9`)
@@ -132,6 +132,44 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `$env:AUDIT_PHASE='phase-5'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and **0.0124** on `/jobs`.
+
+### Phase 6 — Recruiter Command Center (`redesign/phase-6`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 7).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-6.json`, `tests/reports/lighthouse-phase-6.json`, `tests/screenshots/phase-6/`.
+- **Key Deliverables:**
+  - **Overview & Analytics Tab**:
+    - Complete recruiting conversion funnel tracking: Views -> Applications -> Under Review -> Shortlisted -> Interviews -> Hired.
+    - 3 live conversion rate indicators: View-to-Apply %, Apply-to-Shortlist %, and Interview-to-Offer %.
+    - Summary metrics: Active Jobs, Total Applicants, Shortlisted, Interview Stage, Hired / Offers.
+    - Next Upcoming Interview card with direct "Join Meeting" action.
+    - Top in-demand technical skills breakdown across recruiter's listings.
+  - **Job Openings & Templates Tab**:
+    - 6 Production Job Templates ("Full-Stack AI Engineer", "Frontend Angular & WebGL Specialist", "Machine Learning Scientist", "Product Designer UI/UX", "Cloud & DevOps Engineer", "Data Analyst & BI Specialist") with 1-click form pre-filling.
+    - Active & Closed status toggle button with live backend sync.
+    - Responsive listings table with views, applicants counters, edit, and delete actions.
+  - **Kanban Pipeline & Bulk Actions Tab (`/recruiter/applications`)**:
+    - **Dual View**: 1-click toggle between **📋 Kanban Board** (6 columns: `Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Rejected`) and **📑 Table List**.
+    - Full HTML5 Drag-and-Drop stage transitions (`onDragStart`, `onDragOver`, `onDrop`).
+    - Keyboard-accessible stage promotion via accessible `<select>` dropdown.
+    - **Bulk Actions Bar**: Select multiple applicants with checkboxes, bulk stage transition, and bulk tagging.
+    - Tagging system ("Top Tier", "Immediate Joiner", "High Potential") with tag chip deletion.
+    - Internal hiring notes with author and timestamp audit log.
+  - **Candidate Discovery & ATS Match Tab (`/recruiter/candidates`)**:
+    - Multi-criteria candidate talent pool search (skills, target role, location).
+    - Candidate Detail Drawer with education, experience, and honest ATS Match Breakdown computed against the recruiter's active requirements.
+  - **Interview Calendar & Scheduler Tab**:
+    - **New Backend Model**: `InterviewSchedule.js` with fields for application, job, candidate, recruiter, round, duration, mode (Google Meet, Zoom, Teams, In-Person, Phone), link, status, notes, and feedback.
+    - Interactive 7-column monthly calendar grid with previous/next month navigation, current day highlight, and interview count pills.
+    - Comprehensive Schedule/Reschedule Modal with meeting link generator and candidate notification triggers.
+    - Agenda list with reschedule, cancel (with reason), and feedback recording.
+  - **Company Profile Tab**:
+    - Comprehensive company branding, industry, company size, culture narrative, official website, and verified employer status.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **536.75 kB** raw (**143.10 kB** transfer), `main`: **86.04 kB** raw / **18.59 kB** transfer + 40 lazy chunks (`recruiter-dashboard-component`: **83.40 kB** raw / **18.29 kB** transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 6 interview schedules, recruiter analytics, tags, and bulk actions tests).
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.
   - Dual-theme (`[data-theme="light"]`) spot-checks on `/student/dashboard`, `/profile`, `/resume-builder`, `/notifications`, and `/settings` rendered with 0 layout shift or clipped elements.
 
 ### Phase 4 — AI Modules (`redesign/phase-4`)
@@ -223,3 +261,41 @@
   - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
   - `$env:AUDIT_PHASE='phase-5'; node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 issues, 0 errors, 0 Axe violations, 0 overflow)**.
   - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and **0.0124** on `/jobs`.
+
+### Phase 6 — Recruiter Command Center (`redesign/phase-6`)
+- **Status:** Complete (awaiting user `"continue"` for Phase 7).
+- **Artifacts & Reports:** `tests/reports/playwright-phase-6.json`, `tests/reports/lighthouse-phase-6.json`, `tests/screenshots/phase-6/`.
+- **Key Deliverables:**
+  - **Overview & Analytics Tab**:
+    - Complete recruiting conversion funnel tracking: Views -> Applications -> Under Review -> Shortlisted -> Interviews -> Hired.
+    - 3 live conversion rate indicators: View-to-Apply %, Apply-to-Shortlist %, and Interview-to-Offer %.
+    - Summary metrics: Active Jobs, Total Applicants, Shortlisted, Interview Stage, Hired / Offers.
+    - Next Upcoming Interview card with direct "Join Meeting" action.
+    - Top in-demand technical skills breakdown across recruiter's listings.
+  - **Job Openings & Templates Tab**:
+    - 6 Production Job Templates ("Full-Stack AI Engineer", "Frontend Angular & WebGL Specialist", "Machine Learning Scientist", "Product Designer UI/UX", "Cloud & DevOps Engineer", "Data Analyst & BI Specialist") with 1-click form pre-filling.
+    - Active & Closed status toggle button with live backend sync.
+    - Responsive listings table with views, applicants counters, edit, and delete actions.
+  - **Kanban Pipeline & Bulk Actions Tab (`/recruiter/applications`)**:
+    - **Dual View**: 1-click toggle between **📋 Kanban Board** (6 columns: `Applied`, `Under Review`, `Shortlisted`, `Interview`, `Selected / Offer`, `Rejected`) and **📑 Table List**.
+    - Full HTML5 Drag-and-Drop stage transitions (`onDragStart`, `onDragOver`, `onDrop`).
+    - Keyboard-accessible stage promotion via accessible `<select>` dropdown.
+    - **Bulk Actions Bar**: Select multiple applicants with checkboxes, bulk stage transition, and bulk tagging.
+    - Tagging system ("Top Tier", "Immediate Joiner", "High Potential") with tag chip deletion.
+    - Internal hiring notes with author and timestamp audit log.
+  - **Candidate Discovery & ATS Match Tab (`/recruiter/candidates`)**:
+    - Multi-criteria candidate talent pool search (skills, target role, location).
+    - Candidate Detail Drawer with education, experience, and honest ATS Match Breakdown computed against the recruiter's active requirements.
+  - **Interview Calendar & Scheduler Tab**:
+    - **New Backend Model**: `InterviewSchedule.js` with fields for application, job, candidate, recruiter, round, duration, mode (Google Meet, Zoom, Teams, In-Person, Phone), link, status, notes, and feedback.
+    - Interactive 7-column monthly calendar grid with previous/next month navigation, current day highlight, and interview count pills.
+    - Comprehensive Schedule/Reschedule Modal with meeting link generator and candidate notification triggers.
+    - Agenda list with reschedule, cancel (with reason), and feedback recording.
+  - **Company Profile Tab**:
+    - Comprehensive company branding, industry, company size, culture narrative, official website, and verified employer status.
+- **Verified Checks:**
+  - `cd frontend; npx ng build --configuration production`: exit `0`; Initial total **536.75 kB** raw (**143.10 kB** transfer), `main`: **86.04 kB** raw / **18.59 kB** transfer + 40 lazy chunks (`recruiter-dashboard-component`: **83.40 kB** raw / **18.29 kB** transfer).
+  - `node --test backend/tests/regression.test.js`: **9/9 passing** with zero failures (including new Phase 6 interview schedules, recruiter analytics, tags, and bulk actions tests).
+  - `node test_e2e.js`: **all 22 full-stack smoke tests passing**.
+  - `node tests/run-audit-harness.mjs`: **32 routes × 10 viewports = 320/320 checks clean (0 console errors, 0 page errors, 0 API failures, 0 Axe violations, 0 overflow down to 360px)**.
+  - Mobile Slow 4G Lighthouse audits: Accessibility **95–100** across audited routes, Best Practices **100**, CLS = **0.0001** on landing and career-explorer.

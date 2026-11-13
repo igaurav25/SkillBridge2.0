@@ -9,6 +9,10 @@ const {
   getMockSessionById,
 } = require('../controllers/interviewController');
 const { protect } = require('../middleware/authMiddleware');
+const interviewScheduleRoutes = require('./interviewScheduleRoutes');
+
+// Live recruiter-candidate interview scheduling & calendar
+router.use('/schedules', interviewScheduleRoutes);
 
 router.get('/questions', getQuestions);
 router.get('/categories', getCategories);

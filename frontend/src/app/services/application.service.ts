@@ -49,4 +49,24 @@ export class ApplicationService {
   ): Observable<ApiResponse<Application>> {
     return this.http.put<ApiResponse<Application>>(`${this.API_URL}/${id}/status`, data);
   }
+
+  bulkUpdateStatus(
+    applicationIds: string[],
+    status: string,
+    note?: string
+  ): Observable<ApiResponse<{ count: number; updatedIds: string[] }>> {
+    return this.http.post<ApiResponse<{ count: number; updatedIds: string[] }>>(`${this.API_URL}/bulk-status`, {
+      applicationIds,
+      status,
+      note,
+    });
+  }
+
+  updateTags(id: string, tags: string[]): Observable<ApiResponse<{ tags: string[] }>> {
+    return this.http.put<ApiResponse<{ tags: string[] }>>(`${this.API_URL}/${id}/tags`, { tags });
+  }
+
+  addInternalNote(id: string, note: string): Observable<ApiResponse<any[]>> {
+    return this.http.post<ApiResponse<any[]>>(`${this.API_URL}/${id}/internal-notes`, { note });
+  }
 }

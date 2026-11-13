@@ -330,6 +330,152 @@ const updateApplicationStatus = async (req, res, next) => {
   }
 };
 
+// @desc    Bulk update application statuses (Recruiter bulk actions)
+// @route   POST /api/applications/bulk-status
+// @access  Private (Recruiter / Admin)
+const bulkUpdateApplications = async (req, res, next) => {
+  try {
+    const { applicationIds, status, note } = req.body;
+
+    if (!Array.isArray(applicationIds) || applicationIds.length === 0) {
+      return res.status(400).json({ success: false, message: 'Please provide an array of applicationIds.' });
+    }
+
+    const APP_STATUS_MAP = {
+      applied: 'Applied',
+      under_review: 'Under Review',
+      'under review': 'Under Review',
+      shortlisted: 'Shortlisted',
+      interview: 'Interview',
+      selected: 'Selected',
+      rejected: 'Rejected',
+      withdrawn: 'Withdrawn',
+    };
+
+    const normalizedStatus = APP_STATUS_MAP[String(status).trim().toLowerCase()];
+    if (!normalizedStatus) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid application status "${status}". Allowed: Applied, Under Review, Shortlisted, Interview, Selected, Rejected, Withdrawn.`,
+      });
+    }
+
+    const query = {
+      _id: { $in: applicationIds },
+      ...(req.user.role === 'admin' ? {} : { recruiter: req.user.id }),
+    };
+
+    const applications = await Application.find(query).populate('job', 'title companyName');
+
+    const updated = [];
+    for (const app of applications) {
+      app.status = normalizedStatus;
+      app.timeline.push({
+        status: normalizedStatus,
+        note: note || `Bulk status update to ${normalizedStatus}.`,
+        changedAt: new Date(),
+        changedBy: req.user.id,
+      });
+      await app.save();
+      updated.push(app._id);
+
+      // Notification
+      if (app.candidate) {
+        await Notification.create({
+          recipient: app.candidate,
+          sender: req.user.id,
+          type: normalizedStatus === 'Interview' ? 'interview' : 'application_status',
+          title: `Application Status: ${normalizedStatus}`,
+          message: `Your application for "${app.job?.title || 'Position'}" has moved to "${normalizedStatus}".`,
+          link: '/applications',
+          metadata: { jobId: app.job?._id, applicationId: app._id },
+        }).catch(() => {});
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Successfully updated ${updated.length} applications to "${normalizedStatus}".`,
+      count: updated.length,
+      updatedIds: updated,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Update application tags & recruiter internal notes
+// @route   PUT /api/applications/:id/tags
+// @access  Private (Recruiter / Admin)
+const updateApplicationTags = async (req, res, next) => {
+  try {
+    const { tags } = req.body;
+    if (!Array.isArray(tags)) {
+      return res.status(400).json({ success: false, message: 'Tags must be an array of strings.' });
+    }
+
+    const query = {
+      _id: req.params.id,
+      ...(req.user.role === 'admin' ? {} : { recruiter: req.user.id }),
+    };
+
+    const app = await Application.findOne(query);
+    if (!app) {
+      return res.status(404).json({ success: false, message: 'Application not found or unauthorized.' });
+    }
+
+    app.tags = tags.map(t => String(t).trim()).filter(Boolean);
+    await app.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Tags updated successfully.',
+      tags: app.tags,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// @desc    Add internal note to application
+// @route   POST /api/applications/:id/internal-notes
+// @access  Private (Recruiter / Admin)
+const addInternalNote = async (req, res, next) => {
+  try {
+    const { note } = req.body;
+    if (!note || !String(note).trim()) {
+      return res.status(400).json({ success: false, message: 'Note text is required.' });
+    }
+
+    const query = {
+      _id: req.params.id,
+      ...(req.user.role === 'admin' ? {} : { recruiter: req.user.id }),
+    };
+
+    const app = await Application.findOne(query);
+    if (!app) {
+      return res.status(404).json({ success: false, message: 'Application not found or unauthorized.' });
+    }
+
+    const newNote = {
+      note: String(note).trim(),
+      createdAt: new Date(),
+      authorName: req.user.name || 'Recruiter',
+    };
+
+    app.internalNotes.push(newNote);
+    await app.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Internal note added.',
+      data: app.internalNotes,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   applyForJob,
   getMyApplications,
@@ -337,4 +483,7 @@ module.exports = {
   withdrawApplication,
   getRecruiterApplications,
   updateApplicationStatus,
+  bulkUpdateApplications,
+  updateApplicationTags,
+  addInternalNote,
 };

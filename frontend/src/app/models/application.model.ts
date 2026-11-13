@@ -43,6 +43,12 @@ export interface Application {
   status: ApplicationStatus;
   timeline: TimelineItem[];
   recruiterNotes?: string;
+  tags?: string[];
+  internalNotes?: {
+    note: string;
+    createdAt: string;
+    authorName?: string;
+  }[];
   interviewDetails?: InterviewDetails;
   matchScore?: number;
   matchDetails?: {

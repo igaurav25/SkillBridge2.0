@@ -85,5 +85,51 @@ export class AnalyticsService {
   getStudentCareerAnalytics(): Observable<{ success: boolean; data: CareerAnalyticsData }> {
     return this.http.get<{ success: boolean; data: CareerAnalyticsData }>(`${this.apiUrl}/career`);
   }
+
+  getRecruiterAnalytics(): Observable<{ success: boolean; data: RecruiterAnalyticsData }> {
+    return this.http.get<{ success: boolean; data: RecruiterAnalyticsData }>(`${this.apiUrl}/recruiter`);
+  }
+}
+
+export interface RecruiterAnalyticsData {
+  summary: {
+    totalJobs: number;
+    activeJobs: number;
+    closedJobs: number;
+    totalViews: number;
+    totalApplications: number;
+    shortlistedCandidates: number;
+    scheduledInterviews: number;
+    totalHires: number;
+  };
+  funnel: {
+    views: number;
+    applications: number;
+    underReview: number;
+    shortlisted: number;
+    interview: number;
+    selected: number;
+    rejected: number;
+  };
+  conversionRates: {
+    viewToApplyRate: number;
+    applyToShortlistRate: number;
+    interviewToHireRate: number;
+  };
+  jobPerformance: Array<{
+    id: string;
+    title: string;
+    status: string;
+    views: number;
+    applications: number;
+    shortlisted: number;
+    hired: number;
+    conversionRate: number;
+    createdAt: string;
+  }>;
+  topSkillsInDemand: Array<{
+    name: string;
+    count: number;
+  }>;
 }
 
