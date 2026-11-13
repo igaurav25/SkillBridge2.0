@@ -1,0 +1,336 @@
+{
+  "phase": "phase-8",
+  "timestamp": "2026-11-13T16:27:22.626Z",
+  "viewportsTested": [
+    1920,
+    1440,
+    1366,
+    1280,
+    1024,
+    768,
+    430,
+    390,
+    375,
+    360
+  ],
+  "totalRoutesChecked": 35,
+  "totalViewportChecks": 350,
+  "routesWithIssues": 0,
+  "findings": [
+    {
+      "role": "guest",
+      "route": "/",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "guest",
+      "route": "/login",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "guest",
+      "route": "/register",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "guest",
+      "route": "/jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "guest",
+      "route": "/companies",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "guest",
+      "route": "/career-explorer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/student/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/profile",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/resume-builder",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/resume-analyzer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/applications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/saved-jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/skill-gap",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/career-assistant",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/interview-prep",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/assessments",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/learning-roadmap",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/projects",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/github-analyzer",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/career-analytics",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/achievements",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/notifications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/settings",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "student",
+      "route": "/jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/post-job",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/applications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "recruiter",
+      "route": "/recruiter/candidates",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/dashboard",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/users",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/jobs",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/companies",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/reports",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/applications",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    },
+    {
+      "role": "admin",
+      "route": "/admin/audit",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "failedApiCalls": [],
+      "axeSeriousCritical": [],
+      "viewportIssues": []
+    }
+  ]
+}

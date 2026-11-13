@@ -1,10 +1,11 @@
 // SkillBridge 2.0 — Universal Service Worker
-const CACHE_NAME = 'skillbridge-pwa-v2.1';
+const CACHE_NAME = 'skillbridge-pwa-v2.2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/favicon.ico'
+  '/favicon.ico',
+  '/offline.html',
 ];
 
 // Install Event: Precaching App Shell
@@ -96,9 +97,11 @@ self.addEventListener('fetch', (event) => {
         });
         return networkResponse;
       }).catch(() => {
-        // Fallback for navigation
+        // Fallback for navigation: App Shell index.html or dedicated offline page
         if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
+          return caches.match('/index.html').then((indexCached) => {
+            return indexCached || caches.match('/offline.html');
+          });
         }
       });
     })

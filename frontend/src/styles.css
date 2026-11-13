@@ -843,6 +843,63 @@ textarea.form-control {
   z-index: var(--z-modal);
 }
 
+@media (max-width: 640px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    max-height: 85dvh;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 1.25rem;
+    border-top-right-radius: 1.25rem;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 1.25rem 1rem max(1.25rem, env(safe-area-inset-bottom, 1rem)) 1rem;
+    animation: slideUpBottomSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .bottom-sheet-handle {
+    width: 38px;
+    height: 4px;
+    background: var(--border-card, rgba(255, 255, 255, 0.25));
+    border-radius: 9999px;
+    margin: -0.5rem auto 1rem auto;
+  }
+}
+
+@keyframes slideUpBottomSheet {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  /* iOS Safari auto-zoom prevention: inputs must be 16px or larger */
+  input,
+  select,
+  textarea,
+  .form-control,
+  .select-control {
+    font-size: 16px !important;
+  }
+
+  /* Minimum 44px touch targets on mobile */
+  .btn,
+  .nav-tab,
+  button:not(.btn-xs):not(.pwa-close-btn),
+  .select-control {
+    min-height: 44px;
+  }
+}
+
 .modal-header {
   display: flex;
   align-items: center;

@@ -2,6 +2,7 @@ import { Injectable, signal, computed, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, catchError, of } from 'rxjs';
+import { Preferences } from '@capacitor/preferences';
 import { User, AuthResponse } from '../models/user.model';
 import { ApiResponse } from '../models/api-response.model';
 import { ToastService } from './toast.service';
@@ -41,10 +42,29 @@ export class AuthService {
           this.token.set(savedToken);
           this.currentUser.set(JSON.parse(savedUser));
           this.fetchMe().subscribe();
+          return;
         } catch (e) {
           this.clearSession();
         }
       }
+
+      // Check Capacitor secure preferences fallback
+      Preferences.get({ key: 'sb_auth_token' }).then((prefToken) => {
+        if (prefToken.value && !this.token()) {
+          this.token.set(prefToken.value);
+          localStorage.setItem('sb_auth_token', prefToken.value);
+          Preferences.get({ key: 'sb_user' }).then((prefUser) => {
+            if (prefUser.value) {
+              try {
+                const parsed = JSON.parse(prefUser.value);
+                this.currentUser.set(parsed);
+                localStorage.setItem('sb_user', prefUser.value);
+                this.fetchMe().subscribe();
+              } catch {}
+            }
+          });
+        }
+      }).catch(() => {});
     }
   }
 
@@ -146,6 +166,7 @@ export class AuthService {
     if (typeof window !== 'undefined') {
       localStorage.setItem('sb_user', JSON.stringify(user));
     }
+    Preferences.set({ key: 'sb_user', value: JSON.stringify(user) }).catch(() => {});
   }
 
   private setSession(token: string, user: User) {
@@ -155,6 +176,8 @@ export class AuthService {
       localStorage.setItem('sb_auth_token', token);
       localStorage.setItem('sb_user', JSON.stringify(user));
     }
+    Preferences.set({ key: 'sb_auth_token', value: token }).catch(() => {});
+    Preferences.set({ key: 'sb_user', value: JSON.stringify(user) }).catch(() => {});
   }
 
   forceClearSession() {
@@ -168,6 +191,8 @@ export class AuthService {
       localStorage.removeItem('sb_auth_token');
       localStorage.removeItem('sb_user');
     }
+    Preferences.remove({ key: 'sb_auth_token' }).catch(() => {});
+    Preferences.remove({ key: 'sb_user' }).catch(() => {});
   }
 
   redirectByRole(role: string) {
